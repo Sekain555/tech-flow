@@ -1,0 +1,196 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/recepcion"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6">
+        <ion-card>
+          <ion-grid>
+            <ion-row class="ion-justify-content-center">
+              <ion-col size="auto" class="ion-align-self-center">
+                <ion-thumbnail>
+                  <img src="/assets/icon/usuario-ccuenta.png">
+                </ion-thumbnail>
+              </ion-col>
+                &nbsp;<h2>DATOS PERSONALES</h2>
+            </ion-row>
+            <ion-row class="ion-justify-content-around">
+              <ion-col size="6">
+                <!--Esto es para que el usuario ingrese su nombre, apellidos Y RUT-->
+                <ion-item>
+                  <ion-label position="floating">Nombre completo</ion-label>
+                  <ion-input placeholder="ej: Victor Sepulveda Brito" [(ngModel)]="datosusuario.nombre"></ion-input>
+                </ion-item>
+              </ion-col>
+              <ion-col size="3">
+                <ion-item>
+                  <ion-label position="floating">RUT:</ion-label>
+                  <ion-input minlength="10" placeholder="99888777-6" [(ngModel)]="datosusuario.rut"></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-justify-content-around">
+              <ion-col size="4">
+                <ion-item>
+                  <ion-label position="floating">Correo electrónico</ion-label>
+                  <ion-input type="email" [(ngModel)]="datosusuario.correo"></ion-input>
+                </ion-item>
+              </ion-col>
+              <ion-col size="4">
+                <ion-item>
+                  <ion-label position="floating">Número telefónico</ion-label>
+                  <ion-input type="tel" [(ngModel)]="datosusuario.nrotelefono" placeholder="912345678"></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-row class="ion-justify-content-around">
+              <ion-col size="4">
+                <!--INGRESAR CONTRASEÑA-->
+                <ion-item>
+                  <ion-label position="floating">Ingrese contraseña</ion-label>
+                  <ion-input type="password" [(ngModel)]="datosusuario.clave"></ion-input>
+                </ion-item>
+              </ion-col>
+              <ion-col size="4">
+                <!--REINGRESAR CONTRASEÑA-->
+                <ion-item>
+                  <ion-label position="floating">Reingrese contraseña</ion-label>
+                  <ion-input type="password" [(ngModel)]="rinclave16"></ion-input>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+            <ion-col class="ion-padding-vertical">
+              <ion-row class="ion-justify-content-center">
+                <ion-label>Seleccione su cargo en el servicio técnico</ion-label>
+              </ion-row>
+            </ion-col>
+            <ion-row class="ion-justify-content-center">
+              <ion-list>
+                <ion-radio-group (ionChange)="mostrarAdmin($event)">
+                  <ion-item>
+                    <ion-label>Administrador</ion-label>
+                    <ion-radio slot="end" value="Administrador"></ion-radio>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label>Técnico</ion-label>
+                    <ion-radio slot="end" value="Tecnico"></ion-radio>
+                  </ion-item>
+                  <ion-item>
+                    <ion-label>Vendedor</ion-label>
+                    <ion-radio slot="end" value="Vendedor"></ion-radio>
+                  </ion-item>
+                </ion-radio-group>
+              </ion-list>
+            </ion-row>
+          </ion-grid>
+        </ion-card>
+      </ion-col>
+      <ion-col>
+        <ion-card>
+          <ion-grid>
+            <ion-row class="ion-justify-content-center">
+              <ion-col size="auto" class="ion-align-self-center">
+                <ion-thumbnail>
+                  <img src="/assets/icon/taller.png">
+                </ion-thumbnail>
+              </ion-col>
+                &nbsp;
+              <h2>DATOS DEL SERV. TÉCNICO</h2>
+            </ion-row>
+            <!--PLANTILLA DE REGISTRO PARA ADMINISTRADORES-->
+            <ion-col *ngIf="administrador">
+              <ion-row>
+                <ion-col>
+                  <ion-item>
+                    <ion-label position="floating">Nombre del servicio técnico</ion-label>
+                    <ion-input [(ngModel)]="datostaller.nombretaller"></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col>
+                  <ion-item>
+                    <ion-label position="floating">RUT Empresa</ion-label>
+                    <ion-input maxlength="10" placeholder="99888777-6" [(ngModel)]="datostaller.rutempresa"></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col size="auto">
+                  <ion-item>
+                    <ion-label position="floating">Telefono taller</ion-label>
+                    <ion-input type="tel" [(ngModel)]="datostaller.nrotelefonotaller"
+                      placeholder="912345678"></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col>
+                  <ion-item>
+                    <ion-label position="floating">Dirección</ion-label>
+                    <ion-input [(ngModel)]="datostaller.direcciontaller" placeholder="Calle y número"></ion-input>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-item>
+                    <ion-label>Comuna</ion-label>
+                    <ion-select [(ngModel)]="datostaller.comuna">
+                      <ion-select-option value="Machali">Machalí</ion-select-option>
+                      <ion-select-option value="Rancagua">Rancagua</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-item>
+                    <ion-label>Región</ion-label>
+                    <ion-select [(ngModel)]="datostaller.region">
+                      <ion-select-option value="VI - Región de O'higgins">VI - Región de O'higgins</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row class="ion-justify-content-center">
+                <ion-button (click)="crearcuenta()">Crear cuenta</ion-button>
+              </ion-row>
+            </ion-col>
+            <!--PLANTILLA DE REGISTRO PARA TECNICOS Y VENDEDORES-->
+            <ion-col *ngIf="tecven">
+              <ion-row class="ion-justify-content-center">
+                <ion-button id="no-click-trigger" fill="clear"><ion-icon name="search-outline"></ion-icon>&nbsp;ASIGNAR
+                  SERVICIO TECNICO
+                </ion-button>
+                <ion-popover trigger="no-click-trigger" triggerAction="click" size="auto">
+                  <ng-template>
+                    <ion-grid>
+                      <ion-list>
+                        <ion-item button (click)="nombretaller = taller.nombretaller" *ngFor="let taller of talleres">
+                          <ion-col size="auto">
+                            <ion-label>{{taller.nombretaller}}</ion-label>
+                          </ion-col>
+                        </ion-item>
+                      </ion-list>
+                    </ion-grid>
+                  </ng-template>
+                </ion-popover>
+              </ion-row>
+              <ion-row class="ion-justify-content-center">
+                <ion-item>
+                  <ion-label position="stacked">Servicio técnico asignado</ion-label>
+                  <ion-input [readonly]="true">{{nombretaller}}</ion-input>
+                </ion-item>
+              </ion-row>
+              <ion-row class="ion-justify-content-center">
+                <ion-button (click)="crearcuenta()">Crear cuenta</ion-button>
+              </ion-row>
+            </ion-col>
+          </ion-grid>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

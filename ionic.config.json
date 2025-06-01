@@ -1,0 +1,7 @@
+{
+  "name": "Kit Sertec",
+  "integrations": {
+    "capacitor": {}
+  },
+  "type": "angular"
+}

@@ -1,0 +1,93 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-row class="ion-align-items-center">
+      <ion-col size="auto">
+        <ion-thumbnail>
+          <img alt="" src="/assets/stickers/play-list.png" />
+        </ion-thumbnail>
+      </ion-col>
+      <ion-col>
+        <ion-title>Playlist de {{passvideo}}</ion-title>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="3">
+        <ion-card *ngIf="passvideo === 'Technyfix'">
+          <ion-row class="ion-justify-content-center">
+            <iframe src="https://www.youtube.com/embed/wrgAZECW5oI" title="YouTube video player"
+              frameborder="3" allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+          </ion-row>
+        </ion-card>
+        <ion-card *ngIf="passvideo === 'Sertec'">
+          <ion-row class="ion-justify-content-center">
+            <iframe src="https://www.youtube.com/embed/MvTHH7X0Thk" title="YouTube video player"
+              frameborder="3" allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+      <ion-col size="3">
+        <ion-card *ngIf="passvideo === 'Technyfix'">
+          <ion-row class="ion-justify-content-center">
+            <iframe src="https://www.youtube.com/embed/Kki2grjxGo0" title="YouTube video player"
+              frameborder="3" allow="clipboard-write; encrypted-media; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+          </ion-row>
+        </ion-card>
+        <ion-card *ngIf="passvideo === 'Sertec'">
+          <ion-row class="ion-justify-content-center">
+            <iframe src="https://www.youtube.com/embed/3YmqYA4G9K8" title="YouTube video player"
+              frameborder="3" allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+      <ion-col size="3">
+        <ion-card *ngIf="passvideo === 'Technyfix'">
+          <ion-row class="ion-justify-content-center">
+            <iframe src="https://www.youtube.com/embed/S2s0OQroA0E" title="YouTube video player"
+              frameborder="3" allow="clipboard-write; encrypted-media; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+          </ion-row>
+        </ion-card>
+        <ion-card *ngIf="passvideo === 'Sertec'">
+          <ion-row class="ion-justify-content-center">
+            <iframe src="https://www.youtube.com/embed/3oO5GUxXJgA" title="YouTube video player"
+              frameborder="3" allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+      <ion-col size="3">
+        <ion-card *ngIf="passvideo === 'Technyfix'">
+          <ion-row class="ion-justify-content-center">
+            <iframe src="https://www.youtube.com/embed/rKcp9oe5Cj4" title="YouTube video player"
+              frameborder="3" allow="clipboard-write; encrypted-media; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+          </ion-row>
+        </ion-card>
+        <ion-card *ngIf="passvideo === 'Sertec'">
+          <ion-row class="ion-justify-content-center">
+            <iframe src="https://www.youtube.com/embed/yWsVcyU4LbY" title="YouTube video player"
+              frameborder="3" allow="accelerometer; clipboard-write; encrypted-media; picture-in-picture"
+              allowfullscreen>
+            </iframe>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

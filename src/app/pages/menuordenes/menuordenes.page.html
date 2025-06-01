@@ -1,0 +1,86 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-row class="ion-align-items-center">
+      <ion-col size="auto">
+        <ion-thumbnail>
+          <img alt="" src="/assets/icon/ico-orden.png" />
+        </ion-thumbnail>
+      </ion-col>
+      <ion-col>
+        <ion-title>Ordenes de trabajo</ion-title>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="3">
+        <ion-card>
+          <ion-item button detail="false" routerLink="/nuevaorden">
+            <ion-grid>
+              <ion-row>
+                <ion-col>
+                  <h3>Nueva orden</h3>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  Presiona aquí para crear una nueva orden de trabajo
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-img src="assets/stickers/nueva-orden.png" alt="Crear nueva orden de trabajo"></ion-img>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-card>
+      </ion-col>
+      <ion-col size="3">
+        <ion-card>
+          <ion-item button detail="false" routerLink="/estadisticasorden">
+            <ion-grid>
+              <ion-row>
+                <ion-col>
+                  <h3>Estadísticas</h3>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  Presiona aquí para revisar información útil sobre tus ordenes
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-img src="assets/stickers/estadisticas-orden.png" alt="Estadisticas de ordenes de trabajo">
+                </ion-img>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-card>
+      </ion-col>
+      <ion-col size="3">
+        <ion-card>
+          <ion-item button detail="false" routerLink="/registroorden">
+            <ion-grid>
+              <ion-row>
+                <ion-col>
+                  <h3>Registro de ordenes</h3>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  Presiona aquí para ver y gestionar tus ordenes
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-img src="assets/stickers/registros-orden.png" alt="Registro de ordenes de trabajo">
+                </ion-img>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

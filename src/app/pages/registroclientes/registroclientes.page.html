@@ -1,0 +1,87 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-row class="ion-align-items-center">
+      <ion-col size="auto">
+        <ion-thumbnail>
+          <img alt="" src="/assets/stickers/lista-de-contactos.png" />
+        </ion-thumbnail>
+      </ion-col>
+      <ion-col>
+        <ion-title>REGISTRO DE CLIENTES</ion-title>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="8">
+        <ion-card>
+          <ion-list>
+            <ion-row>
+              <ion-searchbar [(ngModel)]="busquedacliente" (ionChange)="buscarcliente()" placeholder="Buscar cliente por RUT" >
+              </ion-searchbar>
+            </ion-row>
+          </ion-list>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-list lines="full">
+      <ion-row class="ion-justify-content-between">
+        <ion-col size="2.65">
+          <ion-item>
+            <ion-chip>Nombre</ion-chip>
+          </ion-item>
+        </ion-col>
+        <ion-col size="2.65">
+          <ion-item>
+            <ion-chip>RUT</ion-chip>
+          </ion-item>
+        </ion-col>
+        <ion-col size="2.65">
+          <ion-item>
+            <ion-chip>Última orden</ion-chip>
+          </ion-item>
+        </ion-col>
+        <ion-col size="2.65">
+          <ion-item>
+            <ion-chip>Último dispositivo</ion-chip>
+          </ion-item>
+        </ion-col>
+        <ion-col size="1">
+          &nbsp;
+        </ion-col>
+      </ion-row>
+      <ion-item *ngFor="let cliente of clientes">
+        <ion-grid>
+          <ion-row>
+            <ion-col size="2.65">
+              {{cliente.nombrecliente}}
+            </ion-col>
+            <ion-col size="2.65">
+              {{cliente.rutcliente}}
+            </ion-col>
+            <ion-col size="2.65">
+              {{cliente.nrorden}}
+            </ion-col>
+            <ion-col size="2.65">
+              {{cliente.dispositivos.marcadisp}}
+            </ion-col>
+            <ion-col size="1">
+              <ion-button fill="clear">
+                <ion-icon name="search"></ion-icon>
+              </ion-button>
+              <ion-button fill="clear">
+                <ion-icon name="close-circle"></ion-icon>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-list>
+  </ion-grid>
+</ion-content>

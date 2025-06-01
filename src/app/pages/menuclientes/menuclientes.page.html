@@ -1,0 +1,92 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-row class="ion-align-items-center">
+      <ion-col size="auto">
+        <ion-thumbnail>
+          <img alt="" src="/assets/icon/usuario (1).png" />
+        </ion-thumbnail>
+      </ion-col>
+      <ion-col>
+        <ion-title>CLIENTES</ion-title>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="3">
+        <ion-card>
+          <ion-item button detail="false" routerLink="/nuevocliente">
+            <ion-grid>
+              <ion-row>
+                <ion-col>
+                  <h3>Añadir nuevo cliente</h3>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  Presiona aquí para crear un nuevo cliente
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                &nbsp;
+              </ion-row>
+              <ion-row>
+                <ion-img src="assets/stickers/nuevo-cliente.png"></ion-img>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-card>
+      </ion-col>
+      <ion-col size="3">
+        <ion-card>
+          <ion-item button detail="false" routerLink="/contactoclientes">
+            <ion-grid>
+              <ion-row>
+                <ion-col>
+                  <h3>Contactar clientes</h3>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  Presiona aquí para contactar a tus clientes y/o informarles sobre sus reparaciones
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-img src="assets/stickers/contactar-clientes.png">
+                </ion-img>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-card>
+      </ion-col>
+      <ion-col size="3">
+        <ion-card>
+          <ion-item button detail="false" routerLink="/registroclientes">
+            <ion-grid>
+              <ion-row>
+                <ion-col>
+                  <h3>Registro de clientes</h3>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  Presiona aquí para ver y gestionar tus clientes
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                &nbsp;
+              </ion-row>
+              <ion-row>
+                <ion-img src="assets/stickers/lista-de-contactos.png">
+                </ion-img>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

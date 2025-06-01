@@ -1,0 +1,222 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-row class="ion-align-items-center">
+      <ion-col size="auto">
+        <ion-thumbnail>
+          <img alt="" src="/assets/stickers/registros-orden.png" />
+        </ion-thumbnail>
+      </ion-col>
+      <ion-col>
+        <ion-title>REGISTRO DE ORDENES</ion-title>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="8">
+        <ion-card>
+          <ion-row class="ion-justify-content-around">
+            <ion-list>
+              <ion-list-header>FILTRAR POR:</ion-list-header>
+              <ion-row>
+                <ion-col>
+                  <ion-item>
+                    <ion-label position="floating">N° de orden</ion-label>
+                    <ion-input type="number"></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col>
+                  <ion-item>
+                    <ion-label position="floating">Nombre del cliente</ion-label>
+                    <ion-input type="text"></ion-input>
+                  </ion-item>
+                </ion-col>
+                <ion-col>
+                  <ion-item>
+                    <ion-label position="floating">Dispositivo</ion-label>
+                    <ion-select>
+                      <ion-select-option>Samsung S21+ 5G</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-item>
+                    <ion-label position="floating">Estado de reparación</ion-label>
+                    <ion-select>
+                      <ion-select-option>Ingresado</ion-select-option>
+                      <ion-select-option>En reparación</ion-select-option>
+                      <ion-select-option>Esperando repuesto</ion-select-option>
+                      <ion-select-option>Reparado</ion-select-option>
+                      <ion-select-option>Sin reparación</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                </ion-col>
+                <ion-col>
+                  <ion-item>
+                    <ion-label position="floating">Tipo de reparación</ion-label>
+                    <ion-select>
+                      <ion-select-option>Revisión</ion-select-option>
+                      <ion-select-option>Mantención</ion-select-option>
+                      <ion-select-option>Revisión</ion-select-option>
+                      <ion-select-option>Garantía</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                </ion-col>
+                <ion-col>
+                  <ion-item>
+                    <ion-label position="floating">Técnico</ion-label>
+                    <ion-select>
+                      <ion-select-option>Jesús Pacheco</ion-select-option>
+                    </ion-select>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  <ion-item>
+                    <ion-label>Habilitar intérvalo de fechas</ion-label>
+                    <ion-toggle [enableOnOffLabels]="true" slot="end"></ion-toggle>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="auto">
+                  <ion-item>
+                    <ion-label>Fecha inicio:</ion-label>
+                    <ion-datetime-button datetime="date"></ion-datetime-button>
+
+                    <ion-modal [keepContentsMounted]="true">
+                      <ng-template>
+                        <ion-datetime presentation="date" id="date"></ion-datetime>
+                      </ng-template>
+                    </ion-modal>
+                  </ion-item>
+                </ion-col>
+                <ion-col size="auto">
+                  <ion-item disabled="true">
+                    <ion-label>Fecha corte:</ion-label>
+                    <ion-datetime-button datetime="date"></ion-datetime-button>
+
+                    <ion-modal [keepContentsMounted]="true">
+                      <ng-template>
+                        <ion-datetime presentation="date" id="date"></ion-datetime>
+                      </ng-template>
+                    </ion-modal>
+                  </ion-item>
+                </ion-col>
+              </ion-row>
+            </ion-list>
+            <ion-row class="ion-justify-content-center">
+              <ion-col>
+                <ion-button>FILTRAR</ion-button>
+              </ion-col>
+            </ion-row>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-list lines="full">
+      <ion-row class="ion-justify-content-between">
+        <ion-col size="auto">
+          <ion-item>
+            <ion-chip>N° de orden</ion-chip>
+          </ion-item>
+        </ion-col>
+        <ion-col size="auto">
+          <ion-item>
+            <ion-chip>Nombre cliente</ion-chip>
+          </ion-item>
+        </ion-col>
+        <ion-col size="auto">
+          <ion-item>
+            <ion-chip>Dispositivo</ion-chip>
+          </ion-item>
+        </ion-col>
+        <ion-col size="auto">
+          <ion-item>
+            <ion-chip>Estado de reparación</ion-chip>
+          </ion-item>
+        </ion-col>
+        <ion-col size="auto">
+          <ion-item>
+            <ion-chip>Tipo de reparación</ion-chip>
+          </ion-item>
+        </ion-col>
+        <ion-col size="auto">
+          <ion-item>
+            <ion-chip>Técnico</ion-chip>
+          </ion-item>
+        </ion-col>
+        <ion-col size="auto">
+          <ion-item>
+            <ion-chip>Fecha de ingreso</ion-chip>
+          </ion-item>
+        </ion-col>
+        <ion-col size="0.7">
+          <!--ARREGLO PARA LOS BOTONES DE VER, EDITAR Y ELIMINAR-->
+        </ion-col>
+      </ion-row>
+      <ion-item *ngFor="let orden of ordenes">
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-label>{{orden.inforden.nroorden}}</ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label>{{orden.cliente.nombrecliente}}</ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label>{{orden.cliente.dispositivos.modelodisp}}</ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label>Estado de reparación</ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label>{{orden.inforden.tipodeingreso}}</ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label>Técnico</ion-label>
+            </ion-col>
+            <ion-col>
+              <ion-label>{{orden.inforden.fechahoy}}</ion-label>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+        <ion-button id="modal-verorden" fill="clear">
+          <ion-icon name="search"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear">
+          <ion-icon name="pencil"></ion-icon>
+        </ion-button>
+        <ion-button fill="clear">
+          <ion-icon name="close-circle"></ion-icon>
+        </ion-button>
+      </ion-item>
+    </ion-list>
+  </ion-grid>
+</ion-content>
+
+<!--FUNCION MODAL PARA VER ORDEN-->
+<ion-modal trigger="modal-verorden">
+  <ng-template>
+    <ion-grid>
+      <ion-row>
+        <ion-card>
+          <ion-col>
+            <ion-thumbnail>
+              <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
+            </ion-thumbnail>
+          </ion-col>
+          <ion-col>
+            <ion-row>
+              <ion-label></ion-label>
+            </ion-row>
+          </ion-col>
+        </ion-card>
+      </ion-row>
+    </ion-grid>
+  </ng-template>
+</ion-modal>

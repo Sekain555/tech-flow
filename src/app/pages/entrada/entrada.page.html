@@ -1,0 +1,228 @@
+<ion-menu [type]="menuType" content-id="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>{{perfil}} de {{taller}}</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content class="ion-padding">
+    <ion-menu-toggle>
+      <ion-row class="ion-justify-content-center">
+        <ion-button *ngIf="perfil === 'Administrador'" expand="full" fill="none" routerLink="/configadmin">
+          <ion-icon name="options-outline"></ion-icon>&nbsp;Configuración
+        </ion-button>
+        <ion-button expand="full" fill="none" (click)="logout()">
+          <ion-icon name="log-out-outline"></ion-icon>&nbsp;Cerrar sesión
+        </ion-button>
+      </ion-row>
+    </ion-menu-toggle>
+  </ion-content>
+</ion-menu>
+
+<div class="ion-page" id="main-content">
+  <ion-header>
+    <ion-toolbar>
+      <ion-buttons slot="start">
+        <ion-menu-button></ion-menu-button>
+      </ion-buttons>
+      <ion-title>¡Hola {{usuario}}!</ion-title>
+    </ion-toolbar>
+  </ion-header>
+  <ion-content>
+    <!--TARJETA DE RESUMEN-->
+    <ion-card>
+      <ion-card-header>
+        <ion-row class="ion-align-items-center">
+          <ion-col size="auto">
+            <ion-thumbnail>
+              <img alt="" src="/assets/icon/informe-de-datos.png" />
+            </ion-thumbnail>
+          </ion-col>
+          <ion-col>
+            <ion-card-title>RESUMEN GENERAL</ion-card-title>
+          </ion-col>
+        </ion-row>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-list lines="none">
+                <ion-item>
+                  <ion-label>Reparaciones de hoy:</ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Reparaciones del mes:</ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Ultimo dispositivo reparado:</ion-label>
+                </ion-item>
+              </ion-list>
+            </ion-col>
+            <ion-col>
+              <ion-list lines="none">
+                <ion-item>
+                  <ion-label>Comisiones de hoy:</ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Comisiones del mes:</ion-label>
+                </ion-item>
+              </ion-list>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+      <ion-row class="ion-justify-content-end">
+        <ion-item>
+          <ion-button fill="clear" (click)="estadisticas()">ir a estadisticas</ion-button>
+        </ion-item>
+      </ion-row>
+    </ion-card>
+
+    <!--TARJETA DE ORDENES-->
+    <ion-card>
+      <ion-card-header>
+        <ion-row class="ion-align-items-center">
+          <ion-col size="auto">
+            <ion-thumbnail>
+              <img alt="" src="/assets/icon/ico-orden.png" />
+            </ion-thumbnail>
+          </ion-col>
+          <ion-col>
+            <ion-card-title>ORDENES DE TRABAJO</ion-card-title>
+          </ion-col>
+        </ion-row>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-list lines="none">
+                <ion-item>
+                  <ion-label>Ordenes pendientes:</ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Ordenes finalizadas:</ion-label>
+                </ion-item>
+              </ion-list>
+            </ion-col>
+            <ion-col>
+              <ion-list lines="none">
+                <ion-item>
+                  <ion-label>Promedio de ordenes diarias:</ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Promedio de ordenes mensuales:</ion-label>
+                </ion-item>
+              </ion-list>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+      <ion-row class="ion-justify-content-end">
+        <ion-item>
+          <ion-button fill="clear" routerLink="/menuordenes">IR A ORDENES DE TRABAJO</ion-button>
+        </ion-item>
+      </ion-row>
+    </ion-card>
+
+    <!--TARJETA DE INVENTARIO-->
+    <ion-card>
+      <ion-card-header>
+        <ion-row class="ion-align-items-center">
+          <ion-col size="auto">
+            <ion-thumbnail>
+              <img alt="" src="/assets/icon/dropbox.png" />
+            </ion-thumbnail>
+          </ion-col>
+          <ion-col>
+            <ion-card-title>INVENTARIO</ion-card-title>
+          </ion-col>
+        </ion-row>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-list lines="none">
+                <ion-item>
+                  <ion-label>Repuestos con stock crítico:</ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Repuestos sin stock:</ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Ultimo repuesto ingresado:</ion-label>
+                </ion-item>
+              </ion-list>
+            </ion-col>
+            <ion-col>
+              <ion-list lines="none">
+                <ion-item>
+                  <ion-label>Repuestos utilizados hoy:</ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Repuestos utilizados este mes:</ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Ultimo repuesto utilizado:</ion-label>
+                </ion-item>
+              </ion-list>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+      <ion-row class="ion-justify-content-end">
+        <ion-item>
+          <ion-button fill="clear" routerLink="/menuinventario">ir a inventario</ion-button>
+        </ion-item>
+      </ion-row>
+    </ion-card>
+
+    <!--TARJETA DE CLIENTES-->
+    <ion-card>
+      <ion-card-header>
+        <ion-row class="ion-align-items-center">
+          <ion-col size="auto">
+            <ion-thumbnail>
+              <img alt="" src="/assets/icon/usuario (1).png" />
+            </ion-thumbnail>
+          </ion-col>
+          <ion-col>
+            <ion-card-title>CLIENTES</ion-card-title>
+          </ion-col>
+        </ion-row>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-grid>
+          <ion-row>
+            <ion-col>
+              <ion-list lines="none">
+                <ion-item>
+                  <ion-label>Cantidad de clientes:</ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Clientes bloqueados:</ion-label>
+                </ion-item>
+              </ion-list>
+            </ion-col>
+            <ion-col>
+              <ion-list lines="none">
+                <ion-item>
+                  <ion-label>Clientes nuevos hoy:</ion-label>
+                </ion-item>
+                <ion-item>
+                  <ion-label>Clientes nuevos este mes:</ion-label>
+                </ion-item>
+              </ion-list>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-card-content>
+      <ion-row class="ion-justify-content-end">
+        <ion-item>
+          <ion-button fill="clear" routerLink="/menuclientes">ir a clientes</ion-button>
+        </ion-item>
+      </ion-row>
+    </ion-card>
+  </ion-content>
+</div>

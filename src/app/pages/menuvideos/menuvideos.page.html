@@ -1,0 +1,38 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-row class="ion-align-items-center">
+      <ion-col size="auto">
+        <ion-thumbnail>
+          <img alt="" src="/assets/stickers/menu-videos.png" />
+        </ion-thumbnail>
+      </ion-col>
+      <ion-col>
+        <ion-title>Menú de serv. técnicos partners</ion-title>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-card class="tarjetita" button (click)="tallerplaylist = taller" (click)="verplaylist()" *ngFor="let taller of talleres">
+        <ion-row>
+          <ion-col size="4">
+            <ion-thumbnail>
+              <img src=""/>
+            </ion-thumbnail>
+          </ion-col>
+          <ion-col size="8">
+            <ion-row>
+              <h5>{{taller.nombretaller}}</h5>
+            </ion-row>
+            <ion-row>
+              <ion-label>Presiona aquí para ver la lista de videos</ion-label>
+            </ion-row>
+          </ion-col>
+        </ion-row>
+      </ion-card>
+    </ion-row>
+  </ion-grid>
+</ion-content>

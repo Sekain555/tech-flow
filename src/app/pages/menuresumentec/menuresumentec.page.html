@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button></ion-back-button>
+    </ion-buttons>
+    <ion-row class="ion-align-items-center">
+      <ion-col size="auto">
+        <ion-thumbnail>
+          <img src="/assets/icon/informe-de-datos.png" />
+        </ion-thumbnail>
+      </ion-col>
+      <ion-col>
+        <ion-title>Resumen general - {{usuario}} - {{perfil}} - {{taller}}</ion-title>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6">
+        <ion-card class="ion-padding">
+          <ion-row class="ion-justify-content-center">
+            <ion-thumbnail>
+              <img src="assets/icon/historial.png">
+            </ion-thumbnail>&nbsp;
+            <h3>Historial de ordenes de trabajo</h3>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <h5>Este gráfico visualiza la cantidad de ordenes que le han sido asignados dentro del último mes por semana:</h5>
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-justify-content-center">
+            <ion-col>
+              <canvas id="hodtChart" width="30" height="22"></canvas>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+      <ion-col size="6">
+        <ion-card class="ion-padding">
+          <ion-row class="ion-justify-content-center">
+            <ion-thumbnail>
+              <img src="assets/icon/historial.png">
+            </ion-thumbnail>&nbsp;
+            <h3>Recaudación mensual de comisiones</h3>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <h5>Este gráfico visualiza el monto recaudado en el ultimo semestre en {{taller}} por reparaciones realizadas en el año:</h5>
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-justify-content-center">
+            <ion-col>
+              <canvas id="rmChart" width="30" height="22"></canvas>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+    </ion-row>    
+  </ion-grid>
+</ion-content>

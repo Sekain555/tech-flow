@@ -1,0 +1,75 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-row class="ion-align-items-center">
+      <ion-col size="auto">
+        <ion-thumbnail>
+          <img alt="" src="/assets/stickers/repuesto-servicio.png" />
+        </ion-thumbnail>
+      </ion-col>
+      <ion-col>
+        <ion-title>CREAR NUEVO REPUESTO O SERVICIO</ion-title>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <h1>Datos del repuesto/servicio</h1>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+      <h5>Escriba a continuación los siguientes datos del nuevo repuesto o servicio:</h5>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="2.4">
+        <ion-item>
+          <ion-label position="floating">Nombre repuesto/servicio</ion-label>
+          <ion-input [(ngModel)]="datosrepuesto.nombrers" placeholder="ej: Pantalla"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="1.5">
+        <ion-item>
+          <ion-label position="floating">Marca</ion-label>
+          <ion-input [(ngModel)]="datosrepuesto.marca" placeholder="ej: Samsung"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="1.5">
+        <ion-item>
+          <ion-label position="floating">Modelo</ion-label>
+          <ion-input [(ngModel)]="datosrepuesto.modelo" placeholder="ej: S21+ 5G"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="1.5">
+        <ion-item>
+          <ion-label position="floating">Variante</ion-label>
+          <ion-input [(ngModel)]="datosrepuesto.variante" placeholder="ej: OLED"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="1.2">
+        <ion-item>
+          <ion-label position="floating">Cantidad</ion-label>
+          <ion-input [(ngModel)]="datosrepuesto.cantidad" type="number"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="1.5">
+        <ion-item>
+          <ion-label position="floating">Proveedor</ion-label>
+          <ion-input [(ngModel)]="datosrepuesto.proveedor" placeholder="ej: Aliexpress"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="1.2">
+        <ion-item>
+          <ion-label position="floating">Valor</ion-label>
+          <ion-input [(ngModel)]="datosrepuesto.valor" type="number"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+      <ion-button fill="outline" (click)="guardarrepuesto()"><ion-icon name="save-outline"></ion-icon>&nbsp;GUARDAR
+        REPUESTO/SERVICIO</ion-button>
+    </ion-row>
+  </ion-grid>
+</ion-content>

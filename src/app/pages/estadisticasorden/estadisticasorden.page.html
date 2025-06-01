@@ -1,0 +1,103 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-row class="ion-align-items-center">
+      <ion-col size="auto">
+        <ion-thumbnail>
+          <img alt="" src="/assets/stickers/estadisticas-orden.png" />
+        </ion-thumbnail>
+      </ion-col>
+      <ion-col>
+        <ion-title>Estadísticas de ordenes de trabajo</ion-title>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row>
+      <ion-col size="6">
+        <ion-card class="ion-padding">
+          <ion-row class="ion-justify-content-center">
+            <ion-thumbnail>
+              <img src="assets/icon/analisis.png">
+            </ion-thumbnail>&nbsp;
+            <h3>Estado de reparaciones</h3>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <h5>Este gráfico visualiza la cantidad de ordenes que tienen los siguientes estados de reparación:</h5>
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-justify-content-center">
+            <ion-col>
+              <canvas id="edrChart" width="30" height="30"></canvas>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+      <ion-col size="6">
+        <ion-card class="ion-padding">
+          <ion-row class="ion-justify-content-center">
+            <ion-thumbnail>
+              <img src="assets/icon/analisis.png">
+            </ion-thumbnail>&nbsp;
+            <h3>Tipos de reparaciones</h3>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <h5>Este gráfico visualiza la cantidad de ordenes que tienen los siguientes tipos de reparación:</h5>
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-justify-content-center">
+            <ion-col>
+              <canvas id="tdrChart" width="30" height="30"></canvas>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-row>      
+      <ion-col size="6">
+        <ion-card class="ion-padding">
+          <ion-row class="ion-justify-content-center">
+            <ion-thumbnail>
+              <img src="assets/icon/grafico-de-onda.png">
+            </ion-thumbnail>&nbsp;
+            <h3>Ordenes de trabajo del día</h3>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <h5>Este gráfico visualiza la cantidad de ordenes que se han generado hoy:</h5>
+            </ion-col>
+          </ion-row>
+          <ion-row class="ion-justify-content-around">
+            <ion-col>
+              <canvas id="odtChart" width="30" height="30"></canvas>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+      <ion-col size="6">
+        <ion-card class="ion-padding">
+          <ion-row class="ion-justify-content-center">
+            <ion-thumbnail>
+              <img src="assets/icon/tendencia.png">
+            </ion-thumbnail>
+            <h3>Historial de ordenes de trabajo</h3>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <h5>Este gráfico visualiza la cantidad de ordenes que se han generado dentro de la última semana:</h5>
+            </ion-col>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <canvas id="codtChart" width="30" height="30"></canvas>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

@@ -1,0 +1,106 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-row class="ion-align-items-center">
+      <ion-col size="auto">
+        <ion-thumbnail>
+          <img alt="" src="/assets/stickers/registro-repuesto-servicio.png" />
+        </ion-thumbnail>
+      </ion-col>
+      <ion-col>
+        <ion-title>REGISTRO DE REPUESTOS</ion-title>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="8">
+        <ion-card>
+          <ion-row>
+            <ion-searchbar placeholder="Buscar cliente por nombre completo o RUT">
+            </ion-searchbar>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+    <ion-list lines="full">
+      <ion-row class="ion-justify-content-between">
+        <ion-col size="1.375">
+          <ion-item>
+            <ion-chip>Repuesto</ion-chip>
+          </ion-item>
+        </ion-col>
+        <ion-col size="1.375">
+          <ion-item>
+            <ion-chip>Marca</ion-chip>
+          </ion-item>
+        </ion-col>
+        <ion-col size="1.375">
+          <ion-item>
+            <ion-chip>Modelo</ion-chip>
+          </ion-item>
+        </ion-col>
+        <ion-col size="1.375">
+          <ion-item>
+            <ion-chip>Variante</ion-chip>
+          </ion-item>
+        </ion-col>
+        <ion-col size="1.375">
+          <ion-item>
+            <ion-chip>Cantidad</ion-chip>
+          </ion-item>
+        </ion-col>
+        <ion-col size="1.375">
+          <ion-item>
+            <ion-chip>Proveedor</ion-chip>
+          </ion-item>
+        </ion-col>
+        <ion-col size="1.375">
+          <ion-item>
+            <ion-chip>Valor</ion-chip>
+          </ion-item>
+        </ion-col>
+        <ion-col size="1">
+          <!--ARREGLO PARA LOS BOTONES DE EDITAR Y ELIMINAR-->
+        </ion-col>
+      </ion-row>
+      <ion-item *ngFor="let repuesto of repuestos">
+        <ion-grid>
+          <ion-row class="ion-justify-content-between">
+            <ion-col size="1.375">
+              {{repuesto.nombrers}}
+            </ion-col>
+            <ion-col size="1.375">
+              {{repuesto.marca}}
+            </ion-col>
+            <ion-col size="1.375">
+              {{repuesto.modelo}}
+            </ion-col>
+            <ion-col size="1.375">
+              {{repuesto.variante}}
+            </ion-col>
+            <ion-col size="1.375">
+              {{repuesto.cantidad}}
+            </ion-col>
+            <ion-col size="1.375">
+              {{repuesto.proveedor}}
+            </ion-col>
+            <ion-col size="1.375">
+              {{repuesto.valor}}
+            </ion-col>
+            <ion-col size="1">
+              <ion-button fill="clear">
+                <ion-icon name="pencil"></ion-icon>
+              </ion-button>
+              <ion-button fill="clear">
+                <ion-icon name="close-circle"></ion-icon>
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+      </ion-item>
+    </ion-list>
+  </ion-grid>
+</ion-content>

@@ -1,0 +1,171 @@
+<ion-content>
+  <ion-grid>
+    <ion-row class="ion-padding-vertical">
+      <swiper [navigation]="true" lazy = "true" [autoplay]="{delay: 1500, disableOnInteraction: false}" class="mySwiper">
+        <ng-template swiperSlide>
+          <ion-img src="/assets/banner/banner1.png"></ion-img>
+        </ng-template>
+        <ng-template swiperSlide>
+          <ion-img src="/assets/banner/banner4.png"></ion-img>
+        </ng-template>
+        <ng-template swiperSlide>
+          <ion-img src="/assets/banner/banner2.png"></ion-img>
+        </ng-template>
+        <ng-template swiperSlide>
+          <ion-img src="/assets/banner/banner3.png"></ion-img>
+        </ng-template>
+      </swiper>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="5">
+        <ion-card>
+          <ion-row class="ion-justify-content-center">
+            <ion-thumbnail class="ion-margin-top">
+              <img src="/assets/icon/logo-kit-sertec.png">
+            </ion-thumbnail>
+          </ion-row>
+          <ion-row>
+            <ion-label class="texto-plano-I">Si ya eres parte de nuestro grupo de trabajo, inicia sesión o contáctanos
+              para unirte a los servicios
+              técnicos que ya son parte de Kit Sertec:</ion-label>
+          </ion-row>
+          <ion-row class="ion-justify-content-center">
+            <ion-col size="8">
+              <!--INICIAR SESION-->
+              <ion-button id="modal-sesion" expand="block" fill="outline">
+                <ion-icon slot="start" name="person"></ion-icon>
+                Inicia sesión
+              </ion-button>
+            </ion-col>
+          </ion-row>
+          <!--<ion-row class="ion-justify-content-center">
+            <ion-col size="8">
+              CREAR CUENTA
+              <ion-button expand="block" fill="outline" routerLink="/ccuenta">
+                <ion-icon slot="start" name="person-add"></ion-icon>
+                Crea una cuenta
+              </ion-button>
+            </ion-col>
+          </ion-row>-->
+          <ion-row class="ion-justify-content-center">
+            <ion-col size="8">
+              <ion-button id="modal-contacto" expand="block" fill="outline">
+                <ion-icon slot="start" name="link"></ion-icon>
+                Contactanos!
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+      <!--<ion-col>
+        <ion-card>
+          <ion-row class="ion-padding">
+            <h5>Si eres cliente de nuestros servicios técnicos partners puedes ver la reparación de tu equipo aquí</h5>
+          </ion-row>
+          <ion-row class="ion-justify-content-center">
+            <ion-col size="8">
+              <!Botón que me permite ingresar a la validación de datos para visualizar video de reparación en vivo>
+              <ion-button class="unico" expand="block" fill="outline" routerLink="/menuvideos"><ion-icon name="videocam"></ion-icon>
+                &nbsp;REVISAR VIDEOS
+              </ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </ion-col>-->
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+      <ion-label class="texto-credito">Desarrollado por Insert Coin!</ion-label>
+      <a class="texto-credito" href="https://www.flaticon.es/autores/juicy-fish">Todos los logos e iconos fueron creados por Juicy Fish</a>
+    </ion-row>
+  </ion-grid>
+</ion-content>
+
+<!--FUNCION MODAL PARA INICIO DE SESION-->
+<ion-modal trigger="modal-sesion">
+  <ng-template>
+    <!--BOTONES VOLVER E INGRESAR A LA CUENTA-->
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="volver()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+        </ion-buttons>
+        <ion-row>
+          <ion-thumbnail>
+            <img alt="" src="/assets/icon/inicio-sesion.png" />
+          </ion-thumbnail>
+          <ion-title>Inicio de sesión</ion-title>
+        </ion-row>
+      </ion-toolbar>
+    </ion-header>
+    <!--DATOS PARA INICIAR SESION-->
+    <ion-content>
+      <ion-row class="ion-justify-content-center">
+        <ion-label class="texto-plano">Ingresa tus credenciales para acceder a tu usuario</ion-label>
+      </ion-row>
+      <ion-row class="ion-justify-content-center">
+        <ion-col size="auto">
+          <ion-thumbnail>
+            <img src="/assets/icon/email.png" />
+          </ion-thumbnail>
+        </ion-col>
+        <ion-col size="auto">
+          <ion-item>
+            <ion-label position="floating">Correo</ion-label>
+            <ion-input [(ngModel)]="credenciales.correo" type="email" autocomplete="email" inputmode="email">
+            </ion-input>
+            <ion-note slot="error">You need to enter a valid email.</ion-note>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-justify-content-center">
+        <ion-col size="auto">
+          <ion-thumbnail>
+            <img src="/assets/icon/clave.png" />
+          </ion-thumbnail>
+        </ion-col>
+        <ion-col size="auto">
+          <ion-item>
+            <ion-label position="floating">Contraseña</ion-label>
+            <ion-input [(ngModel)]="credenciales.password" type="password" autocomplete="password" inputmode="text">
+            </ion-input>
+          </ion-item>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-justify-content-center">
+        <ion-col size="auto" class="ion-margin-bottom">
+          <ion-button fill="outline" (click)="login()">INGRESAR</ion-button>
+        </ion-col>
+      </ion-row>
+      <ion-row class="ion-justify-content-center">
+        <ion-label>Al iniciar sesión estás aceptando nuestros</ion-label>
+        <ion-button fill="clear">terminos y condiciones de uso de Kit Sertec</ion-button>
+      </ion-row>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<!--FUNCION MODAL PARA CONTACTO-->
+<ion-modal trigger="modal-contacto">
+  <ng-template>
+    <!--BOTONES VOLVER-->
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button (click)="volverI()"><ion-icon name="chevron-back-outline"></ion-icon></ion-button>
+        </ion-buttons>
+        <ion-row>
+          <ion-thumbnail>
+            <img alt="" src="/assets/icon/contacto.png" />
+          </ion-thumbnail>
+          <ion-title>Contáctanos!</ion-title>
+        </ion-row>
+      </ion-toolbar>
+    </ion-header>
+    <!--DATOS DE CONTACTO-->
+    <ion-content>
+        <ion-row class="ion-justify-content-center">
+          <ion-label class="texto-plano">Si quieres ser usuario de Kit Sertec puedes ponerte en contacto con el desarrollador para agendar una visita</ion-label>
+        </ion-row>
+    </ion-content>
+  </ng-template>
+</ion-modal>

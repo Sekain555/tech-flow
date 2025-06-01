@@ -1,0 +1,67 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-row class="ion-align-items-center">
+      <ion-col size="auto">
+        <ion-thumbnail>
+          <img alt="" src="/assets/icon/dropbox.png" />
+        </ion-thumbnail>
+      </ion-col>
+      <ion-col>
+        <ion-title>INVENTARIO</ion-title>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="3">
+        <ion-card>
+          <ion-item button detail="false" routerLink="/anadirrepuesto">
+            <ion-grid>
+              <ion-row>
+                <ion-col>
+                  <h3>Añadir nuevo repuesto o servicio</h3>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  Presiona aquí para añadir un nuevo repuesto y/o servicio en tu inventario
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-img src="assets/stickers/repuesto-servicio.png"></ion-img>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-card>
+      </ion-col>
+      <ion-col size="3">
+        <ion-card>
+          <ion-item button detail="false" routerLink="/registrorepuesto">
+            <ion-grid>
+              <ion-row>
+                <ion-col>
+                  <h3>Registro de repuestos y servicios</h3>
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                <ion-col>
+                  Presiona aquí para ver y gestionar tus repuestos y servicios
+                </ion-col>
+              </ion-row>
+              <ion-row>
+                &nbsp;
+              </ion-row>
+              <ion-row>
+                <ion-img src="assets/stickers/registro-repuesto-servicio.png">
+                </ion-img>
+              </ion-row>
+            </ion-grid>
+          </ion-item>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+  </ion-grid>
+</ion-content>

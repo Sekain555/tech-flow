@@ -1,0 +1,64 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-row class="ion-align-items-center">
+      <ion-col size="auto">
+        <ion-thumbnail>
+          <img alt="" src="/assets/stickers/nuevo-cliente.png" />
+        </ion-thumbnail>
+      </ion-col>
+      <ion-col>
+        <ion-title>NUEVO CLIENTE</ion-title>
+      </ion-col>
+    </ion-row>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-grid>
+    <ion-row class="ion-justify-content-center">
+      <h1>Datos del cliente</h1>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+      <h5>Escriba a continuación los siguientes datos del nuevo cliente</h5>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="2.5">
+        <ion-item>
+          <ion-label position="floating">Nombre completo</ion-label>
+          <ion-input [(ngModel)]="datoscliente.nombrecliente" placeholder="ej: Victor Sepulveda Brito"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="1.2">
+        <ion-item>
+          <ion-label position="floating">RUT</ion-label>
+          <ion-input [(ngModel)]="datoscliente.rutcliente" placeholder="99888777-6"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+      <ion-col size="2.2">
+        <ion-item>
+          <ion-label position="floating">Correo electrónico</ion-label>
+          <ion-input [(ngModel)]="datoscliente.correocliente" type="email"></ion-input>
+        </ion-item>
+      </ion-col>
+      <ion-col size="1.5">
+        <ion-item>
+          <ion-label position="floating">N° de teléfono</ion-label>
+          <ion-input [(ngModel)]="datoscliente.nrotelefonocliente" type="number" placeholder="912345678"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">      
+      <ion-col size="2">
+        <ion-item>
+          <ion-label position="floating">Comuna</ion-label>
+          <ion-input [(ngModel)]="datoscliente.comunacliente"></ion-input>
+        </ion-item>
+      </ion-col>
+    </ion-row>
+    <ion-row class="ion-justify-content-center">
+      <ion-button fill="outline" (click)="guardarcliente()"><ion-icon name="save-outline"></ion-icon>&nbsp;GUARDAR CLIENTE</ion-button>
+    </ion-row>
+  </ion-grid>
+</ion-content>
