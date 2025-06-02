@@ -24,7 +24,9 @@
             </ion-thumbnail>
           </ion-col>
           <ion-col size="auto">
-            <h1>Datos del cliente</h1>
+            <ion-text color="dark">
+              <h1>Datos del cliente</h1>
+            </ion-text>
           </ion-col>
         </ion-row>
         <ion-row class="ion-justify-content-center">
@@ -57,13 +59,13 @@
         </ion-row>
         <ion-row>
           <ion-col>
-            <ion-item>
+            <ion-item fill="outline">
               <ion-label position="stacked">Nombre cliente</ion-label>
               <ion-input [readonly]="true" [(ngModel)]="muestracliente.nombrecliente"></ion-input>
             </ion-item>
           </ion-col>
           <ion-col>
-            <ion-item>
+            <ion-item fill="outline">
               <ion-label position="stacked">RUT</ion-label>
               <ion-input [readonly]="true" [(ngModel)]="muestracliente.rutcliente"></ion-input>
             </ion-item>
@@ -71,13 +73,13 @@
         </ion-row>
         <ion-row>
           <ion-col>
-            <ion-item>
+            <ion-item fill="outline">
               <ion-label position="stacked">Correo electrónico</ion-label>
               <ion-input [readonly]="true" [(ngModel)]="muestracliente.correocliente"></ion-input>
             </ion-item>
           </ion-col>
           <ion-col>
-            <ion-item>
+            <ion-item fill="outline">
               <ion-label position="stacked">N° Telefónico</ion-label>
               <ion-input [readonly]="true" [(ngModel)]="muestracliente.nrotelefonocliente"></ion-input>
             </ion-item>
@@ -101,7 +103,9 @@
                   <img src="/assets/icon/archivo-de-documento.png">
                 </ion-thumbnail>
               </ion-col>
-              <h1>Datos del dispositivo</h1>
+              <ion-text color="dark">
+                <h1>Datos del dispositivo</h1>
+              </ion-text>
             </ion-row>
             <ion-row class="ion-justify-content-center">
               <ion-button id="click-trigger-i" fill="clear"><ion-icon name="search-outline"></ion-icon>&nbsp;BUSCAR
@@ -190,11 +194,13 @@
                     </ion-item>
                     <ion-item>
                       <ion-label>Tarjeta de memoria</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end" [(ngModel)]="inforden.ingresatarjeta"></ion-toggle>
+                      <ion-toggle [enableOnOffLabels]="true" slot="end"
+                        [(ngModel)]="inforden.ingresatarjeta"></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Batería</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end" [(ngModel)]="inforden.ingresabateria"></ion-toggle>
+                      <ion-toggle [enableOnOffLabels]="true" slot="end"
+                        [(ngModel)]="inforden.ingresabateria"></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Tapa trasera</ion-label>
@@ -204,11 +210,13 @@
                   <ion-col size="auto">
                     <ion-item>
                       <ion-label>Cable USB</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end" [(ngModel)]="inforden.ingresacableusb"></ion-toggle>
+                      <ion-toggle [enableOnOffLabels]="true" slot="end"
+                        [(ngModel)]="inforden.ingresacableusb"></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Cargador</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end" [(ngModel)]="inforden.ingresacargador"></ion-toggle>
+                      <ion-toggle [enableOnOffLabels]="true" slot="end"
+                        [(ngModel)]="inforden.ingresacargador"></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Lápiz táctil</ion-label>
@@ -227,37 +235,45 @@
                   <ion-col size="auto">
                     <ion-item>
                       <ion-label>Encendido</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end" [(ngModel)]="inforden.funcionencendido"></ion-toggle>
+                      <ion-toggle [enableOnOffLabels]="true" slot="end"
+                        [(ngModel)]="inforden.funcionencendido"></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Carga</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end" [(ngModel)]="inforden.funcioncarga"></ion-toggle>
+                      <ion-toggle [enableOnOffLabels]="true" slot="end"
+                        [(ngModel)]="inforden.funcioncarga"></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Imagen</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end" [(ngModel)]="inforden.funcionimagen"></ion-toggle>
+                      <ion-toggle [enableOnOffLabels]="true" slot="end"
+                        [(ngModel)]="inforden.funcionimagen"></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Táctil</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end" [(ngModel)]="inforden.funciontactil"></ion-toggle>
+                      <ion-toggle [enableOnOffLabels]="true" slot="end"
+                        [(ngModel)]="inforden.funciontactil"></ion-toggle>
                     </ion-item>
                   </ion-col>
                   <ion-col size="auto">
                     <ion-item>
                       <ion-label>Microfono</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end" [(ngModel)]="inforden.funcionmicrofono"></ion-toggle>
+                      <ion-toggle [enableOnOffLabels]="true" slot="end"
+                        [(ngModel)]="inforden.funcionmicrofono"></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Auricular</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end" [(ngModel)]="inforden.funcionauricular"></ion-toggle>
+                      <ion-toggle [enableOnOffLabels]="true" slot="end"
+                        [(ngModel)]="inforden.funcionauricular"></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Parlante</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end" [(ngModel)]="inforden.funcionparlante"></ion-toggle>
+                      <ion-toggle [enableOnOffLabels]="true" slot="end"
+                        [(ngModel)]="inforden.funcionparlante"></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Cámara</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end" [(ngModel)]="inforden.funcioncamara"></ion-toggle>
+                      <ion-toggle [enableOnOffLabels]="true" slot="end"
+                        [(ngModel)]="inforden.funcioncamara"></ion-toggle>
                     </ion-item>
                   </ion-col>
                 </ion-row>
@@ -484,10 +500,10 @@
                 <ion-row class="ion-justify-content-between">
                   <ion-col size="auto">
                     <ion-label>Fecha de hoy</ion-label>
-                    <ion-datetime-button datetime="datetime"></ion-datetime-button>
+                    <ion-datetime-button class="ion-datetime-button" datetime="datetime1"></ion-datetime-button>
                     <ion-modal [keepContentsMounted]="true">
                       <ng-template>
-                        <ion-datetime id="datetime"></ion-datetime>
+                        <ion-datetime id="datetime1"></ion-datetime>
                       </ng-template>
                     </ion-modal>
                   </ion-col>
@@ -604,7 +620,7 @@
           </ion-col>
         </ion-row>
         <ion-row class="ion-justify-content-center">
-          <ion-button fill="outline" (click)="guardarcliente()"><ion-icon name="save-outline"></ion-icon>&nbsp;GUARDAR
+          <ion-button fill="clear" (click)="guardarcliente()"><ion-icon name="save-outline"></ion-icon>&nbsp;GUARDAR
             CLIENTE</ion-button>
         </ion-row>
       </ion-grid>

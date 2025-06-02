@@ -272,13 +272,10 @@ export class NuevaordenPage implements OnInit {
   // ---FUNCION GENERAR ORDEN---
 
   async generarorden() {
-
-
     this.orden.cliente = this.muestracliente;
     this.orden.inforden = this.inforden;
     this.orden.repuesto = this.muestrainventario;
     
-
     const path = 'Ordenes';
     await this.firestore.createClient(this.orden, path)
   }

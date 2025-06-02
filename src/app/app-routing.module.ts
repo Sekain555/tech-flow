@@ -83,10 +83,6 @@ const routes: Routes = [
     path: 'menuresumentec',
     loadChildren: () => import('./pages/menuresumentec/menuresumentec.module').then( m => m.MenuresumentecPageModule)
   },
-  {
-    path: 'menuresumenven',
-    loadChildren: () => import('./pages/menuresumenven/menuresumenven.module').then( m => m.MenuresumenvenPageModule)
-  },
 ];
 
 @NgModule({
