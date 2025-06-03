@@ -14,36 +14,49 @@
 </ion-header>
 
 <ion-content>
-  <swiper [pagination]="{type: 'progressbar'}" [navigation]="true" class="mySwiper">
+  <swiper
+    [pagination]="{type: 'progressbar'}"
+    [navigation]="true"
+    class="mySwiper"
+  >
     <ng-template swiperSlide>
       <ion-col size="5">
         <ion-row class="ion-justify-content-center">
           <ion-col size="auto" class="ion-align-self-center">
             <ion-thumbnail>
-              <img src="/assets/icon/usuario.png">
+              <img src="/assets/icon/usuario.png" />
             </ion-thumbnail>
           </ion-col>
           <ion-col size="auto">
             <ion-text color="dark">
-              <h1>Datos del cliente</h1>
+              <h1>DATOS DEL CLIENTE</h1>
             </ion-text>
           </ion-col>
         </ion-row>
         <ion-row class="ion-justify-content-center">
-          <ion-button id="click-trigger" fill="clear"><ion-icon name="search-outline"></ion-icon>&nbsp;BUSCAR CLIENTE
+          <ion-button id="click-trigger" fill="clear"
+            ><ion-icon name="search-outline"></ion-icon>&nbsp;BUSCAR CLIENTE
           </ion-button>
-          <ion-popover trigger="click-trigger" triggerAction="click" size="auto">
+          <ion-popover
+            trigger="click-trigger"
+            triggerAction="click"
+            size="auto"
+          >
             <ng-template>
               <ion-grid>
                 <ion-col>
-                  <ion-item>
+                  <ion-item fill="outline">
                     <ion-label position="stacked">Buscar por RUT</ion-label>
-                    <ion-input [(ngModel)]="busquedacliente" (ionChange)="handleChange($event)"
-                      placeholder="99888777-6"></ion-input>
+                    <ion-input [(ngModel)]="busquedacliente" (ionChange)="handleChange($event)" placeholder="99888777-6"
+                    ></ion-input>
                   </ion-item>
                 </ion-col>
-                <ion-list>
-                  <ion-item button (click)="muestracliente = cliente" *ngFor="let cliente of clientes">
+                <ion-list lines="none">
+                  <ion-item
+                    button
+                    (click)="muestracliente = cliente"
+                    *ngFor="let cliente of clientes"
+                  >
                     <ion-col size="auto">
                       <ion-label>{{ cliente.nombrecliente }}</ion-label>
                     </ion-col>
@@ -61,13 +74,19 @@
           <ion-col>
             <ion-item fill="outline">
               <ion-label position="stacked">Nombre cliente</ion-label>
-              <ion-input [readonly]="true" [(ngModel)]="muestracliente.nombrecliente"></ion-input>
+              <ion-input
+                [readonly]="true"
+                [(ngModel)]="muestracliente.nombrecliente"
+              ></ion-input>
             </ion-item>
           </ion-col>
           <ion-col>
             <ion-item fill="outline">
               <ion-label position="stacked">RUT</ion-label>
-              <ion-input [readonly]="true" [(ngModel)]="muestracliente.rutcliente"></ion-input>
+              <ion-input
+                [readonly]="true"
+                [(ngModel)]="muestracliente.rutcliente"
+              ></ion-input>
             </ion-item>
           </ion-col>
         </ion-row>
@@ -75,19 +94,29 @@
           <ion-col>
             <ion-item fill="outline">
               <ion-label position="stacked">Correo electrónico</ion-label>
-              <ion-input [readonly]="true" [(ngModel)]="muestracliente.correocliente"></ion-input>
+              <ion-input
+                [readonly]="true"
+                [(ngModel)]="muestracliente.correocliente"
+              ></ion-input>
             </ion-item>
           </ion-col>
           <ion-col>
             <ion-item fill="outline">
               <ion-label position="stacked">N° Telefónico</ion-label>
-              <ion-input [readonly]="true" [(ngModel)]="muestracliente.nrotelefonocliente"></ion-input>
+              <ion-input
+                [readonly]="true"
+                [(ngModel)]="muestracliente.nrotelefonocliente"
+              ></ion-input>
             </ion-item>
           </ion-col>
         </ion-row>
         <ion-row class="ion-justify-content-center">
           <ion-col size="auto">
-            <ion-button id="abrir-modal-i" fill="clear" (click)="traerRepesto">AÑADIR CLIENTE MANUALMENTE
+            <ion-button
+              id="abrir-modal-i"
+              fill="clear"
+              (click)="traerrepuestos()"
+              >AÑADIR CLIENTE MANUALMENTE
             </ion-button>
           </ion-col>
         </ion-row>
@@ -100,7 +129,7 @@
             <ion-row class="ion-justify-content-center">
               <ion-col size="auto" class="ion-align-self-center">
                 <ion-thumbnail>
-                  <img src="/assets/icon/archivo-de-documento.png">
+                  <img src="/assets/icon/archivo-de-documento.png" />
                 </ion-thumbnail>
               </ion-col>
               <ion-text color="dark">
@@ -108,22 +137,35 @@
               </ion-text>
             </ion-row>
             <ion-row class="ion-justify-content-center">
-              <ion-button id="click-trigger-i" fill="clear"><ion-icon name="search-outline"></ion-icon>&nbsp;BUSCAR
+              <ion-button id="click-trigger-i" fill="clear"
+                ><ion-icon name="search-outline"></ion-icon>&nbsp;BUSCAR
                 DISPOSITIVO
               </ion-button>
-              <ion-popover trigger="click-trigger-i" triggerAction="click" size="auto">
+              <ion-popover
+                trigger="click-trigger-i"
+                triggerAction="click"
+                size="auto"
+              >
                 <ng-template>
                   <ion-grid>
                     <ion-col>
-                      <ion-item>
-                        <ion-label position="stacked">Buscar por modelo</ion-label>
-                        <ion-input [(ngModel)]="busquedadispositivo" (ionChange)="handleChangeII($event)"
-                          placeholder="ej: S21+ 5G"></ion-input>
+                      <ion-item fill="outline">
+                        <ion-label position="stacked"
+                          >Buscar por modelo</ion-label
+                        >
+                        <ion-input
+                          [(ngModel)]="busquedadispositivo"
+                          (ionChange)="handleChangeII($event)"
+                          placeholder="ej: S21+ 5G"
+                        ></ion-input>
                       </ion-item>
                     </ion-col>
                     <ion-list>
-                      <ion-item button (click)="muestradispositivo = dispositivo"
-                        *ngFor="let dispositivo of dispositivos">
+                      <ion-item
+                        button
+                        (click)="muestradispositivo = dispositivo"
+                        *ngFor="let dispositivo of dispositivos"
+                      >
                         <ion-col size="auto">
                           <ion-label>{{ dispositivo.marcadisp }}</ion-label>
                         </ion-col>
@@ -139,29 +181,42 @@
             </ion-row>
             <ion-row>
               <ion-col size="6">
-                <ion-item>
+                <ion-item fill="outline">
                   <ion-label position="stacked">Marca</ion-label>
-                  <ion-input [readonly]="true" [(ngModel)]="muestradispositivo.marcadisp"></ion-input>
+                  <ion-input
+                    [readonly]="true"
+                    [(ngModel)]="muestradispositivo.marcadisp"
+                  ></ion-input>
                 </ion-item>
               </ion-col>
               <ion-col size="6">
-                <ion-item>
+                <ion-item fill="outline">
                   <ion-label position="stacked">Modelo</ion-label>
-                  <ion-input [readonly]="true" [(ngModel)]="muestradispositivo.modelodisp"></ion-input>
+                  <ion-input
+                    [readonly]="true"
+                    [(ngModel)]="muestradispositivo.modelodisp"
+                  ></ion-input>
                 </ion-item>
               </ion-col>
             </ion-row>
             <ion-row class="ion-justify-content-center">
               <ion-col size="6.3">
-                <ion-item counter="true">
+                <ion-item counter="true" fill="outline">
                   <ion-label position="floating">IMEI</ion-label>
-                  <ion-input maxlength="15" placeholder="Digite *#06# para ver el IMEI"></ion-input>
+                  <ion-input
+                    maxlength="15"
+                    placeholder="Digite *#06# para ver el IMEI"
+                  ></ion-input>
                 </ion-item>
               </ion-col>
             </ion-row>
             <ion-row class="ion-justify-content-center">
               <ion-col size="auto">
-                <ion-button id="abrir-modal-ii" fill="clear" (click)="traerRepesto">AÑADIR DISPOSITIVO MANUALMENTE
+                <ion-button
+                  id="abrir-modal-ii"
+                  fill="clear"
+                  (click)="traerRepesto"
+                  >AÑADIR DISPOSITIVO MANUALMENTE
                 </ion-button>
               </ion-col>
             </ion-row>
@@ -175,105 +230,159 @@
           <ion-row class="ion-justify-content-center">
             <ion-col size="auto" class="ion-align-self-center">
               <ion-thumbnail>
-                <img src="/assets/icon/etiquetas.png">
+                <img src="/assets/icon/etiquetas.png" />
               </ion-thumbnail>
             </ion-col>
-            <h1>Datos de ingreso</h1>
+            <ion-text color="dark">
+              <h1>Datos de ingreso</h1>
+            </ion-text>
           </ion-row>
           <ion-row class="ion-justify-content-center">
             <ion-col size="auto">
-              <ion-list>
+              <ion-list lines="none">
                 <ion-list-header lines="full">
-                  <ion-label>EL DISPOSITIVO INGRESA CON:</ion-label>
+                  <ion-label color="dark"
+                    >EL DISPOSITIVO INGRESA CON:</ion-label
+                  >
                 </ion-list-header>
                 <ion-row>
                   <ion-col size="auto">
                     <ion-item>
                       <ion-label>SIM</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end" [(ngModel)]="inforden.ingresasim"></ion-toggle>
+                      <ion-toggle
+                        [enableOnOffLabels]="true"
+                        slot="end"
+                        [(ngModel)]="inforden.ingresasim"
+                      ></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Tarjeta de memoria</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end"
-                        [(ngModel)]="inforden.ingresatarjeta"></ion-toggle>
+                      <ion-toggle
+                        [enableOnOffLabels]="true"
+                        slot="end"
+                        [(ngModel)]="inforden.ingresatarjeta"
+                      ></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Batería</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end"
-                        [(ngModel)]="inforden.ingresabateria"></ion-toggle>
+                      <ion-toggle
+                        [enableOnOffLabels]="true"
+                        slot="end"
+                        [(ngModel)]="inforden.ingresabateria"
+                      ></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Tapa trasera</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end" [(ngModel)]="inforden.ingresatapa"></ion-toggle>
+                      <ion-toggle
+                        [enableOnOffLabels]="true"
+                        slot="end"
+                        [(ngModel)]="inforden.ingresatapa"
+                      ></ion-toggle>
                     </ion-item>
                   </ion-col>
                   <ion-col size="auto">
                     <ion-item>
                       <ion-label>Cable USB</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end"
-                        [(ngModel)]="inforden.ingresacableusb"></ion-toggle>
+                      <ion-toggle
+                        [enableOnOffLabels]="true"
+                        slot="end"
+                        [(ngModel)]="inforden.ingresacableusb"
+                      ></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Cargador</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end"
-                        [(ngModel)]="inforden.ingresacargador"></ion-toggle>
+                      <ion-toggle
+                        [enableOnOffLabels]="true"
+                        slot="end"
+                        [(ngModel)]="inforden.ingresacargador"
+                      ></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Lápiz táctil</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end" [(ngModel)]="inforden.ingresaspen"></ion-toggle>
+                      <ion-toggle
+                        [enableOnOffLabels]="true"
+                        slot="end"
+                        [(ngModel)]="inforden.ingresaspen"
+                      ></ion-toggle>
                     </ion-item>
                   </ion-col>
                 </ion-row>
               </ion-list>
             </ion-col>
             <ion-col size="auto">
-              <ion-list>
+              <ion-list fill="outline" lines="none">
                 <ion-list-header lines="full">
-                  <ion-label>FUNCIONES DEL DISPOSITIVO ACTIVAS:</ion-label>
-                </ion-list-header>inforden.
+                  <ion-label color="dark"
+                    >FUNCIONES DEL DISPOSITIVO ACTIVAS:</ion-label
+                  >
+                </ion-list-header>
                 <ion-row>
                   <ion-col size="auto">
-                    <ion-item>
+                    <ion-item fill="outline">
                       <ion-label>Encendido</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end"
-                        [(ngModel)]="inforden.funcionencendido"></ion-toggle>
+                      <ion-toggle
+                        [enableOnOffLabels]="true"
+                        slot="end"
+                        [(ngModel)]="inforden.funcionencendido"
+                      ></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Carga</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end"
-                        [(ngModel)]="inforden.funcioncarga"></ion-toggle>
+                      <ion-toggle
+                        [enableOnOffLabels]="true"
+                        slot="end"
+                        [(ngModel)]="inforden.funcioncarga"
+                      ></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Imagen</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end"
-                        [(ngModel)]="inforden.funcionimagen"></ion-toggle>
+                      <ion-toggle
+                        [enableOnOffLabels]="true"
+                        slot="end"
+                        [(ngModel)]="inforden.funcionimagen"
+                      ></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Táctil</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end"
-                        [(ngModel)]="inforden.funciontactil"></ion-toggle>
+                      <ion-toggle
+                        [enableOnOffLabels]="true"
+                        slot="end"
+                        [(ngModel)]="inforden.funciontactil"
+                      ></ion-toggle>
                     </ion-item>
                   </ion-col>
                   <ion-col size="auto">
                     <ion-item>
                       <ion-label>Microfono</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end"
-                        [(ngModel)]="inforden.funcionmicrofono"></ion-toggle>
+                      <ion-toggle
+                        [enableOnOffLabels]="true"
+                        slot="end"
+                        [(ngModel)]="inforden.funcionmicrofono"
+                      ></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Auricular</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end"
-                        [(ngModel)]="inforden.funcionauricular"></ion-toggle>
+                      <ion-toggle
+                        [enableOnOffLabels]="true"
+                        slot="end"
+                        [(ngModel)]="inforden.funcionauricular"
+                      ></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Parlante</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end"
-                        [(ngModel)]="inforden.funcionparlante"></ion-toggle>
+                      <ion-toggle
+                        [enableOnOffLabels]="true"
+                        slot="end"
+                        [(ngModel)]="inforden.funcionparlante"
+                      ></ion-toggle>
                     </ion-item>
                     <ion-item>
                       <ion-label>Cámara</ion-label>
-                      <ion-toggle [enableOnOffLabels]="true" slot="end"
-                        [(ngModel)]="inforden.funcioncamara"></ion-toggle>
+                      <ion-toggle
+                        [enableOnOffLabels]="true"
+                        slot="end"
+                        [(ngModel)]="inforden.funcioncamara"
+                      ></ion-toggle>
                     </ion-item>
                   </ion-col>
                 </ion-row>
@@ -282,9 +391,11 @@
           </ion-row>
           <ion-row class="ion-justify-content-center">
             <ion-col size="6">
-              <ion-item>
+              <ion-item fill="outline">
                 <ion-label position="floating">Observaciones</ion-label>
-                <ion-textarea [(ngModel)]="inforden.observaciones"></ion-textarea>
+                <ion-textarea
+                  [(ngModel)]="inforden.observaciones"
+                ></ion-textarea>
               </ion-item>
             </ion-col>
           </ion-row>
@@ -298,28 +409,35 @@
             <ion-row class="ion-justify-content-center">
               <ion-col size="auto" class="ion-align-self-center">
                 <ion-thumbnail>
-                  <img src="/assets/icon/rastreador-de-fitness.png">
+                  <img src="/assets/icon/rastreador-de-fitness.png" />
                 </ion-thumbnail>
               </ion-col>
-              <h1>Diagnóstico</h1>
+              <ion-text color="dark">
+                <h1>Diagnóstico</h1>
+              </ion-text>
             </ion-row>
             <ion-row>
               <ion-col size="12">
-                <ion-item>
-                  <ion-label position="floating">Problemas del dispositivo</ion-label>
+                <ion-item fill="outline">
+                  <ion-label position="floating"
+                    >Problemas del dispositivo</ion-label
+                  >
                   <ion-textarea
-                    placeholder="Explique la razón y problemas por los que ingresa el dispositivo al taller">
-                  </ion-textarea>
+                    placeholder="Explique la razón y problemas por los que ingresa el dispositivo al taller"
+                  ></ion-textarea>
                 </ion-item>
               </ion-col>
             </ion-row>
             <ion-row>
               <ion-col size="12">
-                <ion-list lines="full">
+                <ion-list lines="none">
                   <ion-list-header>
-                    <ion-label>TIPO DE INGRESO</ion-label>
+                    <ion-label color="dark">TIPO DE INGRESO</ion-label>
                   </ion-list-header>
-                  <ion-radio-group [(ngModel)]="ingreso" (ionChange)="tipoingreso()">
+                  <ion-radio-group
+                    [(ngModel)]="ingreso"
+                    (ionChange)="tipoingreso()"
+                  >
                     <ion-row class="ion-justify-content-between">
                       <ion-item>
                         <ion-label>Revisión</ion-label>
@@ -356,17 +474,23 @@
                   <ion-row class="ion-justify-content-center">
                     <ion-col size="auto" class="ion-align-self-center">
                       <ion-thumbnail>
-                        <img src="/assets/icon/ajustes.png">
+                        <img src="/assets/icon/ajustes.png" />
                       </ion-thumbnail>
                     </ion-col>
-                    <h5>REPARACIÓN</h5>
+                    <ion-text color="dark">
+                      <h5>DATOS DE REPARACIÓN</h5>
+                    </ion-text>
                   </ion-row>
-                  <ion-row class="ion-justify-content-between">
+                  <ion-row
+                    class="ion-justify-content-between ion-align-items-center"
+                  >
                     <ion-col size="auto">
                       <ion-label>Fecha estimada de entrega:</ion-label>
                     </ion-col>
                     <ion-col>
-                      <ion-datetime-button datetime="datetime"></ion-datetime-button>
+                      <ion-datetime-button
+                        datetime="datetime"
+                      ></ion-datetime-button>
                       <ion-modal [keepContentsMounted]="true">
                         <ng-template>
                           <ion-datetime id="datetime"></ion-datetime>
@@ -378,18 +502,24 @@
                     <ion-col size="12">
                       <ion-list>
                         <ion-list-header>
-                          <ion-label>Abono</ion-label>
+                          <ion-label color="dark">ABONO</ion-label>
                         </ion-list-header>
                         <ion-row class="ion-justify-content-center">
                           <ion-col size="auto">
-                            <ion-item>
+                            <ion-item lines="none">
                               <ion-label position="stacked">$</ion-label>
                             </ion-item>
                           </ion-col>
                           <ion-col size="auto">
-                            <ion-item>
-                              <ion-label position="stacked">Cantidad de abono</ion-label>
-                              <ion-input type="number" placeholder="5.000" [(ngModel)]="inforden.abono"></ion-input>
+                            <ion-item fill="outline">
+                              <ion-label position="stacked"
+                                >Cantidad de abono</ion-label
+                              >
+                              <ion-input
+                                type="number"
+                                placeholder="Abono mínimo $5.000"
+                                [(ngModel)]="inforden.abono"
+                              ></ion-input>
                             </ion-item>
                           </ion-col>
                         </ion-row>
@@ -400,19 +530,30 @@
                     <ion-col size="12">
                       <ion-list>
                         <ion-list-header>
-                          <ion-label>Técnico</ion-label>
+                          <ion-label color="dark">TECNICO</ion-label>
                         </ion-list-header>
                         <ion-row class="ion-justify-content-center">
-                          <ion-button id="click-trigger-ii" fill="clear"><ion-icon
-                              name="search-outline"></ion-icon>&nbsp;BUSCAR TECNICO
+                          <ion-button id="click-trigger-ii" fill="clear"
+                            ><ion-icon name="search-outline"></ion-icon
+                            >&nbsp;BUSCAR TECNICO
                           </ion-button>
-                          <ion-popover trigger="click-trigger-ii" triggerAction="click" size="auto">
+                          <ion-popover
+                            trigger="click-trigger-ii"
+                            triggerAction="click"
+                            size="auto"
+                          >
                             <ng-template>
                               <ion-grid>
                                 <ion-list>
-                                  <ion-item button (click)="muestratecnico = tecnico" *ngFor="let tecnico of tecnicos">
+                                  <ion-item
+                                    button
+                                    (click)="muestratecnico = tecnico"
+                                    *ngFor="let tecnico of tecnicos"
+                                  >
                                     <ion-col size="auto">
-                                      <ion-label>{{ tecnico.nombre }}</ion-label>
+                                      <ion-label
+                                        >{{ tecnico.nombre }}</ion-label
+                                      >
                                     </ion-col>
                                   </ion-item>
                                 </ion-list>
@@ -422,9 +563,14 @@
                         </ion-row>
                         <ion-row>
                           <ion-col size="12">
-                            <ion-item>
-                              <ion-label position="stacked">Tecnico asignado</ion-label>
-                              <ion-input [readonly]="true" [(ngModel)]="muestratecnico.nombre"></ion-input>
+                            <ion-item fill="outline">
+                              <ion-label position="stacked"
+                                >Tecnico asignado</ion-label
+                              >
+                              <ion-input
+                                [readonly]="true"
+                                [(ngModel)]="muestratecnico.nombre"
+                              ></ion-input>
                             </ion-item>
                           </ion-col>
                         </ion-row>
@@ -437,24 +583,26 @@
             <ion-col size="7.8">
               <ion-card>
                 <ion-grid>
-                  <ion-row class="ion-justify-content-center">
+                  <ion-row class="ion-justify-content-center ion-align-items-center">
                     <ion-col size="auto" class="ion-align-self-center">
                       <ion-thumbnail>
-                        <img src="/assets/icon/ajustes.png">
+                        <img src="/assets/icon/ajustes.png" />
                       </ion-thumbnail>
                     </ion-col>
-                    <h5>RESUMEN</h5>
+                    <ion-text color="dark">
+                      <h5>RESUMEN</h5>
+                    </ion-text>
                   </ion-row>
-                  <ion-list>
+                  <ion-list lines="none">
                     <ion-row>
                       <ion-col size="9">
                         <ion-item>
-                          <ion-chip>Repuesto/Servicio</ion-chip>
+                          <ion-chip outline="true">Repuesto/Servicio</ion-chip>
                         </ion-item>
                       </ion-col>
                       <ion-item>
                         <ion-col size="3">
-                          <ion-chip>Valor</ion-chip>
+                          <ion-chip outline="true">Valor</ion-chip>
                         </ion-col>
                       </ion-item>
                     </ion-row>
@@ -462,7 +610,9 @@
                       <ion-grid>
                         <ion-row>
                           <ion-col size="10">
-                            {{muestrainventario.nombrers}} {{muestrainventario.marca}} {{muestrainventario.modelo}}
+                            {{muestrainventario.nombrers}}
+                            {{muestrainventario.marca}}
+                            {{muestrainventario.modelo}}
                             {{muestrainventario.variante}}
                           </ion-col>
                           <ion-col size="2">
@@ -474,16 +624,16 @@
                   </ion-list>
                 </ion-grid>
                 <ion-row class="ion-justify-content-center">
-                  <ion-button id="abrir-modal-iii" fill="clear"><ion-icon name="construct-outline"></ion-icon>
-                    &nbsp;SELECCIONAR REPUESTO Y/O SERVICIO</ion-button>
+                  <ion-button id="abrir-modal-iii" fill="clear"
+                    ><ion-icon name="construct-outline"></ion-icon>
+                    &nbsp;SELECCIONAR REPUESTO Y/O SERVICIO</ion-button
+                  >
                 </ion-row>
                 <ion-row class="ion-justify-content-center">
                   <ion-col size="auto">
                     <ion-item lines="none">
                       <ion-checkbox slot="start"></ion-checkbox>
-                      <ion-button id="open-modal" fill="outline"><ion-icon name="reader-outline"></ion-icon>
-                        &nbsp;Acepta las condiciones del servicio técnico
-                      </ion-button>
+                      <ion-button id="open-modal" fill="clear">Acepta las condiciones del servicio técnico</ion-button>
                     </ion-item>
                   </ion-col>
                 </ion-row>
@@ -491,16 +641,17 @@
                   <ion-col size="auto">
                     <ion-item lines="none">
                       <ion-checkbox slot="start"></ion-checkbox>
-                      <ion-button fill="outline"><ion-icon name="paper-plane-outline"></ion-icon>
-                        &nbsp;Acepta el envío de este documento a correo
-                      </ion-button>
+                      <ion-button fill="clear">Acepta el envío de este documento a correo</ion-button>
                     </ion-item>
                   </ion-col>
                 </ion-row>
                 <ion-row class="ion-justify-content-between">
                   <ion-col size="auto">
                     <ion-label>Fecha de hoy</ion-label>
-                    <ion-datetime-button class="ion-datetime-button" datetime="datetime1"></ion-datetime-button>
+                    <ion-datetime-button
+                      class="ion-datetime-button"
+                      datetime="datetime1"
+                    ></ion-datetime-button>
                     <ion-modal [keepContentsMounted]="true">
                       <ng-template>
                         <ion-datetime id="datetime1"></ion-datetime>
@@ -529,8 +680,9 @@
               <h1>CONDICIONES DEL SERVICIO TECNICO</h1>
             </ion-text>
             <p>
-              Aquí se despliegan las condiciones que el administrador allá configurado, pudiendo ser una estándar
-              o una que el mismo administrador redacte
+              Aquí se despliegan las condiciones que el administrador allá
+              configurado, pudiendo ser una estándar o una que el mismo
+              administrador redacte
             </p>
           </ion-row>
         </ion-grid>
@@ -563,8 +715,10 @@
           </ion-col>
         </ion-row>
         <ion-row class="ion-justify-content-center">
-          <ion-button fill="outline" (click)="guardardispositivo()"><ion-icon
-              name="save-outline"></ion-icon>&nbsp;GUARDAR DISPOSITIVO</ion-button>
+          <ion-button fill="outline" (click)="guardardispositivo()"
+            ><ion-icon name="save-outline"></ion-icon>&nbsp;GUARDAR
+            DISPOSITIVO</ion-button
+          >
         </ion-row>
       </ion-content>
     </ng-template>
@@ -586,13 +740,19 @@
           <ion-col>
             <ion-item>
               <ion-label position="floating">Nombre completo</ion-label>
-              <ion-input [(ngModel)]="datoscliente.nombrecliente" placeholder="ej: Victor Sepulveda Brito"></ion-input>
+              <ion-input
+                [(ngModel)]="datoscliente.nombrecliente"
+                placeholder="ej: Victor Sepulveda Brito"
+              ></ion-input>
             </ion-item>
           </ion-col>
           <ion-col>
             <ion-item>
               <ion-label position="floating">RUT</ion-label>
-              <ion-input [(ngModel)]="datoscliente.rutcliente" placeholder="99888777-6"></ion-input>
+              <ion-input
+                [(ngModel)]="datoscliente.rutcliente"
+                placeholder="99888777-6"
+              ></ion-input>
             </ion-item>
           </ion-col>
         </ion-row>
@@ -600,14 +760,20 @@
           <ion-col>
             <ion-item>
               <ion-label position="floating">Correo electrónico</ion-label>
-              <ion-input [(ngModel)]="datoscliente.correocliente" type="email"></ion-input>
+              <ion-input
+                [(ngModel)]="datoscliente.correocliente"
+                type="email"
+              ></ion-input>
             </ion-item>
           </ion-col>
           <ion-col>
             <ion-item>
               <ion-label position="floating">N° de teléfono</ion-label>
-              <ion-input [(ngModel)]="datoscliente.nrotelefonocliente" type="number"
-                placeholder="912345678"></ion-input>
+              <ion-input
+                [(ngModel)]="datoscliente.nrotelefonocliente"
+                type="number"
+                placeholder="912345678"
+              ></ion-input>
             </ion-item>
           </ion-col>
         </ion-row>
@@ -620,8 +786,10 @@
           </ion-col>
         </ion-row>
         <ion-row class="ion-justify-content-center">
-          <ion-button fill="clear" (click)="guardarcliente()"><ion-icon name="save-outline"></ion-icon>&nbsp;GUARDAR
-            CLIENTE</ion-button>
+          <ion-button fill="clear" (click)="guardarcliente()"
+            ><ion-icon name="save-outline"></ion-icon>&nbsp;GUARDAR
+            CLIENTE</ion-button
+          >
         </ion-row>
       </ion-grid>
     </ion-content>
@@ -642,8 +810,11 @@
               <ion-row>
                 <ion-item>
                   <ion-label position="stacked">Buscar por modelo</ion-label>
-                  <ion-input [(ngModel)]="busquedainventario" (ionChange)="handleChangeIII($event)"
-                    placeholder="ej: iPhone 11">
+                  <ion-input
+                    [(ngModel)]="busquedainventario"
+                    (ionChange)="handleChangeIII($event)"
+                    placeholder="ej: iPhone 11"
+                  >
                   </ion-input>
                 </ion-item>
               </ion-row>
@@ -667,24 +838,22 @@
                 <ion-chip>Valor</ion-chip>
               </ion-item>
             </ion-col>
-            <ion-col size="1.2">
-              &nbsp;
-            </ion-col>
+            <ion-col size="1.2"> &nbsp; </ion-col>
           </ion-row>
           <ion-item *ngFor="let repuesto of repuestos">
             <ion-grid>
               <ion-row class="ion-justify-content-between">
                 <ion-col size="6.3">
-                  {{repuesto.nombrers}} {{repuesto.marca}} {{repuesto.modelo}} {{repuesto.variante}}
+                  {{repuesto.nombrers}} {{repuesto.marca}} {{repuesto.modelo}}
+                  {{repuesto.variante}}
                 </ion-col>
-                <ion-col size="2.2">
-                  {{repuesto.cantidad}}
-                </ion-col>
-                <ion-col size="2.3">
-                  {{repuesto.valor}}
-                </ion-col>
+                <ion-col size="2.2"> {{repuesto.cantidad}} </ion-col>
+                <ion-col size="2.3"> {{repuesto.valor}} </ion-col>
                 <ion-col size="1.2">
-                  <ion-button fill="clear" (click)="muestrainventario = repuesto">
+                  <ion-button
+                    fill="clear"
+                    (click)="muestrainventario = repuesto"
+                  >
                     <ion-icon name="add-circle"></ion-icon>
                   </ion-button>
                 </ion-col>

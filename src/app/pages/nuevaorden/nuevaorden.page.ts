@@ -88,7 +88,6 @@ export class NuevaordenPage implements OnInit {
 
   // ---VARIABLE MULTIPLE "INFORDEN"---
   inforden = {
-
     // ---VARIABLES TOGGLE'S "DATOS DE INGRESO"---
     ingresasim: null,
     ingresatarjeta: null,
