@@ -133,7 +133,7 @@
                 </ion-thumbnail>
               </ion-col>
               <ion-text color="dark">
-                <h1>Datos del dispositivo</h1>
+                <h1>DATOS DEL DISPOSITIVO</h1>
               </ion-text>
             </ion-row>
             <ion-row class="ion-justify-content-center">
@@ -150,9 +150,7 @@
                   <ion-grid>
                     <ion-col>
                       <ion-item fill="outline">
-                        <ion-label position="stacked"
-                          >Buscar por modelo</ion-label
-                        >
+                        <ion-label position="stacked">Buscar por modelo</ion-label>
                         <ion-input
                           [(ngModel)]="busquedadispositivo"
                           (ionChange)="handleChangeII($event)"
@@ -160,7 +158,7 @@
                         ></ion-input>
                       </ion-item>
                     </ion-col>
-                    <ion-list>
+                    <ion-list lines="none">
                       <ion-item
                         button
                         (click)="muestradispositivo = dispositivo"
@@ -234,7 +232,7 @@
               </ion-thumbnail>
             </ion-col>
             <ion-text color="dark">
-              <h1>Datos de ingreso</h1>
+              <h1>DATOS DE INGRESO</h1>
             </ion-text>
           </ion-row>
           <ion-row class="ion-justify-content-center">
@@ -413,7 +411,7 @@
                 </ion-thumbnail>
               </ion-col>
               <ion-text color="dark">
-                <h1>Diagnóstico</h1>
+                <h1>DIAGNOSTICO</h1>
               </ion-text>
             </ion-row>
             <ion-row>
@@ -544,7 +542,7 @@
                           >
                             <ng-template>
                               <ion-grid>
-                                <ion-list>
+                                <ion-list lines="none">
                                   <ion-item
                                     button
                                     (click)="muestratecnico = tecnico"

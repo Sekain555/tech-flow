@@ -2,14 +2,18 @@
 // http://ionicframework.com/docs/theming/
 
 :root {
+
+  --ion-font-family: 'Inter', sans-serif;
+
   /* TechFlow Colors */
+  --ion-background-color: var(--ion-color-light);
 
   ion-button {
     --color: var(--ion-color-primary);
   }
 
   ion-card {
-    --background: var(--ion-color-light-tint);
+    --background: var(--ion-color-light);
     --color: var(--ion-color-dark);
   }
 
@@ -23,6 +27,10 @@
   }
 
   ion-label {
+    --color: var(--ion-color-dark);
+  }
+
+  ion-title {
     --color: var(--ion-color-dark);
   }
 
