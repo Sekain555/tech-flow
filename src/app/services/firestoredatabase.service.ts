@@ -8,7 +8,6 @@ export class FirestoredatabaseService {
 
   constructor(public database: AngularFirestore) { }
 
-
   createDoc(data: any, path: string, id: string) {
     const collection = this.database.collection(path);
     return collection.doc(id).set(data);
@@ -53,7 +52,6 @@ export class FirestoredatabaseService {
   /*contarDoc(path: string) {
     const collection = this.database.collection(path);
     collection.onSnapshot(snap =>{
-
     })
   }*/
 }
