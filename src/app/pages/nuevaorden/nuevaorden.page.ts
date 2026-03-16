@@ -78,6 +78,7 @@ export class NuevaordenPage implements OnInit {
     clave: null,
     cargo: null,
     nombretaller: null,
+    tenantId: null
   };
   private tecnicos: UsuarioI[] = [];
 

@@ -6,6 +6,7 @@ export interface UsuarioI {
     clave: string;
     cargo: 'administrador' | 'tecnico' | 'vendedor';
     nombretaller: string;
+    tenantId?: string
 }
 
 export interface Taller {

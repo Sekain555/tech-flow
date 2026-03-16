@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
+import firebase from 'firebase/compat/app';
 
 @Injectable({
   providedIn: 'root'
@@ -54,4 +55,25 @@ export class FirestoredatabaseService {
     collection.onSnapshot(snap =>{
     })
   }*/
+
+  async createTenant(data: any) {
+    return await this.database.collection('tenants').add(data);
+  }
+
+  async setUserTenant(uid: string, data: any) {
+    return await this.database.collection('userTenants').doc(uid).set(data);
+  }
+
+  async setTenantUser(tenantId: string, uid: string, data: any) {
+    return await this.database
+      .collection('tenants')
+      .doc(tenantId)
+      .collection('users')
+      .doc(uid)
+      .set(data);
+  }
+
+  getUserTenant(uid: string) {
+    return this.database.collection('userTenants').doc(uid).valueChanges();
+  }
 }
