@@ -5,48 +5,6 @@ TechFlow es una aplicación móvil desarrollada con Angular e Ionic diseñada pa
 
 ## 🏗️ Arquitectura del Sistema
 
-### Arquitectura de la Aplicación
-```mermaid
-graph TB
-    subgraph "Aplicación Cliente"
-        AppComponent["AppComponent"]
-        AppModule["AppModule"]
-        AppRoutingModule["AppRoutingModule"]
-    end
-    
-    subgraph "Servicios Core"
-        FirestoreService["FirestoredatabaseService"]
-        AuthService["AuthfirebaseService"]
-    end
-    
-    subgraph "Componentes de Página"
-        RecepcionPage["RecepcionPage"]
-        NuevaordenPage["NuevaordenPage"]
-        MenuclientesPage["MenuclientesPage"]
-        MenuordenesPage["MenuordenesPage"]
-        MenuinventarioPage["MenuinventarioPage"]
-    end
-    
-    subgraph "Servicios Externos"
-        Firebase["Firebase Auth"]
-        Firestore["Firestore Database"]
-        Capacitor["Capacitor Native APIs"]
-    end
-    
-    AppComponent --> AppModule
-    AppModule --> AppRoutingModule
-    AppRoutingModule --> RecepcionPage
-    AppRoutingModule --> NuevaordenPage
-    AppRoutingModule --> MenuclientesPage
-    AppRoutingModule --> MenuordenesPage
-    AppRoutingModule --> MenuinventarioPage
-    
-    NuevaordenPage --> FirestoreService
-    FirestoreService --> Firestore
-    AuthService --> Firebase
-    AppModule --> Capacitor
-``` [1](#0-0) [2](#0-1) 
-
 ### Stack Tecnológico
 - **Frontend**: Angular 14, Ionic 6, TypeScript
 - **Backend**: Firebase (Firestore Database, Authentication)
