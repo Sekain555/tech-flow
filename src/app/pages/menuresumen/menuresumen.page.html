@@ -10,7 +10,7 @@
         </ion-thumbnail>
       </ion-col>
       <ion-col>
-        <ion-title>Resumen general - {{usuario}} - {{perfil}} - {{taller}}</ion-title>
+        <ion-title>Resumen general - {{perfil}} - {{taller}}</ion-title>
       </ion-col>
     </ion-row>
   </ion-toolbar>
@@ -18,7 +18,9 @@
 
 <ion-content>
   <ion-grid>
-    <ion-row>
+
+    <!-- SECCIÓN ADMINISTRADOR -->
+    <ion-row *ngIf="perfil === 'administrador'">
       <ion-col size="6">
         <ion-card class="ion-padding">
           <ion-row class="ion-justify-content-center">
@@ -29,7 +31,7 @@
           </ion-row>
           <ion-row>
             <ion-col>
-              <h5>Este gráfico visualiza la cantidad de ordenes que se han generado en {{taller}} dentro del último mes por semana:</h5>
+              <h5>Este gráfico visualiza la cantidad de ordenes generadas en {{taller}} dentro del último mes por semana:</h5>
             </ion-col>
           </ion-row>
           <ion-row class="ion-justify-content-center">
@@ -59,6 +61,39 @@
           </ion-row>
         </ion-card>
       </ion-col>
-    </ion-row>    
+    </ion-row>
+
+    <!-- SECCIÓN TÉCNICO -->
+    <ion-row *ngIf="perfil === 'tecnico'">
+      <ion-col>
+        <ion-card class="ion-padding">
+          <ion-row class="ion-justify-content-center">
+            <h3>Bienvenido, técnico</h3>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <p>Aquí verás tus órdenes de trabajo asignadas. (En construcción)</p>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
+    <!-- SECCIÓN VENDEDOR -->
+    <ion-row *ngIf="perfil === 'vendedor'">
+      <ion-col>
+        <ion-card class="ion-padding">
+          <ion-row class="ion-justify-content-center">
+            <h3>Bienvenido, vendedor</h3>
+          </ion-row>
+          <ion-row>
+            <ion-col>
+              <p>Aquí verás tus funciones disponibles. (En construcción)</p>
+            </ion-col>
+          </ion-row>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
   </ion-grid>
 </ion-content>

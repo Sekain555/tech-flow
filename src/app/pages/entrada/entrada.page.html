@@ -1,4 +1,4 @@
-<ion-menu [type]="menuType" content-id="main-content">
+<ion-menu content-id="main-content">
   <ion-header>
     <ion-toolbar>
       <ion-title>{{perfil}} de {{taller}}</ion-title>
@@ -7,7 +7,7 @@
   <ion-content class="ion-padding">
     <ion-menu-toggle>
       <ion-row class="ion-justify-content-center">
-        <ion-button *ngIf="perfil === 'Administrador'" expand="full" fill="none" routerLink="/configadmin">
+        <ion-button *ngIf="perfil === 'administrador'" expand="full" fill="none" routerLink="/configadmin">
           <ion-icon name="options-outline"></ion-icon>&nbsp;Configuración
         </ion-button>
         <ion-button expand="full" fill="none" (click)="logout()">
