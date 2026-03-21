@@ -58,7 +58,9 @@ export class CcuentaPage implements OnInit {
 
       const tenantRef = await this.firestore.createTenant({
         ...this.datostaller,
-        ownerUid: uid
+        ownerUid: uid,
+        estado: 'trial',
+        creadoEn: new Date().toISOString()
       });
 
       const tenantId = tenantRef.id;

@@ -134,6 +134,10 @@ export class FirestoredatabaseService {
     return this.database.collection('userTenants').doc(uid).valueChanges();
   }
 
+  getTenant(tenantId: string) {
+    return this.database.collection('tenants').doc(tenantId).valueChanges();
+  }
+
   // ─── MÉTODOS LEGACY (pendiente migrar a métodos por tenant) ──────
 
   getCollection<T>(path: string) {

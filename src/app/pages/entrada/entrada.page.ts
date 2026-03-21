@@ -47,10 +47,20 @@ export class EntradaPage implements OnInit {
       if (res) {
         this.perfil = res.role;
         this.taller = res.tenantId;
-        this.session.setSession({
-          tenantId: res.tenantId,
-          role: res.role,
-          uid: uid,
+
+        // Verificar estado del tenant
+        this.firestore.getTenant(res.tenantId).subscribe((tenant: any) => {
+          if (tenant && tenant.estado === 'suspendido') {
+            this.auth.logout();
+            this.route.navigate(['/recepcion']);
+            return;
+          }
+
+          this.session.setSession({
+            tenantId: res.tenantId,
+            role: res.role,
+            uid: uid,
+          });
         });
       }
     });
