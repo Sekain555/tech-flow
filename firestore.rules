@@ -1,0 +1,66 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ─── FUNCIÓN AUXILIAR ─────────────────────────────────────────
+    function perteneceAlTenant(tenantId) {
+      return request.auth != null &&
+        exists(/databases/$(database)/documents/userTenants/$(request.auth.uid)) &&
+        get(/databases/$(database)/documents/userTenants/$(request.auth.uid)).data.tenantId == tenantId;
+    }
+
+    function esAdmin(tenantId) {
+      return perteneceAlTenant(tenantId) &&
+        get(/databases/$(database)/documents/userTenants/$(request.auth.uid)).data.role == 'administrador';
+    }
+
+    // ─── COLECCIONES GLOBALES ──────────────────────────────────────
+
+    // userTenants: solo el propio usuario puede leer su mapping
+    match /userTenants/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false; // solo escritura desde backend/registro
+    }
+
+    // Usuarios: legacy, solo el propio usuario puede leer
+    match /Usuarios/{uid} {
+      allow read: if request.auth != null && request.auth.uid == uid;
+      allow write: if false;
+    }
+
+    // ─── TENANTS ──────────────────────────────────────────────────
+
+    // Datos del tenant: solo miembros del tenant pueden leer
+    match /tenants/{tenantId} {
+      allow read: if perteneceAlTenant(tenantId);
+      allow write: if false; // solo desde registro o Firebase Console
+
+      // Usuarios dentro del tenant
+      match /users/{uid} {
+        allow read: if perteneceAlTenant(tenantId);
+        allow write: if esAdmin(tenantId);
+      }
+
+      // Clientes
+      match /clients/{clientId} {
+        allow read, write: if perteneceAlTenant(tenantId);
+      }
+
+      // Órdenes de trabajo
+      match /workorders/{workOrderId} {
+        allow read, write: if perteneceAlTenant(tenantId);
+      }
+
+      // Inventario
+      match /inventory/{itemId} {
+        allow read, write: if perteneceAlTenant(tenantId);
+      }
+
+      // Configuración: solo admin puede modificar
+      match /settings/{docId} {
+        allow read: if perteneceAlTenant(tenantId);
+        allow write: if esAdmin(tenantId);
+      }
+    }
+  }
+}
