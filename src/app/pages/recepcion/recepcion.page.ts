@@ -37,7 +37,6 @@ export class RecepcionPage implements OnInit {
   }
 
   async login() {
-    console.log(this.credenciales);
     const res = await this.auth.login(this.credenciales.correo, this.credenciales.password)
     if (res) {
       console.log(res);
