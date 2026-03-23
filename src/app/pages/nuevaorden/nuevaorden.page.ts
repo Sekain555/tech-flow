@@ -2,15 +2,14 @@ import { Component, OnInit, ViewChild, ViewEncapsulation } from '@angular/core';
 import { IonModal, ModalController, ToastController } from '@ionic/angular';
 import SwiperCore, { Navigation, Pagination, Scrollbar } from 'swiper';
 import { FirestoredatabaseService } from 'src/app/services/firestoredatabase.service';
+import { SessionService } from 'src/app/services/session.service';
 import {
   UsuarioI,
   ClienteST,
   InventarioRepuesto,
   Dispositivos,
-  Taller,
   Ordenes,
 } from 'src/app/models/modelos';
-import { NgFor } from '@angular/common';
 import { NgForm } from '@angular/forms';
 
 SwiperCore.use([Navigation, Pagination, Scrollbar]);
@@ -54,20 +53,14 @@ export class NuevaordenPage implements OnInit {
     nrorden: null,
   };
   busquedacliente: string;
-  private clientes: ClienteST[] = [];
+  clientes: ClienteST[] = [];
 
   // ---VARIABLES DISPOSITIVOS---
-  muestradispositivo: Dispositivos = {
-    marcadisp: null,
-    modelodisp: null,
-  };
-  datosdispositivo: Dispositivos = {
-    marcadisp: null,
-    modelodisp: null,
-  };
+  muestradispositivo: Dispositivos = { marcadisp: null, modelodisp: null };
+  datosdispositivo: Dispositivos = { marcadisp: null, modelodisp: null };
   busquedadispositivo: string;
   problemadisp: string;
-  private dispositivos: Dispositivos[] = [];
+  dispositivos: Dispositivos[] = [];
 
   // ---VARIABLES TECNICOS---
   muestratecnico: UsuarioI = {
@@ -78,9 +71,9 @@ export class NuevaordenPage implements OnInit {
     clave: null,
     cargo: null,
     nombretaller: null,
-    tenantId: null
+    tenantId: null,
   };
-  private tecnicos: UsuarioI[] = [];
+  tecnicos: UsuarioI[] = [];
 
   // ---VARIABLES REPUESTOS---
   muestrainventario: InventarioRepuesto = {
@@ -93,11 +86,10 @@ export class NuevaordenPage implements OnInit {
     valor: null,
   };
   busquedainventario: string;
-  private repuestos: InventarioRepuesto[] = [];
+  repuestos: InventarioRepuesto[] = [];
 
   // ---VARIABLE MULTIPLE "INFORDEN"---
   inforden = {
-    // ---VARIABLES TOGGLE'S "DATOS DE INGRESO"---
     ingresasim: null,
     ingresatarjeta: null,
     ingresabateria: null,
@@ -113,27 +105,19 @@ export class NuevaordenPage implements OnInit {
     funcionauricular: null,
     funcionparlante: null,
     funcioncamara: null,
-
-    // ---VARIABLE SUELTA "N° DE ORDEN ACTUAL"---
     nroorden: null,
-
-    // ---VARIABLE "OBSERVACIONES"---
     observaciones: null,
-
-    // ---VARIABLE "TIPO DE INGRESO"---
     tipodeingreso: null,
-
-    // ---VARIABLES "FECHAS"---
     fechaestim: null,
     fechahoy: null,
     abono: null,
   };
 
-  // ---VARIABLE "INGRESO"---
   ingreso: null;
 
-  // ---VARIABLES "ORDEN DE TRABAJO"---
+  // ---VARIABLES ORDEN---
   orden: Ordenes = {
+    estado: 'ingresado',
     cliente: {
       nrorden: null,
       nombrecliente: null,
@@ -195,8 +179,9 @@ export class NuevaordenPage implements OnInit {
 
   constructor(
     private firestore: FirestoredatabaseService,
+    private session: SessionService,
     private modalController: ModalController,
-    private toastController: ToastController
+    private toastController: ToastController,
   ) {}
 
   ngOnInit() {
@@ -206,77 +191,79 @@ export class NuevaordenPage implements OnInit {
     this.traertecnicos();
   }
 
-  // ---FUNCIONES PARA MODAL---    
   cerrarModal() {
     this.modalController.dismiss();
   }
 
-  // ---FUNCIONES PARA TOAST---
   async presentToast(mensaje: string) {
     const toast = await this.toastController.create({
       message: mensaje,
       position: 'bottom',
       duration: 1500,
     });
-
     await toast.present();
   }
 
-  // ---FUNCIONES PARA CLIENTES---
+  // ---CLIENTES---
   async guardarcliente(formularioCliente: NgForm) {
     if (formularioCliente.invalid) {
-      Object.values(formularioCliente.controls).forEach((control) => {
-        control.markAsTouched();
-      });
-      console.log('Formulario incompleto');
+      Object.values(formularioCliente.controls).forEach((c) =>
+        c.markAsTouched(),
+      );
       this.presentToast('Datos incompletos o con errores de formato');
       return;
     }
-    const path = 'Clientes';
-    await this.firestore.createClient(this.datoscliente, path);
-    this.datoscliente.nombrecliente = null;
-    this.datoscliente.rutcliente = null;
-    this.datoscliente.correocliente = null;
-    this.datoscliente.nrotelefonocliente = null;
-    this.datoscliente.comunacliente = null;
+    await this.firestore.createDocByTenant(
+      'clients',
+      this.session.tenantId,
+      this.datoscliente,
+    );
+    this.datoscliente = {
+      nombrecliente: null,
+      rutcliente: null,
+      correocliente: null,
+      nrotelefonocliente: null,
+      comunacliente: null,
+      dispositivos: {
+        marcadisp: null,
+        modelodisp: null,
+        imei: null,
+        problemadisp: null,
+      },
+      nrorden: null,
+    };
     this.cerrarModal();
   }
 
   handleChange(event) {
     this.firestore
-      .getCollectionQuery<ClienteST>(
-        'Clientes',
+      .getCollectionByTenantQuery<ClienteST>(
+        'clients',
+        this.session.tenantId,
         'rutcliente',
         '==',
-        this.busquedacliente
+        this.busquedacliente,
       )
-      .subscribe((res) => {
-        console.log(res);
-        this.clientes = res;
-      });
+      .subscribe((res) => (this.clientes = res));
   }
 
   traerclientes() {
-    this.firestore.getCollection<ClienteST>('Clientes').subscribe((res) => {
-      console.log(res);
-      this.clientes = res;
-    });
+    this.firestore
+      .getCollectionByTenant<ClienteST>('clients', this.session.tenantId)
+      .subscribe((res) => (this.clientes = res));
   }
 
-  // --- FUNCIONES PARA DISPOSITIVOS---
+  // ---DISPOSITIVOS--- (legacy hasta card de migración)
   async guardardispositivo(formularioDispositivo: NgForm) {
     if (formularioDispositivo.invalid) {
-      Object.values(formularioDispositivo.controls).forEach((control) => {
-        control.markAsTouched();
-      });
-      console.log('Formulario incompleto');
+      Object.values(formularioDispositivo.controls).forEach((c) =>
+        c.markAsTouched(),
+      );
       this.presentToast('Datos incompletos o con errores de formato');
       return;
     }
-    const path = 'Dispositivos';
-    await this.firestore.createClient(this.datosdispositivo, path);
-    this.datosdispositivo.marcadisp = null;
-    this.datosdispositivo.modelodisp = null;
+    await this.firestore.createClient(this.datosdispositivo, 'Dispositivos');
+    this.datosdispositivo = { marcadisp: null, modelodisp: null };
     this.cerrarModal();
   }
 
@@ -286,69 +273,59 @@ export class NuevaordenPage implements OnInit {
         'Dispositivos',
         'modelodisp',
         '==',
-        this.busquedadispositivo
+        this.busquedadispositivo,
       )
-      .subscribe((res) => {
-        console.log(res);
-        this.dispositivos = res;
-      });
+      .subscribe((res) => (this.dispositivos = res));
   }
 
   traerdispositivos() {
     this.firestore
       .getCollection<Dispositivos>('Dispositivos')
-      .subscribe((res) => {
-        console.log(res);
-        this.dispositivos = res;
-      });
+      .subscribe((res) => (this.dispositivos = res));
   }
 
-  // ---FUNCIONES PARA TECNICOS---
+  // ---TECNICOS--- (legacy hasta card de migración)
   traertecnicos() {
     this.firestore
-      .getCollectionQuery<UsuarioI>('Usuarios', 'cargo', '==', 'Tecnico')
-      .subscribe((res) => {
-        console.log(res);
-        this.tecnicos = res;
-      });
+      .getCollectionQuery<UsuarioI>('Usuarios', 'cargo', '==', 'tecnico')
+      .subscribe((res) => (this.tecnicos = res));
   }
 
-  // ---FUNCIONES PARA REPUESTOS---
+  // ---REPUESTOS--- (legacy hasta card de migración)
   handleChangeIII(event) {
     this.firestore
       .getCollectionQuery<InventarioRepuesto>(
         'RepuestoServicio',
         'modelo',
         '==',
-        this.busquedainventario
+        this.busquedainventario,
       )
-      .subscribe((res) => {
-        console.log(res);
-        this.repuestos = res;
-      });
+      .subscribe((res) => (this.repuestos = res));
   }
+
   traerrepuestos() {
     this.firestore
       .getCollection<InventarioRepuesto>('RepuestoServicio')
-      .subscribe((res) => {
-        console.log(res);
-        this.repuestos = res;
-      });
+      .subscribe((res) => (this.repuestos = res));
   }
 
-  // ---FUNCION TIPO DE INGRESO---
   tipoingreso() {
     this.inforden.tipodeingreso = this.ingreso;
   }
 
-  // ---FUNCION GENERAR ORDEN---
-
+  // ---GENERAR ORDEN---
   async generarorden() {
     this.orden.cliente = this.muestracliente;
     this.orden.inforden = this.inforden;
     this.orden.repuesto = this.muestrainventario;
+    this.orden.inforden.fechahoy = new Date().toISOString();
+    this.orden.estado = 'ingresado';
 
-    const path = 'Ordenes';
-    await this.firestore.createClient(this.orden, path);
+    await this.firestore.createDocByTenant(
+      'workorders',
+      this.session.tenantId,
+      this.orden,
+    );
+    this.presentToast('Orden generada correctamente');
   }
 }
