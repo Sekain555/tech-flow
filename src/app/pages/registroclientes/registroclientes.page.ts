@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ClienteST } from 'src/app/models/modelos';
 import { FirestoredatabaseService } from 'src/app/services/firestoredatabase.service';
+import { SessionService } from 'src/app/services/session.service';
 
 @Component({
   selector: 'app-registroclientes',
@@ -13,23 +14,29 @@ export class RegistroclientesPage implements OnInit {
   clientes: ClienteST[] = [];
 
   constructor(
-    private firestore: FirestoredatabaseService
+    private firestore: FirestoredatabaseService,
+    private session: SessionService
   ) { }
 
   ngOnInit() {
-    this.traercliente()
+    this.traercliente();
   }
 
   traercliente() {
-    this.firestore.getCollection<ClienteST>('Clientes').subscribe(res => {
-      console.log(res);
-      this.clientes = res;
-    })
+    this.firestore.getCollectionByTenant<ClienteST>('clients', this.session.tenantId)
+      .subscribe(res => {
+        this.clientes = res;
+      });
   }
 
   buscarcliente() {
-    this.firestore.getCollectionQuery<ClienteST>('Clientes', 'rutcliente', '==', this.busquedacliente).subscribe(res => {
-      console.log(res);
+    this.firestore.getCollectionByTenantQuery<ClienteST>(
+      'clients',
+      this.session.tenantId,
+      'rutcliente',
+      '==',
+      this.busquedacliente
+    ).subscribe(res => {
       this.clientes = res;
     });
   }
