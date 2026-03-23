@@ -1,5 +1,5 @@
 # CONTEXTO.md — TechFlow
-> Última actualización: 16-03-2026
+> Última actualización: 22-03-2026
 
 ---
 
@@ -160,74 +160,80 @@ Métodos: `setSession()`, `clear()`, `isReady()`
 
 ---
 
-## 7. Arquitectura de navegación
+## 7. Reglas de seguridad Firestore
+
+Archivo `firestore.rules` en la raíz del proyecto, versionado en Git.
+
+**Funciones auxiliares:**
+- `perteneceAlTenant(tenantId)` — valida auth + uid en userTenants + tenantId coincide
+- `esAdmin(tenantId)` — valida perteneceAlTenant + role === 'administrador'
+
+**Reglas por colección:**
+
+| Colección | Lectura | Escritura |
+|---|---|---|
+| `userTenants/{uid}` | Solo el propio uid | Bloqueada desde cliente |
+| `Usuarios/{uid}` | Solo el propio uid | Bloqueada desde cliente |
+| `tenants/{tenantId}` | Miembros del tenant | Bloqueada desde cliente |
+| `tenants/{tenantId}/users` | Miembros del tenant | Solo administrador |
+| `tenants/{tenantId}/clients` | Miembros del tenant | Miembros del tenant |
+| `tenants/{tenantId}/workorders` | Miembros del tenant | Miembros del tenant |
+| `tenants/{tenantId}/inventory` | Miembros del tenant | Miembros del tenant |
+| `tenants/{tenantId}/settings` | Miembros del tenant | Solo administrador |
+
+---
+
+## 8. Arquitectura de navegación
 
 ### Flujo de registro (Administrador)
-1. Usuario completa formulario en `/ccuenta` (datos personales + datos del taller)
+1. Usuario completa formulario en `/ccuenta`
 2. Se crea cuenta en Firebase Auth
-3. Se crea documento en `tenants/` con datos del taller, `ownerUid`, `estado: 'trial'` y `creadoEn`
-4. Se guarda `tenantId` en el usuario
-5. Se crea documento en `Usuarios/{uid}` (compatibilidad temporal)
-6. Se crea mapping en `userTenants/{uid}` con `tenantId` y `role: 'administrador'`
-7. Se crea usuario dentro de `tenants/{tenantId}/users/{uid}`
-8. Redirige a `/entrada`
-
-> Técnicos y vendedores **no se registran públicamente**. Solo el administrador puede crearlos desde dentro del sistema (pendiente implementar).
+3. Se crea documento en `tenants/` con `estado: 'trial'` y `creadoEn`
+4. Se crea mapping en `userTenants/{uid}`
+5. Se crea usuario en `Usuarios/{uid}` (compatibilidad temporal)
+6. Se crea usuario en `tenants/{tenantId}/users/{uid}`
+7. Redirige a `/entrada`
 
 ### Flujo de login
 1. Firebase Auth detecta sesión activa en `/entrada`
 2. Se consulta `userTenants/{uid}` para obtener `tenantId` y `role`
 3. Se consulta `tenants/{tenantId}` para verificar `estado`
-4. Si `estado === 'suspendido'` → logout automático y redirección a `/recepcion`
+4. Si `estado === 'suspendido'` → logout y redirección a `/recepcion`
 5. Si no suspendido → `SessionService.setSession()` y acceso al dashboard
-6. **Todos los roles quedan en `/entrada`** — no hay redirección por rol
 
 ### Arquitectura de páginas principales
-- **`/entrada`** — layout principal con menú lateral + dashboard. Controla visibilidad por rol via `*ngIf`
-- **`/menuresumen`** — página secundaria de gráficos. Lee rol y tenantId desde `SessionService`
+- **`/entrada`** — layout principal con menú lateral + dashboard
+- **`/menuresumen`** — estadísticas y gráficos, lee desde `SessionService`
 - **`/recepcion`** — pantalla pública de login
-- **`/ccuenta`** — registro público, solo crea cuentas de Administrador
+- **`/ccuenta`** — registro público, solo Administrador
 
 ---
 
-## 8. Páginas del sistema
+## 9. Archivos de configuración Firebase
 
-| Página | Ruta | Descripción |
+| Archivo | Versionado | Descripción |
 |---|---|---|
-| recepcion | /recepcion | Pantalla inicial / login |
-| ccuenta | /ccuenta | Registro de nuevo taller + administrador |
-| entrada | /entrada | Layout principal — dashboard + menú lateral |
-| menuresumen | /menuresumen | Estadísticas y gráficos (secundaria) |
-| menuresumentec | /menuresumentec | Legacy — pendiente evaluar si se elimina |
-| menuordenes | /menuordenes | Listado de órdenes |
-| nuevaorden | /nuevaorden | Crear nueva orden |
-| registroorden | /registroorden | Detalle/registro de orden |
-| estadisticasorden | /estadisticasorden | Estadísticas de órdenes |
-| menuclientes | /menuclientes | Listado de clientes |
-| nuevocliente | /nuevocliente | Crear cliente |
-| registroclientes | /registroclientes | Detalle de cliente |
-| contactoclientes | /contactoclientes | Contactar clientes |
-| menuinventario | /menuinventario | Inventario de repuestos |
-| anadirrepuesto | /anadirrepuesto | Agregar repuesto |
-| registrorepuesto | /registrorepuesto | Detalle de repuesto |
-| configadmin | /configadmin | Configuración administrador |
-| menuvideos | /menuvideos | Videos tutoriales (función postergada) |
-| registrovideos | /registrovideos | Registrar video (función postergada) |
+| `firestore.rules` | ✅ Sí | Reglas de seguridad |
+| `firestore.indexes.json` | ✅ Sí | Índices de Firestore |
+| `firebase.json` | ✅ Sí | Configuración Firebase CLI |
+| `.firebaserc` | ❌ No (.gitignore) | ID del proyecto Firebase |
+| `environment.ts` | ❌ No (.gitignore) | API keys y configuración sensible |
+| `environment.prod.ts` | ❌ No (.gitignore) | API keys producción |
+| `config.xml` | ❌ No (.gitignore) | Configuración Capacitor con datos sensibles |
 
 ---
 
-## 9. Hardware complementario (planificado)
+## 10. Hardware complementario (planificado)
 
 - **ESP32** con lector RFID
 - Tarjetas RFID entregadas al cliente al dejar su equipo
-- Cliente consulta estado del equipo escaneando su tarjeta en la tienda
 - ESP32 se comunica con el backend via WiFi (REST API)
-- Aprovisionamiento WiFi via WiFiManager (primer arranque)
+- Aprovisionamiento WiFi via WiFiManager
 - Kit RFID como add-on premium del plan de suscripción
 
 ---
 
-## 10. Modelo de negocio (en definición)
+## 11. Modelo de negocio (en definición)
 
 - SaaS por suscripción mensual/anual
 - Planes por cantidad de técnicos o volumen de OTs incluidas
@@ -237,7 +243,7 @@ Métodos: `setSession()`, `clear()`, `isReady()`
 
 ---
 
-## 11. Estado del Trello — Roadmap MVP
+## 12. Estado del Trello — Roadmap MVP
 
 ### DONE ✅
 | Tarjeta |
@@ -247,19 +253,19 @@ Métodos: `setSession()`, `clear()`, `isReady()`
 | Refactor FirestoredatabaseService (IDs + paths por tenant) |
 | Restringir registro público a solo rol Administrador |
 | Modelo de activación de tenant (trial/activo/suspendido) |
+| Definir reglas Firestore por tenant |
 
 ### BACKLOG (orden de prioridad)
 | # | Tarjeta | Prioridad | Tamaño | Categoría |
 |---|---|---|---|---|
-| 1 | Definir reglas Firestore por tenant | Alta | M | OPS |
-| 2 | Validar flujo OT dentro de tenant | Alta | M | FE/BE |
-| 3 | Órdenes de trabajo end-to-end (crear → estados → cerrar) | Media | L | FE/BE |
-| 4 | Clientes + equipos (asociación real a OT) | Media | M | FE/BE |
-| 5 | Inventario / repuestos (asociado a OT + stock) | Media | M | FE/BE |
-| 6 | Migrar páginas legacy a métodos por tenant | Alta | L | FE/BE |
-| 7 | Historial / búsqueda (por cliente, por OT, por estado) | Baja | M | FE/BE |
-| 8 | Export simple (PDF/print o resumen) | Baja | S | FE |
-| 9 | Onboarding (crear taller → primer técnico → primera OT) | Baja | M | FE/BE |
+| 1 | Validar flujo OT dentro de tenant | Alta | M | FE/BE |
+| 2 | Órdenes de trabajo end-to-end (crear → estados → cerrar) | Media | L | FE/BE |
+| 3 | Clientes + equipos (asociación real a OT) | Media | M | FE/BE |
+| 4 | Inventario / repuestos (asociado a OT + stock) | Media | M | FE/BE |
+| 5 | Migrar páginas legacy a métodos por tenant | Alta | L | FE/BE |
+| 6 | Historial / búsqueda (por cliente, por OT, por estado) | Baja | M | FE/BE |
+| 7 | Export simple (PDF/print o resumen) | Baja | S | FE |
+| 8 | Onboarding (crear taller → primer técnico → primera OT) | Baja | M | FE/BE |
 
 ### POST-MVP
 | Tarjeta |
@@ -268,7 +274,7 @@ Métodos: `setSession()`, `clear()`, `isReady()`
 
 ---
 
-## 12. Pendientes técnicos conocidos
+## 13. Pendientes técnicos conocidos
 
 | Pendiente | Prioridad | Contexto |
 |---|---|---|
@@ -276,14 +282,12 @@ Métodos: `setSession()`, `clear()`, `isReady()`
 | Colección `Usuarios/` es legacy | Baja | Mantener por compatibilidad hasta migración completa |
 | Interfaz `Taller` es legacy | Baja | Usar `Tenant` para nuevos desarrollos |
 | Técnicos/vendedores sin flujo de creación | Alta | Solo el admin puede crearlos, flujo no implementado aún |
-| Validación de roles técnico/vendedor pendiente | Media | Depende de implementación de creación de usuarios internos |
-| `menuresumentec` posiblemente redundante | Baja | Evaluar si se elimina ahora que existe dashboard unificado |
 | Métodos legacy en FirestoredatabaseService | Alta | Migrar cuando se trabajen cards de OTs, clientes e inventario |
-| YouTube API key revocada | Resuelta | Función de videos postergada para post-MVP |
+| `menuresumentec` posiblemente redundante | Baja | Evaluar si se elimina ahora que existe dashboard unificado |
 
 ---
 
-## 13. Convención de tarjetas Trello
+## 14. Convención de tarjetas Trello
 
 ```
 **Prioridad:** Alta / Media / Baja
@@ -302,7 +306,7 @@ Métodos: `setSession()`, `clear()`, `isReady()`
 
 ---
 
-## 14. Decisiones de arquitectura tomadas
+## 15. Decisiones de arquitectura tomadas
 
 | Decisión | Razón |
 |---|---|
@@ -313,5 +317,7 @@ Métodos: `setSession()`, `clear()`, `isReady()`
 | `ionViewDidEnter` para inicializar gráficos | El DOM debe estar listo antes de acceder a canvas |
 | Tenant nuevo inicia en estado `trial` | Control de acceso desde el primer registro |
 | Estado del tenant verificado en cada login | Permite suspender acceso sin eliminar la cuenta |
+| Escritura de datos críticos bloqueada desde cliente | Seguridad — solo Firebase Console o funciones del servidor |
+| `firestore.rules` versionado en Git | Trazabilidad de cambios en reglas de seguridad |
 | Panel superadmin postergado para post-MVP | Complejidad excede el scope del MVP |
 | Función de videos postergada para post-MVP | YouTube API key revocada, bajo impacto en MVP |
