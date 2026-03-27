@@ -253,9 +253,9 @@ export class NuevaordenPage implements OnInit {
       .subscribe((res) => (this.clientes = res));
   }
 
-  // ---DISPOSITIVOS--- (legacy hasta card de migración)
+  // ---DISPOSITIVOS--- (pendiente card: Catálogo global de dispositivos)
   async guardardispositivo(formularioDispositivo: NgForm) {
-    if (formularioDispositivo.invalid) {
+    /*if (formularioDispositivo.invalid) {
       Object.values(formularioDispositivo.controls).forEach((c) =>
         c.markAsTouched(),
       );
@@ -263,11 +263,12 @@ export class NuevaordenPage implements OnInit {
       return;
     }
     await this.firestore.createClient(this.datosdispositivo, 'Dispositivos');
-    this.datosdispositivo = { marcadisp: null, modelodisp: null };
+    this.datosdispositivo = { marcadisp: null, modelodisp: null };*/
+    this.presentToast('Función temporalmente deshabilitada');
     this.cerrarModal();
   }
 
-  handleChangeII(event) {
+  /*handleChangeII(event) {
     this.firestore
       .getCollectionQuery<Dispositivos>(
         'Dispositivos',
@@ -276,26 +277,34 @@ export class NuevaordenPage implements OnInit {
         this.busquedadispositivo,
       )
       .subscribe((res) => (this.dispositivos = res));
-  }
+  }*/
 
   traerdispositivos() {
-    this.firestore
+    /*this.firestore
       .getCollection<Dispositivos>('Dispositivos')
-      .subscribe((res) => (this.dispositivos = res));
+      .subscribe((res) => (this.dispositivos = res));*/
+      this.dispositivos = [];
   }
 
-  // ---TECNICOS--- (legacy hasta card de migración)
+  // ---TECNICOS---
   traertecnicos() {
     this.firestore
-      .getCollectionQuery<UsuarioI>('Usuarios', 'cargo', '==', 'tecnico')
+      .getCollectionByTenantQuery<UsuarioI>(
+        'users',
+        this.session.tenantId,
+        'cargo',
+        '==',
+        'tecnico',
+      )
       .subscribe((res) => (this.tecnicos = res));
   }
 
-  // ---REPUESTOS--- (legacy hasta card de migración)
+  // ---REPUESTOS---
   handleChangeIII(event) {
     this.firestore
-      .getCollectionQuery<InventarioRepuesto>(
-        'RepuestoServicio',
+      .getCollectionByTenantQuery<InventarioRepuesto>(
+        'inventory',
+        this.session.tenantId,
         'modelo',
         '==',
         this.busquedainventario,
@@ -305,7 +314,10 @@ export class NuevaordenPage implements OnInit {
 
   traerrepuestos() {
     this.firestore
-      .getCollection<InventarioRepuesto>('RepuestoServicio')
+      .getCollectionByTenant<InventarioRepuesto>(
+        'inventory',
+        this.session.tenantId,
+      )
       .subscribe((res) => (this.repuestos = res));
   }
 
