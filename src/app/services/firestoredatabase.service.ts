@@ -134,24 +134,7 @@ export class FirestoredatabaseService {
     return this.database.collection('userTenants').doc(uid).valueChanges();
   }
 
-  // ─── MÉTODOS LEGACY (pendiente migrar a métodos por tenant) ──────
-
-  getCollection<T>(path: string) {
-    return this.database.collection<T>(path).valueChanges();
-  }
-
-  getCollectionQuery<T>(
-    path: string,
-    parametro: string,
-    condicion: any,
-    busqueda: string,
-  ) {
-    return this.database
-      .collection<T>(path, (ref) => ref.where(parametro, condicion, busqueda))
-      .valueChanges();
-  }
-
-  createClient(data: any, path: string) {
-    return this.database.collection(path).add(data);
+  getTenant(tenantId: string) {
+    return this.database.collection('tenants').doc(tenantId).valueChanges();
   }
 }

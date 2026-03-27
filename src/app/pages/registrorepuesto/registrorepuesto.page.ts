@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { StrapisqlService } from 'src/app/services/strapisql.service';
 import { FirestoredatabaseService } from 'src/app/services/firestoredatabase.service';
+import { SessionService } from 'src/app/services/session.service';
 import { InventarioRepuesto } from 'src/app/models/modelos';
 
 @Component({
@@ -12,18 +12,19 @@ export class RegistrorepuestoPage implements OnInit {
 
   repuestos: InventarioRepuesto[] = [];
 
-  constructor(private strapisql: StrapisqlService,
-    private firestore: FirestoredatabaseService) { }
+  constructor(
+    private firestore: FirestoredatabaseService,
+    private session: SessionService
+  ) { }
 
   ngOnInit() {
-    this.traerrepuestos()
+    this.traerrepuestos();
   }
 
   traerrepuestos() {
-    this.firestore.getCollection<InventarioRepuesto>('RepuestoServicio').subscribe(res =>{
-      console.log(res);
-      this.repuestos= res;
-    })
+    this.firestore.getCollectionByTenant<InventarioRepuesto>('inventory', this.session.tenantId)
+      .subscribe(res => {
+        this.repuestos = res;
+      });
   }
-
 }
