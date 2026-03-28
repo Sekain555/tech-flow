@@ -137,4 +137,47 @@ export class FirestoredatabaseService {
   getTenant(tenantId: string) {
     return this.database.collection('tenants').doc(tenantId).valueChanges();
   }
+
+  // ─── MÉTODOS CATÁLOGO GLOBAL ─────────────────────────────────────
+
+  getCatalog<T>(catalogPath: string) {
+    return this.database
+      .collection<T>(catalogPath)
+      .snapshotChanges()
+      .pipe(
+        map((actions) =>
+          actions.map((a) => {
+            const data = a.payload.doc.data() as T;
+            const id = a.payload.doc.id;
+            return { id, ...data };
+          }),
+        ),
+      );
+  }
+
+  getCatalogQuery<T>(
+    catalogPath: string,
+    parametro: string,
+    condicion: any,
+    busqueda: any,
+  ) {
+    return this.database
+      .collection<T>(catalogPath, (ref) =>
+        ref.where(parametro, condicion, busqueda),
+      )
+      .snapshotChanges()
+      .pipe(
+        map((actions) =>
+          actions.map((a) => {
+            const data = a.payload.doc.data() as T;
+            const id = a.payload.doc.id;
+            return { id, ...data };
+          }),
+        ),
+      );
+  }
+
+  addToCatalog(catalogPath: string, data: any) {
+    return this.database.collection(catalogPath).add(data);
+  }
 }

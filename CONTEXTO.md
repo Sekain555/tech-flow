@@ -43,8 +43,10 @@ userTenants/{uid}
   - role: 'administrador' | 'tecnico' | 'vendedor'
 
 Usuarios/{uid}           ← compatibilidad temporal, se eliminará en el futuro
-Dispositivos/            ← legacy, pendiente eliminar tras card catálogo global
-RepuestoServicio/        ← legacy, pendiente eliminar tras card catálogo global
+
+devices/{deviceId}       ← catálogo global compartido entre todos los tenants
+  - marcadisp: string
+  - modelodisp: string
 ```
 
 ### Por tenant
@@ -65,11 +67,6 @@ tenants/{tenantId}
   ├─ workorders/{workOrderId} ← ✅ migrado
   ├─ inventory/{itemId}       ← ✅ migrado
   └─ settings/{docId}
-```
-
-### Catálogo global (planificado)
-```
-catalogs/devices/        ← pendiente card "Catálogo global de dispositivos"
 ```
 
 ---
@@ -152,6 +149,15 @@ export interface Ordenes {
 }
 ```
 
+### Dispositivos
+```typescript
+export interface Dispositivos {
+  id?: string;
+  marcadisp: string;
+  modelodisp: string;
+}
+```
+
 ---
 
 ## 6. Servicios principales
@@ -179,7 +185,12 @@ export interface Ordenes {
 - `getUserTenant(uid)` — resolver tenant al iniciar sesión
 - `getTenant(tenantId)` — obtener datos completos del tenant
 
-> ✅ Métodos legacy eliminados — no existen `getCollection()`, `getCollectionQuery()` ni `createClient()`
+**Métodos catálogo global:**
+- `getCatalog<T>(catalogPath)` — obtener colección global con IDs reales
+- `getCatalogQuery<T>(catalogPath, param, cond, search)` — consulta filtrada en catálogo
+- `addToCatalog(catalogPath, data)` — agregar documento al catálogo
+
+> ✅ No existen métodos legacy — migración completa
 
 ### SessionService
 - `tenantId`, `role`, `uid`
@@ -198,6 +209,7 @@ Archivo `firestore.rules` en la raíz del proyecto.
 |---|---|---|
 | `userTenants/{uid}` | Solo el propio uid | Bloqueada desde cliente |
 | `Usuarios/{uid}` | Solo el propio uid | Bloqueada desde cliente |
+| `devices/{deviceId}` | Cualquier usuario autenticado | Solo administrador |
 | `tenants/{tenantId}` | Miembros del tenant | Bloqueada desde cliente |
 | `tenants/{tenantId}/users` | Miembros del tenant | Solo administrador |
 | `tenants/{tenantId}/clients` | Miembros del tenant | Miembros del tenant |
@@ -220,8 +232,9 @@ Archivo `firestore.rules` en la raíz del proyecto.
 
 ### Flujo de OT
 1. `/nuevaorden` → crea cliente en `clients/` + orden en `workorders/` con `estado: 'ingresado'`
-2. `/registroorden` → lista órdenes del tenant, permite cambiar estado via `cambiarEstado()`
-3. `/registroclientes` → lista clientes del tenant, búsqueda por RUT
+2. Dispositivos desde catálogo global `devices/`
+3. `/registroorden` → lista órdenes del tenant, permite cambiar estado
+4. `/registroclientes` → lista clientes del tenant, búsqueda por RUT
 
 ---
 
@@ -233,7 +246,7 @@ Archivo `firestore.rules` en la raíz del proyecto.
 | ccuenta | /ccuenta | ✅ multi-tenant |
 | entrada | /entrada | ✅ multi-tenant |
 | menuresumen | /menuresumen | ✅ SessionService |
-| nuevaorden | /nuevaorden | ✅ clients + workorders + inventory + users por tenant |
+| nuevaorden | /nuevaorden | ✅ completo — clients + workorders + inventory + users + devices |
 | registroorden | /registroorden | ✅ workorders por tenant |
 | registroclientes | /registroclientes | ✅ clients por tenant |
 | nuevocliente | /nuevocliente | ✅ clients por tenant |
@@ -277,6 +290,7 @@ Archivo `firestore.rules` en la raíz del proyecto.
 | Definir reglas Firestore por tenant |
 | Validar flujo OT dentro de tenant |
 | Migrar páginas legacy a métodos por tenant |
+| Catálogo global de dispositivos |
 
 ### BACKLOG
 | # | Tarjeta | Prioridad | Tamaño | Categoría |
@@ -284,10 +298,9 @@ Archivo `firestore.rules` en la raíz del proyecto.
 | 1 | Órdenes de trabajo end-to-end (crear → estados → cerrar) | Media | L | FE/BE |
 | 2 | Clientes + equipos (asociación real a OT) | Media | M | FE/BE |
 | 3 | Inventario / repuestos (asociado a OT + stock) | Media | M | FE/BE |
-| 4 | Catálogo global de dispositivos | Media | M | FE/BE |
-| 5 | Historial / búsqueda (por cliente, por OT, por estado) | Baja | M | FE/BE |
-| 6 | Export simple (PDF/print o resumen) | Baja | S | FE |
-| 7 | Onboarding (crear taller → primer técnico → primera OT) | Baja | M | FE/BE |
+| 4 | Historial / búsqueda (por cliente, por OT, por estado) | Baja | M | FE/BE |
+| 5 | Export simple (PDF/print o resumen) | Baja | S | FE |
+| 6 | Onboarding (crear taller → primer técnico → primera OT) | Baja | M | FE/BE |
 
 ### POST-MVP
 | Tarjeta |
@@ -304,8 +317,6 @@ Archivo `firestore.rules` en la raíz del proyecto.
 | Colección `Usuarios/` legacy | Baja | Compatibilidad temporal |
 | Interfaz `Taller` legacy | Baja | Usar `Tenant` para nuevos desarrollos |
 | Técnicos/vendedores sin flujo de creación | Alta | Pendiente implementar |
-| Colecciones `Dispositivos/` y `RepuestoServicio/` globales | Media | Eliminar tras card catálogo global |
-| Dispositivos en `nuevaorden` deshabilitados | Media | Pendiente card catálogo global |
 | UI cambio de estado en `registroorden` | Media | Backend listo, HTML pendiente de conectar |
 | `menuresumentec` posiblemente redundante | Baja | Evaluar eliminación |
 | `menuvideos` función comentada | Baja | Postergado post-MVP |
@@ -325,7 +336,8 @@ Archivo `firestore.rules` en la raíz del proyecto.
 | Estado del tenant verificado en cada login | Permite suspender sin eliminar cuenta |
 | Escritura de datos críticos bloqueada desde cliente | Seguridad — solo Firebase Console |
 | `firestore.rules` versionado en Git | Trazabilidad de cambios |
-| Dispositivos como catálogo global compartido | Marcas y modelos son iguales para todos los talleres |
+| Dispositivos como catálogo global `devices/` | Marcas y modelos son iguales para todos los talleres |
+| `catalogs/devices` descartado | Firestore requiere número impar de segmentos en rutas de colección |
 | Panel superadmin postergado para post-MVP | Excede scope del MVP |
 | Función de videos postergada para post-MVP | API key revocada, bajo impacto |
 | `estado: 'ingresado'` asignado automáticamente al crear OT | Consistencia del flujo |
