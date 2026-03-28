@@ -253,37 +253,38 @@ export class NuevaordenPage implements OnInit {
       .subscribe((res) => (this.clientes = res));
   }
 
-  // ---DISPOSITIVOS--- (pendiente card: Catálogo global de dispositivos)
+  // ---DISPOSITIVOS--- (catálogo global)
   async guardardispositivo(formularioDispositivo: NgForm) {
-    /*if (formularioDispositivo.invalid) {
+    if (formularioDispositivo.invalid) {
       Object.values(formularioDispositivo.controls).forEach((c) =>
         c.markAsTouched(),
       );
       this.presentToast('Datos incompletos o con errores de formato');
       return;
     }
-    await this.firestore.createClient(this.datosdispositivo, 'Dispositivos');
-    this.datosdispositivo = { marcadisp: null, modelodisp: null };*/
-    this.presentToast('Función temporalmente deshabilitada');
+    await this.firestore.addToCatalog(
+      'devices',
+      this.datosdispositivo,
+    );
+    this.datosdispositivo = { marcadisp: null, modelodisp: null };
     this.cerrarModal();
   }
 
-  /*handleChangeII(event) {
+  handleChangeII(event) {
     this.firestore
-      .getCollectionQuery<Dispositivos>(
-        'Dispositivos',
+      .getCatalogQuery<Dispositivos>(
+        'devices',
         'modelodisp',
         '==',
         this.busquedadispositivo,
       )
       .subscribe((res) => (this.dispositivos = res));
-  }*/
+  }
 
   traerdispositivos() {
-    /*this.firestore
-      .getCollection<Dispositivos>('Dispositivos')
-      .subscribe((res) => (this.dispositivos = res));*/
-      this.dispositivos = [];
+    this.firestore
+      .getCatalog<Dispositivos>('devices')
+      .subscribe((res) => (this.dispositivos = res));
   }
 
   // ---TECNICOS---

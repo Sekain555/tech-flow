@@ -62,5 +62,14 @@ service cloud.firestore {
         allow write: if esAdmin(tenantId);
       }
     }
+
+    // ─── CATÁLOGO GLOBAL ──────────────────────────────────────────────
+
+    // Dispositivos: lectura pública para autenticados, escritura solo admin
+    match /devices/{deviceId} {
+      allow read: if request.auth != null;
+      allow write: if request.auth != null &&
+      get(/databases/$(database)/documents/userTenants/$(request.auth.uid)).data.role == 'administrador';
+    }
   }
 }
