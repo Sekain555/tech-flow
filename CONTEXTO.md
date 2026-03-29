@@ -1,5 +1,5 @@
 # CONTEXTO.md — TechFlow
-> Última actualización: 27-03-2026
+> Última actualización: 29-03-2026
 
 ---
 
@@ -89,15 +89,7 @@ export interface UsuarioI {
 
 ### Taller ← legacy, usar Tenant para nuevos desarrollos
 ```typescript
-export interface Taller {
-  nombretaller: string;
-  rutempresa: string;
-  correotaller: string;
-  nrotelefonotaller: number;
-  direcciontaller: string;
-  comuna: string;
-  region: string;
-}
+export interface Taller { ... }
 ```
 
 ### Tenant
@@ -190,7 +182,7 @@ export interface Dispositivos {
 - `getCatalogQuery<T>(catalogPath, param, cond, search)` — consulta filtrada en catálogo
 - `addToCatalog(catalogPath, data)` — agregar documento al catálogo
 
-> ✅ No existen métodos legacy — migración completa
+> ✅ No existen métodos legacy
 
 ### SessionService
 - `tenantId`, `role`, `uid`
@@ -219,7 +211,26 @@ Archivo `firestore.rules` en la raíz del proyecto.
 
 ---
 
-## 8. Arquitectura de navegación
+## 8. Flujo de órdenes de trabajo
+
+### Estados posibles
+| Estado | Color badge | Descripción |
+|---|---|---|
+| `ingresado` | primary (azul) | Estado inicial al crear la orden |
+| `en reparacion` | warning (amarillo) | Técnico trabajando |
+| `esperando repuesto` | tertiary (morado) | En espera de repuesto |
+| `reparado` | success (verde) | Listo para retirar |
+| `sin reparacion` | danger (rojo) | No se pudo reparar |
+
+### Reglas del flujo
+- Las órdenes **nunca se eliminan** — siempre se cambia el estado
+- El botón rojo marca como `'sin reparacion'`
+- El cambio de estado se persiste inmediatamente en Firestore
+- El filtro opera sobre `ordenesFiltradas[]` sin mutar `ordenes[]`
+
+---
+
+## 9. Arquitectura de navegación
 
 ### Flujo de registro (Administrador)
 1. `/ccuenta` → crea Auth + tenant (`estado: 'trial'`) + userTenants + Usuarios + users
@@ -233,21 +244,21 @@ Archivo `firestore.rules` en la raíz del proyecto.
 ### Flujo de OT
 1. `/nuevaorden` → crea cliente en `clients/` + orden en `workorders/` con `estado: 'ingresado'`
 2. Dispositivos desde catálogo global `devices/`
-3. `/registroorden` → lista órdenes del tenant, permite cambiar estado
+3. `/registroorden` → lista órdenes con badge de estado, filtros, modal detalle y cambio de estado
 4. `/registroclientes` → lista clientes del tenant, búsqueda por RUT
 
 ---
 
-## 9. Estado de migración por página
+## 10. Estado de migración por página
 
-| Página | Ruta | Estado migración |
+| Página | Ruta | Estado |
 |---|---|---|
 | recepcion | /recepcion | — |
 | ccuenta | /ccuenta | ✅ multi-tenant |
 | entrada | /entrada | ✅ multi-tenant |
 | menuresumen | /menuresumen | ✅ SessionService |
-| nuevaorden | /nuevaorden | ✅ completo — clients + workorders + inventory + users + devices |
-| registroorden | /registroorden | ✅ workorders por tenant |
+| nuevaorden | /nuevaorden | ✅ completo |
+| registroorden | /registroorden | ✅ completo |
 | registroclientes | /registroclientes | ✅ clients por tenant |
 | nuevocliente | /nuevocliente | ✅ clients por tenant |
 | contactoclientes | /contactoclientes | ✅ clients por tenant |
@@ -263,7 +274,7 @@ Archivo `firestore.rules` en la raíz del proyecto.
 
 ---
 
-## 10. Archivos de configuración Firebase
+## 11. Archivos de configuración Firebase
 
 | Archivo | Versionado | Descripción |
 |---|---|---|
@@ -277,7 +288,7 @@ Archivo `firestore.rules` en la raíz del proyecto.
 
 ---
 
-## 11. Estado del Trello — Roadmap MVP
+## 12. Estado del Trello — Roadmap MVP
 
 ### DONE ✅
 | Tarjeta |
@@ -291,16 +302,16 @@ Archivo `firestore.rules` en la raíz del proyecto.
 | Validar flujo OT dentro de tenant |
 | Migrar páginas legacy a métodos por tenant |
 | Catálogo global de dispositivos |
+| Órdenes de trabajo end-to-end |
 
 ### BACKLOG
 | # | Tarjeta | Prioridad | Tamaño | Categoría |
 |---|---|---|---|---|
-| 1 | Órdenes de trabajo end-to-end (crear → estados → cerrar) | Media | L | FE/BE |
-| 2 | Clientes + equipos (asociación real a OT) | Media | M | FE/BE |
-| 3 | Inventario / repuestos (asociado a OT + stock) | Media | M | FE/BE |
-| 4 | Historial / búsqueda (por cliente, por OT, por estado) | Baja | M | FE/BE |
-| 5 | Export simple (PDF/print o resumen) | Baja | S | FE |
-| 6 | Onboarding (crear taller → primer técnico → primera OT) | Baja | M | FE/BE |
+| 1 | Clientes + equipos (asociación real a OT) | Media | M | FE/BE |
+| 2 | Inventario / repuestos (asociado a OT + stock) | Media | M | FE/BE |
+| 3 | Historial / búsqueda (por cliente, por OT, por estado) | Baja | M | FE/BE |
+| 4 | Export simple (PDF/print o resumen) | Baja | S | FE |
+| 5 | Onboarding (crear taller → primer técnico → primera OT) | Baja | M | FE/BE |
 
 ### POST-MVP
 | Tarjeta |
@@ -309,7 +320,7 @@ Archivo `firestore.rules` en la raíz del proyecto.
 
 ---
 
-## 12. Pendientes técnicos conocidos
+## 13. Pendientes técnicos conocidos
 
 | Pendiente | Prioridad | Contexto |
 |---|---|---|
@@ -317,13 +328,12 @@ Archivo `firestore.rules` en la raíz del proyecto.
 | Colección `Usuarios/` legacy | Baja | Compatibilidad temporal |
 | Interfaz `Taller` legacy | Baja | Usar `Tenant` para nuevos desarrollos |
 | Técnicos/vendedores sin flujo de creación | Alta | Pendiente implementar |
-| UI cambio de estado en `registroorden` | Media | Backend listo, HTML pendiente de conectar |
 | `menuresumentec` posiblemente redundante | Baja | Evaluar eliminación |
 | `menuvideos` función comentada | Baja | Postergado post-MVP |
 
 ---
 
-## 13. Decisiones de arquitectura tomadas
+## 14. Decisiones de arquitectura tomadas
 
 | Decisión | Razón |
 |---|---|
@@ -337,7 +347,7 @@ Archivo `firestore.rules` en la raíz del proyecto.
 | Escritura de datos críticos bloqueada desde cliente | Seguridad — solo Firebase Console |
 | `firestore.rules` versionado en Git | Trazabilidad de cambios |
 | Dispositivos como catálogo global `devices/` | Marcas y modelos son iguales para todos los talleres |
-| `catalogs/devices` descartado | Firestore requiere número impar de segmentos en rutas de colección |
+| Órdenes nunca se eliminan | Preservar historial completo — se cambia estado a `sin reparacion` |
 | Panel superadmin postergado para post-MVP | Excede scope del MVP |
 | Función de videos postergada para post-MVP | API key revocada, bajo impacto |
 | `estado: 'ingresado'` asignado automáticamente al crear OT | Consistencia del flujo |
