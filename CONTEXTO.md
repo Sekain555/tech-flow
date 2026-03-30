@@ -87,11 +87,6 @@ export interface UsuarioI {
 }
 ```
 
-### Taller ← legacy, usar Tenant para nuevos desarrollos
-```typescript
-export interface Taller { ... }
-```
-
 ### Tenant
 ```typescript
 export interface Tenant {
@@ -132,7 +127,18 @@ export interface ClienteST {
 export interface Ordenes {
   id?: string;
   estado: 'ingresado' | 'en reparacion' | 'esperando repuesto' | 'reparado' | 'sin reparacion';
-  cliente: { ... };
+  cliente: {
+    nombrecliente: string;
+    rutcliente: string;
+    correocliente: string;
+    nrotelefonocliente: number;
+    dispositivos: {
+      marcadisp: string;
+      modelodisp: string;
+      imei: string;
+      problemadisp: string;
+    };
+  };
   inforden: { ... };
   nombreregistro: string;
   cargo: string;
@@ -157,30 +163,30 @@ export interface Dispositivos {
 ### FirestoredatabaseService
 
 **Métodos globales:**
-- `createDoc(data, path, id)` — crear documento con ID conocido
-- `getDoc(path, id)` — obtener documento por ID
-- `modificarDoc(data, path, id)` — actualizar documento
-- `getId()` — generar ID único
+- `createDoc(data, path, id)`
+- `getDoc(path, id)`
+- `modificarDoc(data, path, id)`
+- `getId()`
 
 **Métodos por tenant:**
-- `getCollectionByTenant<T>(subpath, tenantId)` — obtener colección con IDs reales
-- `getCollectionByTenantQuery<T>(subpath, tenantId, param, cond, search)` — consulta filtrada
-- `getDocByTenant<T>(subpath, tenantId, docId)` — obtener documento
-- `createDocByTenant(subpath, tenantId, data)` — crear documento
-- `updateDocByTenant(subpath, tenantId, docId, data)` — actualizar documento
-- `deleteDocByTenant(subpath, tenantId, docId)` — eliminar documento
+- `getCollectionByTenant<T>(subpath, tenantId)`
+- `getCollectionByTenantQuery<T>(subpath, tenantId, param, cond, search)`
+- `getDocByTenant<T>(subpath, tenantId, docId)`
+- `createDocByTenant(subpath, tenantId, data)`
+- `updateDocByTenant(subpath, tenantId, docId, data)`
+- `deleteDocByTenant(subpath, tenantId, docId)`
 
 **Métodos multi-tenant:**
-- `createTenant(data)` — crear nuevo tenant
-- `setUserTenant(uid, data)` — mapear usuario → tenant
-- `setTenantUser(tenantId, uid, data)` — guardar usuario dentro del tenant
-- `getUserTenant(uid)` — resolver tenant al iniciar sesión
-- `getTenant(tenantId)` — obtener datos completos del tenant
+- `createTenant(data)`
+- `setUserTenant(uid, data)`
+- `setTenantUser(tenantId, uid, data)`
+- `getUserTenant(uid)`
+- `getTenant(tenantId)`
 
 **Métodos catálogo global:**
-- `getCatalog<T>(catalogPath)` — obtener colección global con IDs reales
-- `getCatalogQuery<T>(catalogPath, param, cond, search)` — consulta filtrada en catálogo
-- `addToCatalog(catalogPath, data)` — agregar documento al catálogo
+- `getCatalog<T>(catalogPath)`
+- `getCatalogQuery<T>(catalogPath, param, cond, search)`
+- `addToCatalog(catalogPath, data)`
 
 > ✅ No existen métodos legacy
 
@@ -194,8 +200,6 @@ export interface Dispositivos {
 ---
 
 ## 7. Reglas de seguridad Firestore
-
-Archivo `firestore.rules` en la raíz del proyecto.
 
 | Colección | Lectura | Escritura |
 |---|---|---|
@@ -213,57 +217,43 @@ Archivo `firestore.rules` en la raíz del proyecto.
 
 ## 8. Flujo de órdenes de trabajo
 
+### Modelo de datos en nuevaorden
+- `muestradispositivo` — objeto temporal de selección del catálogo
+- `muestracliente` — objeto temporal del cliente seleccionado
+- `orden.cliente.dispositivos` — datos del dispositivo que se persisten en la OT
+- En `generarorden()` se copia `muestradispositivo` → `orden.cliente.dispositivos`
+
 ### Estados posibles
-| Estado | Color badge | Descripción |
+| Estado | Color | Descripción |
 |---|---|---|
-| `ingresado` | primary (azul) | Estado inicial al crear la orden |
-| `en reparacion` | warning (amarillo) | Técnico trabajando |
-| `esperando repuesto` | tertiary (morado) | En espera de repuesto |
-| `reparado` | success (verde) | Listo para retirar |
-| `sin reparacion` | danger (rojo) | No se pudo reparar |
+| `ingresado` | primary | Estado inicial |
+| `en reparacion` | warning | Técnico trabajando |
+| `esperando repuesto` | tertiary | En espera |
+| `reparado` | success | Listo para retirar |
+| `sin reparacion` | danger | No se pudo reparar |
 
 ### Reglas del flujo
 - Las órdenes **nunca se eliminan** — siempre se cambia el estado
 - El botón rojo marca como `'sin reparacion'`
-- El cambio de estado se persiste inmediatamente en Firestore
-- El filtro opera sobre `ordenesFiltradas[]` sin mutar `ordenes[]`
+- El historial filtra por `cliente.rutcliente` en `workorders`
 
 ---
 
-## 9. Arquitectura de navegación
-
-### Flujo de registro (Administrador)
-1. `/ccuenta` → crea Auth + tenant (`estado: 'trial'`) + userTenants + Usuarios + users
-2. Redirige a `/entrada`
-
-### Flujo de login
-1. `/entrada` → consulta `userTenants` → verifica `estado` del tenant
-2. Si suspendido → logout + `/recepcion`
-3. Si no → `SessionService.setSession()` → dashboard
-
-### Flujo de OT
-1. `/nuevaorden` → crea cliente en `clients/` + orden en `workorders/` con `estado: 'ingresado'`
-2. Dispositivos desde catálogo global `devices/`
-3. `/registroorden` → lista órdenes con badge de estado, filtros, modal detalle y cambio de estado
-4. `/registroclientes` → lista clientes del tenant, búsqueda por RUT
-
----
-
-## 10. Estado de migración por página
+## 9. Estado de migración por página
 
 | Página | Ruta | Estado |
 |---|---|---|
 | recepcion | /recepcion | — |
-| ccuenta | /ccuenta | ✅ multi-tenant |
-| entrada | /entrada | ✅ multi-tenant |
-| menuresumen | /menuresumen | ✅ SessionService |
+| ccuenta | /ccuenta | ✅ completo |
+| entrada | /entrada | ✅ completo |
+| menuresumen | /menuresumen | ✅ completo |
 | nuevaorden | /nuevaorden | ✅ completo |
 | registroorden | /registroorden | ✅ completo |
-| registroclientes | /registroclientes | ✅ clients por tenant |
-| nuevocliente | /nuevocliente | ✅ clients por tenant |
-| contactoclientes | /contactoclientes | ✅ clients por tenant |
-| anadirrepuesto | /anadirrepuesto | ✅ inventory por tenant |
-| registrorepuesto | /registrorepuesto | ✅ inventory por tenant |
+| registroclientes | /registroclientes | ✅ completo |
+| nuevocliente | /nuevocliente | ✅ completo |
+| contactoclientes | /contactoclientes | ✅ completo |
+| anadirrepuesto | /anadirrepuesto | ✅ completo |
+| registrorepuesto | /registrorepuesto | ✅ completo |
 | menuordenes | /menuordenes | pendiente |
 | estadisticasorden | /estadisticasorden | pendiente |
 | menuclientes | /menuclientes | pendiente |
@@ -274,21 +264,7 @@ Archivo `firestore.rules` en la raíz del proyecto.
 
 ---
 
-## 11. Archivos de configuración Firebase
-
-| Archivo | Versionado | Descripción |
-|---|---|---|
-| `firestore.rules` | ✅ Sí | Reglas de seguridad |
-| `firestore.indexes.json` | ✅ Sí | Índices de Firestore |
-| `firebase.json` | ✅ Sí | Configuración Firebase CLI |
-| `.firebaserc` | ❌ No | ID del proyecto Firebase |
-| `environment.ts` | ❌ No | API keys y configuración sensible |
-| `environment.prod.ts` | ❌ No | API keys producción |
-| `config.xml` | ❌ No | Configuración Capacitor |
-
----
-
-## 12. Estado del Trello — Roadmap MVP
+## 10. Estado del Trello — Roadmap MVP
 
 ### DONE ✅
 | Tarjeta |
@@ -303,15 +279,15 @@ Archivo `firestore.rules` en la raíz del proyecto.
 | Migrar páginas legacy a métodos por tenant |
 | Catálogo global de dispositivos |
 | Órdenes de trabajo end-to-end |
+| Clientes + equipos (asociación real a OT) |
 
 ### BACKLOG
 | # | Tarjeta | Prioridad | Tamaño | Categoría |
 |---|---|---|---|---|
-| 1 | Clientes + equipos (asociación real a OT) | Media | M | FE/BE |
-| 2 | Inventario / repuestos (asociado a OT + stock) | Media | M | FE/BE |
-| 3 | Historial / búsqueda (por cliente, por OT, por estado) | Baja | M | FE/BE |
-| 4 | Export simple (PDF/print o resumen) | Baja | S | FE |
-| 5 | Onboarding (crear taller → primer técnico → primera OT) | Baja | M | FE/BE |
+| 1 | Inventario / repuestos (asociado a OT + stock) | Media | M | FE/BE |
+| 2 | Historial / búsqueda (por cliente, por OT, por estado) | Baja | M | FE/BE |
+| 3 | Export simple (PDF/print o resumen) | Baja | S | FE |
+| 4 | Onboarding (crear taller → primer técnico → primera OT) | Baja | M | FE/BE |
 
 ### POST-MVP
 | Tarjeta |
@@ -320,7 +296,7 @@ Archivo `firestore.rules` en la raíz del proyecto.
 
 ---
 
-## 13. Pendientes técnicos conocidos
+## 11. Pendientes técnicos conocidos
 
 | Pendiente | Prioridad | Contexto |
 |---|---|---|
@@ -328,12 +304,14 @@ Archivo `firestore.rules` en la raíz del proyecto.
 | Colección `Usuarios/` legacy | Baja | Compatibilidad temporal |
 | Interfaz `Taller` legacy | Baja | Usar `Tenant` para nuevos desarrollos |
 | Técnicos/vendedores sin flujo de creación | Alta | Pendiente implementar |
+| Botón eliminar cliente sin funcionalidad | Baja | Decidir si elimina o desactiva en card futura |
+| Historial por rutcliente puede necesitar índice compuesto | Media | Evaluar en optimización |
 | `menuresumentec` posiblemente redundante | Baja | Evaluar eliminación |
 | `menuvideos` función comentada | Baja | Postergado post-MVP |
 
 ---
 
-## 14. Decisiones de arquitectura tomadas
+## 12. Decisiones de arquitectura tomadas
 
 | Decisión | Razón |
 |---|---|
@@ -344,10 +322,11 @@ Archivo `firestore.rules` en la raíz del proyecto.
 | `ionViewDidEnter` para gráficos | DOM debe estar listo antes de acceder a canvas |
 | Tenant inicia en estado `trial` | Control de acceso desde el primer registro |
 | Estado del tenant verificado en cada login | Permite suspender sin eliminar cuenta |
-| Escritura de datos críticos bloqueada desde cliente | Seguridad — solo Firebase Console |
+| Escritura de datos críticos bloqueada desde cliente | Seguridad |
 | `firestore.rules` versionado en Git | Trazabilidad de cambios |
 | Dispositivos como catálogo global `devices/` | Marcas y modelos son iguales para todos los talleres |
-| Órdenes nunca se eliminan | Preservar historial completo — se cambia estado a `sin reparacion` |
+| Órdenes nunca se eliminan | Preservar historial completo |
+| `muestradispositivo` copiado a `orden.cliente.dispositivos` en generarorden() | Asociación real dispositivo → OT |
+| Historial de cliente filtra por `cliente.rutcliente` en workorders | Consulta directa sin colección intermedia |
 | Panel superadmin postergado para post-MVP | Excede scope del MVP |
 | Función de videos postergada para post-MVP | API key revocada, bajo impacto |
-| `estado: 'ingresado'` asignado automáticamente al crear OT | Consistencia del flujo |
