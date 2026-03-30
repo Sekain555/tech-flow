@@ -262,10 +262,7 @@ export class NuevaordenPage implements OnInit {
       this.presentToast('Datos incompletos o con errores de formato');
       return;
     }
-    await this.firestore.addToCatalog(
-      'devices',
-      this.datosdispositivo,
-    );
+    await this.firestore.addToCatalog('devices', this.datosdispositivo);
     this.datosdispositivo = { marcadisp: null, modelodisp: null };
     this.cerrarModal();
   }
@@ -329,6 +326,10 @@ export class NuevaordenPage implements OnInit {
   // ---GENERAR ORDEN---
   async generarorden() {
     this.orden.cliente = this.muestracliente;
+    this.orden.cliente.dispositivos.marcadisp =
+      this.muestradispositivo.marcadisp;
+    this.orden.cliente.dispositivos.modelodisp =
+      this.muestradispositivo.modelodisp;
     this.orden.inforden = this.inforden;
     this.orden.repuesto = this.muestrainventario;
     this.orden.inforden.fechahoy = new Date().toISOString();
