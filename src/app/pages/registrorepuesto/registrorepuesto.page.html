@@ -19,82 +19,85 @@
       <ion-col size="8">
         <ion-card>
           <ion-row>
-            <ion-searchbar placeholder="Buscar cliente por nombre completo o RUT">
+            <ion-searchbar
+              [(ngModel)]="busqueda"
+              (ionChange)="buscarrepuesto()"
+              placeholder="Buscar por nombre de repuesto"
+            >
             </ion-searchbar>
           </ion-row>
         </ion-card>
       </ion-col>
     </ion-row>
+
+    <!-- ALERTA STOCK CRÍTICO -->
+    <ion-row>
+      <ion-col *ngIf="repuestosConStockCritico() > 0">
+        <ion-card color="danger">
+          <ion-card-content>
+            <ion-icon name="warning-outline"></ion-icon>
+            <strong> Stock crítico:</strong> {{repuestosConStockCritico()}}
+            repuesto(s) con stock igual o menor a {{STOCK_CRITICO}} unidades.
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+    </ion-row>
+
     <ion-list lines="full">
       <ion-row class="ion-justify-content-between">
-        <ion-col size="1.375">
-          <ion-item>
-            <ion-chip>Repuesto</ion-chip>
-          </ion-item>
-        </ion-col>
-        <ion-col size="1.375">
-          <ion-item>
-            <ion-chip>Marca</ion-chip>
-          </ion-item>
-        </ion-col>
-        <ion-col size="1.375">
-          <ion-item>
-            <ion-chip>Modelo</ion-chip>
-          </ion-item>
-        </ion-col>
-        <ion-col size="1.375">
-          <ion-item>
-            <ion-chip>Variante</ion-chip>
-          </ion-item>
-        </ion-col>
-        <ion-col size="1.375">
-          <ion-item>
-            <ion-chip>Cantidad</ion-chip>
-          </ion-item>
-        </ion-col>
-        <ion-col size="1.375">
-          <ion-item>
-            <ion-chip>Proveedor</ion-chip>
-          </ion-item>
-        </ion-col>
-        <ion-col size="1.375">
-          <ion-item>
-            <ion-chip>Valor</ion-chip>
-          </ion-item>
-        </ion-col>
-        <ion-col size="1">
-          <!--ARREGLO PARA LOS BOTONES DE EDITAR Y ELIMINAR-->
-        </ion-col>
+        <ion-col size="1.375"
+          ><ion-item><ion-chip>Repuesto</ion-chip></ion-item></ion-col
+        >
+        <ion-col size="1.375"
+          ><ion-item><ion-chip>Marca</ion-chip></ion-item></ion-col
+        >
+        <ion-col size="1.375"
+          ><ion-item><ion-chip>Modelo</ion-chip></ion-item></ion-col
+        >
+        <ion-col size="1.375"
+          ><ion-item><ion-chip>Variante</ion-chip></ion-item></ion-col
+        >
+        <ion-col size="1.375"
+          ><ion-item><ion-chip>Cantidad</ion-chip></ion-item></ion-col
+        >
+        <ion-col size="1.375"
+          ><ion-item><ion-chip>Proveedor</ion-chip></ion-item></ion-col
+        >
+        <ion-col size="1.375"
+          ><ion-item><ion-chip>Valor</ion-chip></ion-item></ion-col
+        >
+        <ion-col size="1"></ion-col>
       </ion-row>
-      <ion-item *ngFor="let repuesto of repuestos">
+
+      <ion-item
+        *ngFor="let repuesto of repuestos"
+        [color]="stockCritico(repuesto.cantidad) ? 'danger' : ''"
+      >
         <ion-grid>
-          <ion-row class="ion-justify-content-between">
+          <ion-row class="ion-justify-content-between ion-align-items-center">
+            <ion-col size="1.375">{{repuesto.nombrers}}</ion-col>
+            <ion-col size="1.375">{{repuesto.marca}}</ion-col>
+            <ion-col size="1.375">{{repuesto.modelo}}</ion-col>
+            <ion-col size="1.375">{{repuesto.variante}}</ion-col>
             <ion-col size="1.375">
-              {{repuesto.nombrers}}
+              <ion-badge
+                [color]="stockCritico(repuesto.cantidad) ? 'danger' : 'success'"
+              >
+                {{repuesto.cantidad}}
+              </ion-badge>
+              <ion-icon
+                *ngIf="stockCritico(repuesto.cantidad)"
+                name="warning-outline"
+                color="danger"
+              ></ion-icon>
             </ion-col>
-            <ion-col size="1.375">
-              {{repuesto.marca}}
-            </ion-col>
-            <ion-col size="1.375">
-              {{repuesto.modelo}}
-            </ion-col>
-            <ion-col size="1.375">
-              {{repuesto.variante}}
-            </ion-col>
-            <ion-col size="1.375">
-              {{repuesto.cantidad}}
-            </ion-col>
-            <ion-col size="1.375">
-              {{repuesto.proveedor}}
-            </ion-col>
-            <ion-col size="1.375">
-              {{repuesto.valor}}
-            </ion-col>
+            <ion-col size="1.375">{{repuesto.proveedor}}</ion-col>
+            <ion-col size="1.375">{{repuesto.valor}}</ion-col>
             <ion-col size="1">
               <ion-button fill="clear">
                 <ion-icon name="pencil"></ion-icon>
               </ion-button>
-              <ion-button fill="clear">
+              <ion-button fill="clear" color="danger">
                 <ion-icon name="close-circle"></ion-icon>
               </ion-button>
             </ion-col>

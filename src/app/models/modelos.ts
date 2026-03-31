@@ -36,6 +36,7 @@ export interface ClienteST {
 }
 
 export interface InventarioRepuesto {
+  id?: string;
   nombrers: string;
   marca: string;
   modelo: string;

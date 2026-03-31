@@ -1,5 +1,5 @@
 # CONTEXTO.md — TechFlow
-> Última actualización: 29-03-2026
+> Última actualización: 30-03-2026
 
 ---
 
@@ -122,28 +122,38 @@ export interface ClienteST {
 }
 ```
 
+### InventarioRepuesto
+```typescript
+export interface InventarioRepuesto {
+  id?: string;
+  nombrers: string;
+  marca: string;
+  modelo: string;
+  variante: string;
+  cantidad: number;
+  proveedor: string;
+  valor: number;
+}
+```
+
 ### Ordenes
 ```typescript
 export interface Ordenes {
   id?: string;
   estado: 'ingresado' | 'en reparacion' | 'esperando repuesto' | 'reparado' | 'sin reparacion';
-  cliente: {
-    nombrecliente: string;
-    rutcliente: string;
-    correocliente: string;
-    nrotelefonocliente: number;
-    dispositivos: {
-      marcadisp: string;
-      modelodisp: string;
-      imei: string;
-      problemadisp: string;
-    };
-  };
+  cliente: { ... };
   inforden: { ... };
   nombreregistro: string;
   cargo: string;
   taller: { ... };
-  repuesto: { ... };
+  repuesto: {           ← solo admite un repuesto por OT (post-MVP: múltiples)
+    nombrers: string;
+    marca: string;
+    modelo: string;
+    variante: string;
+    cantidad: number;   ← siempre 1 por ahora
+    valor: number;
+  };
 }
 ```
 
@@ -220,10 +230,13 @@ export interface Dispositivos {
 ### Modelo de datos en nuevaorden
 - `muestradispositivo` — objeto temporal de selección del catálogo
 - `muestracliente` — objeto temporal del cliente seleccionado
-- `orden.cliente.dispositivos` — datos del dispositivo que se persisten en la OT
-- En `generarorden()` se copia `muestradispositivo` → `orden.cliente.dispositivos`
+- `muestrainventario` — objeto temporal del repuesto seleccionado
+- En `generarorden()`:
+  - `muestradispositivo` → `orden.cliente.dispositivos`
+  - `muestrainventario` → `orden.repuesto` con `cantidad: 1` forzada
+  - Stock del repuesto se decrementa en 1 en `inventory/`
 
-### Estados posibles
+### Estados posibles de OT
 | Estado | Color | Descripción |
 |---|---|---|
 | `ingresado` | primary | Estado inicial |
@@ -232,10 +245,11 @@ export interface Dispositivos {
 | `reparado` | success | Listo para retirar |
 | `sin reparacion` | danger | No se pudo reparar |
 
-### Reglas del flujo
-- Las órdenes **nunca se eliminan** — siempre se cambia el estado
-- El botón rojo marca como `'sin reparacion'`
-- El historial filtra por `cliente.rutcliente` en `workorders`
+### Inventario
+- Stock crítico definido como `cantidad <= 3` (constante `STOCK_CRITICO`)
+- Badge verde/rojo según stock
+- Alerta global si hay repuestos en stock crítico
+- Descuento automático al generar OT
 
 ---
 
@@ -254,10 +268,10 @@ export interface Dispositivos {
 | contactoclientes | /contactoclientes | ✅ completo |
 | anadirrepuesto | /anadirrepuesto | ✅ completo |
 | registrorepuesto | /registrorepuesto | ✅ completo |
+| menuinventario | /menuinventario | ✅ solo navegación |
 | menuordenes | /menuordenes | pendiente |
 | estadisticasorden | /estadisticasorden | pendiente |
 | menuclientes | /menuclientes | pendiente |
-| menuinventario | /menuinventario | pendiente |
 | configadmin | /configadmin | pendiente |
 | menuvideos | /menuvideos | postergado (post-MVP) |
 | registrovideos | /registrovideos | postergado (post-MVP) |
@@ -280,19 +294,20 @@ export interface Dispositivos {
 | Catálogo global de dispositivos |
 | Órdenes de trabajo end-to-end |
 | Clientes + equipos (asociación real a OT) |
+| Inventario / repuestos (asociado a OT + stock) |
 
 ### BACKLOG
 | # | Tarjeta | Prioridad | Tamaño | Categoría |
 |---|---|---|---|---|
-| 1 | Inventario / repuestos (asociado a OT + stock) | Media | M | FE/BE |
-| 2 | Historial / búsqueda (por cliente, por OT, por estado) | Baja | M | FE/BE |
-| 3 | Export simple (PDF/print o resumen) | Baja | S | FE |
-| 4 | Onboarding (crear taller → primer técnico → primera OT) | Baja | M | FE/BE |
+| 1 | Historial / búsqueda (por cliente, por OT, por estado) | Baja | M | FE/BE |
+| 2 | Export simple (PDF/print o resumen) | Baja | S | FE |
+| 3 | Onboarding (crear taller → primer técnico → primera OT) | Baja | M | FE/BE |
 
 ### POST-MVP
 | Tarjeta |
 |---|
 | Panel de administración del sistema (superadmin) |
+| Múltiples repuestos por OT |
 
 ---
 
@@ -304,7 +319,9 @@ export interface Dispositivos {
 | Colección `Usuarios/` legacy | Baja | Compatibilidad temporal |
 | Interfaz `Taller` legacy | Baja | Usar `Tenant` para nuevos desarrollos |
 | Técnicos/vendedores sin flujo de creación | Alta | Pendiente implementar |
-| Botón eliminar cliente sin funcionalidad | Baja | Decidir si elimina o desactiva en card futura |
+| Botón eliminar/editar repuesto sin funcionalidad | Baja | Pendiente card futura |
+| Botón eliminar cliente sin funcionalidad | Baja | Pendiente card futura |
+| Solo un repuesto por OT | Media | Post-MVP: card "Múltiples repuestos por OT" |
 | Historial por rutcliente puede necesitar índice compuesto | Media | Evaluar en optimización |
 | `menuresumentec` posiblemente redundante | Baja | Evaluar eliminación |
 | `menuvideos` función comentada | Baja | Postergado post-MVP |
@@ -326,7 +343,9 @@ export interface Dispositivos {
 | `firestore.rules` versionado en Git | Trazabilidad de cambios |
 | Dispositivos como catálogo global `devices/` | Marcas y modelos son iguales para todos los talleres |
 | Órdenes nunca se eliminan | Preservar historial completo |
-| `muestradispositivo` copiado a `orden.cliente.dispositivos` en generarorden() | Asociación real dispositivo → OT |
-| Historial de cliente filtra por `cliente.rutcliente` en workorders | Consulta directa sin colección intermedia |
+| `orden.repuesto.cantidad` siempre 1 | Simplificación para MVP — post-MVP soportará múltiples |
+| Stock crítico = cantidad ≤ 3 | Umbral configurable via constante `STOCK_CRITICO` |
+| `muestradispositivo` copiado a `orden.cliente.dispositivos` | Asociación real dispositivo → OT |
+| Historial de cliente filtra por `cliente.rutcliente` | Consulta directa sin colección intermedia |
 | Panel superadmin postergado para post-MVP | Excede scope del MVP |
 | Función de videos postergada para post-MVP | API key revocada, bajo impacto |
