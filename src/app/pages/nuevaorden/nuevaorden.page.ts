@@ -331,7 +331,10 @@ export class NuevaordenPage implements OnInit {
     this.orden.cliente.dispositivos.modelodisp =
       this.muestradispositivo.modelodisp;
     this.orden.inforden = this.inforden;
-    this.orden.repuesto = this.muestrainventario;
+    this.orden.repuesto = {
+      ...this.muestrainventario,
+      cantidad: 1,
+    };
     this.orden.inforden.fechahoy = new Date().toISOString();
     this.orden.estado = 'ingresado';
 
@@ -340,6 +343,17 @@ export class NuevaordenPage implements OnInit {
       this.session.tenantId,
       this.orden,
     );
+
+    // Descontar stock si hay repuesto seleccionado
+    if (this.muestrainventario.id && this.muestrainventario.cantidad > 0) {
+      await this.firestore.updateDocByTenant(
+        'inventory',
+        this.session.tenantId,
+        this.muestrainventario.id,
+        { cantidad: this.muestrainventario.cantidad - 1 },
+      );
+    }
+
     this.presentToast('Orden generada correctamente');
   }
 }
