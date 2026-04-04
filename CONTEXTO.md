@@ -1,5 +1,5 @@
 # CONTEXTO.md — TechFlow
-> Última actualización: 30-03-2026
+> Última actualización: 03-04-2026
 
 ---
 
@@ -146,7 +146,7 @@ export interface Ordenes {
   nombreregistro: string;
   cargo: string;
   taller: { ... };
-  repuesto: {           ← solo admite un repuesto por OT (post-MVP: múltiples)
+  repuesto: {
     nombrers: string;
     marca: string;
     modelo: string;
@@ -228,15 +228,11 @@ export interface Dispositivos {
 ## 8. Flujo de órdenes de trabajo
 
 ### Modelo de datos en nuevaorden
-- `muestradispositivo` — objeto temporal de selección del catálogo
-- `muestracliente` — objeto temporal del cliente seleccionado
-- `muestrainventario` — objeto temporal del repuesto seleccionado
-- En `generarorden()`:
-  - `muestradispositivo` → `orden.cliente.dispositivos`
-  - `muestrainventario` → `orden.repuesto` con `cantidad: 1` forzada
-  - Stock del repuesto se decrementa en 1 en `inventory/`
+- `muestradispositivo` → `orden.cliente.dispositivos`
+- `muestrainventario` → `orden.repuesto` con `cantidad: 1` forzada
+- Stock del repuesto se decrementa en 1 en `inventory/`
 
-### Estados posibles de OT
+### Estados posibles
 | Estado | Color | Descripción |
 |---|---|---|
 | `ingresado` | primary | Estado inicial |
@@ -245,11 +241,18 @@ export interface Dispositivos {
 | `reparado` | success | Listo para retirar |
 | `sin reparacion` | danger | No se pudo reparar |
 
-### Inventario
-- Stock crítico definido como `cantidad <= 3` (constante `STOCK_CRITICO`)
-- Badge verde/rojo según stock
-- Alerta global si hay repuestos en stock crítico
-- Descuento automático al generar OT
+### Búsqueda en registroorden
+- Filtro por nombre de cliente (texto libre)
+- Filtro por estado (selector)
+- Filtro por N° de orden (texto libre)
+- Todos los filtros operan sobre `ordenesFiltradas[]` sin mutar `ordenes[]`
+
+### Dashboard (entrada)
+- Últimas 5 órdenes ordenadas por fecha descendente
+- Conteo de órdenes pendientes y finalizadas
+- Total de clientes
+- Repuestos críticos y sin stock
+- Tarjetas de inventario y clientes visibles solo para administrador
 
 ---
 
@@ -295,19 +298,20 @@ export interface Dispositivos {
 | Órdenes de trabajo end-to-end |
 | Clientes + equipos (asociación real a OT) |
 | Inventario / repuestos (asociado a OT + stock) |
+| Historial / búsqueda (por cliente, por OT, por estado) |
 
 ### BACKLOG
 | # | Tarjeta | Prioridad | Tamaño | Categoría |
 |---|---|---|---|---|
-| 1 | Historial / búsqueda (por cliente, por OT, por estado) | Baja | M | FE/BE |
-| 2 | Export simple (PDF/print o resumen) | Baja | S | FE |
-| 3 | Onboarding (crear taller → primer técnico → primera OT) | Baja | M | FE/BE |
+| 1 | Export simple (PDF/print o resumen) | Baja | S | FE |
+| 2 | Onboarding (crear taller → primer técnico → primera OT) | Baja | M | FE/BE |
 
 ### POST-MVP
 | Tarjeta |
 |---|
 | Panel de administración del sistema (superadmin) |
 | Múltiples repuestos por OT |
+| Enriquecer dashboard con métricas reales |
 
 ---
 
@@ -321,8 +325,7 @@ export interface Dispositivos {
 | Técnicos/vendedores sin flujo de creación | Alta | Pendiente implementar |
 | Botón eliminar/editar repuesto sin funcionalidad | Baja | Pendiente card futura |
 | Botón eliminar cliente sin funcionalidad | Baja | Pendiente card futura |
-| Solo un repuesto por OT | Media | Post-MVP: card "Múltiples repuestos por OT" |
-| Historial por rutcliente puede necesitar índice compuesto | Media | Evaluar en optimización |
+| Solo un repuesto por OT | Media | Post-MVP |
 | `menuresumentec` posiblemente redundante | Baja | Evaluar eliminación |
 | `menuvideos` función comentada | Baja | Postergado post-MVP |
 
@@ -343,9 +346,9 @@ export interface Dispositivos {
 | `firestore.rules` versionado en Git | Trazabilidad de cambios |
 | Dispositivos como catálogo global `devices/` | Marcas y modelos son iguales para todos los talleres |
 | Órdenes nunca se eliminan | Preservar historial completo |
-| `orden.repuesto.cantidad` siempre 1 | Simplificación para MVP — post-MVP soportará múltiples |
+| `orden.repuesto.cantidad` siempre 1 | Simplificación para MVP |
 | Stock crítico = cantidad ≤ 3 | Umbral configurable via constante `STOCK_CRITICO` |
-| `muestradispositivo` copiado a `orden.cliente.dispositivos` | Asociación real dispositivo → OT |
-| Historial de cliente filtra por `cliente.rutcliente` | Consulta directa sin colección intermedia |
+| Dashboard simplificado con datos reales | Mejor UX que campos vacíos — métricas avanzadas en post-MVP |
+| Tarjetas de inventario y clientes solo para admin | Control de visibilidad por rol en dashboard |
 | Panel superadmin postergado para post-MVP | Excede scope del MVP |
 | Función de videos postergada para post-MVP | API key revocada, bajo impacto |
