@@ -31,6 +31,7 @@ Apunta a cubrir todo el ecosistema de servicios técnicos: desde técnicos indep
 | Backend futuro | Python + FastAPI (a implementar post-MVP) |
 | Base de datos futura | MySQL |
 | Mobile | Capacitor (Android + iOS) |
+| Generación PDF | jsPDF |
 
 ---
 
@@ -241,18 +242,17 @@ export interface Dispositivos {
 | `reparado` | success | Listo para retirar |
 | `sin reparacion` | danger | No se pudo reparar |
 
-### Búsqueda en registroorden
-- Filtro por nombre de cliente (texto libre)
-- Filtro por estado (selector)
-- Filtro por N° de orden (texto libre)
-- Todos los filtros operan sobre `ordenesFiltradas[]` sin mutar `ordenes[]`
+### Exportación PDF
+- Generado con jsPDF desde el modal de detalle de orden
+- Secciones: encabezado, datos del cliente, dispositivo, orden y repuesto
+- Nombre del archivo: `orden-{nroorden}-{nombrecliente}.pdf`
+- Pendiente: agregar logo del taller cuando se implemente subida de imágenes
 
-### Dashboard (entrada)
-- Últimas 5 órdenes ordenadas por fecha descendente
-- Conteo de órdenes pendientes y finalizadas
-- Total de clientes
-- Repuestos críticos y sin stock
-- Tarjetas de inventario y clientes visibles solo para administrador
+### Búsqueda en registroorden
+- Filtro por N° de orden
+- Filtro por nombre de cliente
+- Filtro por estado
+- Todos operan sobre `ordenesFiltradas[]`
 
 ---
 
@@ -299,12 +299,12 @@ export interface Dispositivos {
 | Clientes + equipos (asociación real a OT) |
 | Inventario / repuestos (asociado a OT + stock) |
 | Historial / búsqueda (por cliente, por OT, por estado) |
+| Export simple (PDF/print o resumen) |
 
 ### BACKLOG
 | # | Tarjeta | Prioridad | Tamaño | Categoría |
 |---|---|---|---|---|
-| 1 | Export simple (PDF/print o resumen) | Baja | S | FE |
-| 2 | Onboarding (crear taller → primer técnico → primera OT) | Baja | M | FE/BE |
+| 1 | Onboarding (crear taller → primer técnico → primera OT) | Baja | M | FE/BE |
 
 ### POST-MVP
 | Tarjeta |
@@ -326,8 +326,10 @@ export interface Dispositivos {
 | Botón eliminar/editar repuesto sin funcionalidad | Baja | Pendiente card futura |
 | Botón eliminar cliente sin funcionalidad | Baja | Pendiente card futura |
 | Solo un repuesto por OT | Media | Post-MVP |
+| Logo del taller en PDF | Baja | Pendiente subida de imágenes |
 | `menuresumentec` posiblemente redundante | Baja | Evaluar eliminación |
 | `menuvideos` función comentada | Baja | Postergado post-MVP |
+| Conflicto ng2-charts vs chart.js | Baja | Preexistente, usar --legacy-peer-deps |
 
 ---
 
@@ -348,7 +350,7 @@ export interface Dispositivos {
 | Órdenes nunca se eliminan | Preservar historial completo |
 | `orden.repuesto.cantidad` siempre 1 | Simplificación para MVP |
 | Stock crítico = cantidad ≤ 3 | Umbral configurable via constante `STOCK_CRITICO` |
-| Dashboard simplificado con datos reales | Mejor UX que campos vacíos — métricas avanzadas en post-MVP |
-| Tarjetas de inventario y clientes solo para admin | Control de visibilidad por rol en dashboard |
+| Dashboard simplificado con datos reales | Mejor UX que campos vacíos |
+| jsPDF para generación de PDF | Control total sobre el diseño del documento |
 | Panel superadmin postergado para post-MVP | Excede scope del MVP |
 | Función de videos postergada para post-MVP | API key revocada, bajo impacto |
