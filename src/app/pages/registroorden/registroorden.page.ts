@@ -18,6 +18,7 @@ export class RegistroordenPage implements OnInit {
 
   filtroNombre: string = '';
   filtroEstado: string = '';
+  filtroNroOrden: string = '';
 
   estados: string[] = [
     'ingresado',
@@ -74,13 +75,17 @@ export class RegistroordenPage implements OnInit {
       const coincideEstado = this.filtroEstado
         ? orden.estado === this.filtroEstado
         : true;
-      return coincideNombre && coincideEstado;
+      const coincideNroOrden = this.filtroNroOrden
+        ? orden.inforden.nroorden?.toString().includes(this.filtroNroOrden)
+        : true;
+      return coincideNombre && coincideEstado && coincideNroOrden;
     });
   }
 
   limpiarFiltros() {
     this.filtroNombre = '';
     this.filtroEstado = '';
+    this.filtroNroOrden = '';
     this.ordenesFiltradas = [...this.ordenes];
   }
 
