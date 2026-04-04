@@ -4,6 +4,7 @@ import { Ordenes } from 'src/app/models/modelos';
 import { FirestoredatabaseService } from 'src/app/services/firestoredatabase.service';
 import { SessionService } from 'src/app/services/session.service';
 import { IonModal } from '@ionic/angular';
+import jsPDF from 'jspdf';
 
 @Component({
   selector: 'app-registroorden',
@@ -107,4 +108,139 @@ export class RegistroordenPage implements OnInit {
   }
 
   @ViewChild(IonModal) modal: IonModal;
+
+  exportarPDF(orden: Ordenes) {
+    const doc = new jsPDF();
+    const margen = 15;
+    let y = margen;
+
+    // ─── ENCABEZADO ───────────────────────────────────────────────
+    doc.setFontSize(18);
+    doc.setFont('helvetica', 'bold');
+    doc.text('ORDEN DE TRABAJO', 105, y, { align: 'center' });
+    y += 8;
+
+    doc.setFontSize(11);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`N° ${orden.inforden.nroorden ?? 'S/N'}`, 105, y, {
+      align: 'center',
+    });
+    y += 10;
+
+    doc.setLineWidth(0.5);
+    doc.line(margen, y, 195, y);
+    y += 8;
+
+    // ─── DATOS DEL CLIENTE ────────────────────────────────────────
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('DATOS DEL CLIENTE', margen, y);
+    y += 6;
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Nombre: ${orden.cliente.nombrecliente ?? '-'}`, margen, y);
+    y += 5;
+    doc.text(`RUT: ${orden.cliente.rutcliente ?? '-'}`, margen, y);
+    y += 5;
+    doc.text(`Correo: ${orden.cliente.correocliente ?? '-'}`, margen, y);
+    y += 5;
+    doc.text(`Teléfono: ${orden.cliente.nrotelefonocliente ?? '-'}`, margen, y);
+    y += 10;
+
+    // ─── DATOS DEL DISPOSITIVO ────────────────────────────────────
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('DATOS DEL DISPOSITIVO', margen, y);
+    y += 6;
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(
+      `Marca: ${orden.cliente.dispositivos.marcadisp ?? '-'}`,
+      margen,
+      y,
+    );
+    y += 5;
+    doc.text(
+      `Modelo: ${orden.cliente.dispositivos.modelodisp ?? '-'}`,
+      margen,
+      y,
+    );
+    y += 5;
+    doc.text(`IMEI: ${orden.cliente.dispositivos.imei ?? '-'}`, margen, y);
+    y += 5;
+    doc.text(
+      `Problema: ${orden.cliente.dispositivos.problemadisp ?? '-'}`,
+      margen,
+      y,
+    );
+    y += 10;
+
+    // ─── DATOS DE LA ORDEN ────────────────────────────────────────
+    doc.setFontSize(12);
+    doc.setFont('helvetica', 'bold');
+    doc.text('DATOS DE LA ORDEN', margen, y);
+    y += 6;
+
+    doc.setFontSize(10);
+    doc.setFont('helvetica', 'normal');
+    doc.text(`Estado: ${orden.estado ?? '-'}`, margen, y);
+    y += 5;
+    doc.text(
+      `Tipo de ingreso: ${orden.inforden.tipodeingreso ?? '-'}`,
+      margen,
+      y,
+    );
+    y += 5;
+
+    const fechaIngreso = orden.inforden.fechahoy
+      ? new Date(orden.inforden.fechahoy).toLocaleDateString('es-CL')
+      : '-';
+    doc.text(`Fecha de ingreso: ${fechaIngreso}`, margen, y);
+    y += 5;
+    doc.text(
+      `Observaciones: ${orden.inforden.observaciones ?? '-'}`,
+      margen,
+      y,
+    );
+    y += 5;
+    doc.text(`Abono: $${orden.inforden.abono ?? 0}`, margen, y);
+    y += 10;
+
+    // ─── REPUESTO ─────────────────────────────────────────────────
+    if (orden.repuesto?.nombrers) {
+      doc.setFontSize(12);
+      doc.setFont('helvetica', 'bold');
+      doc.text('REPUESTO / SERVICIO', margen, y);
+      y += 6;
+
+      doc.setFontSize(10);
+      doc.setFont('helvetica', 'normal');
+      doc.text(`Nombre: ${orden.repuesto.nombrers}`, margen, y);
+      y += 5;
+      doc.text(
+        `Marca/Modelo: ${orden.repuesto.marca ?? '-'} ${orden.repuesto.modelo ?? '-'}`,
+        margen,
+        y,
+      );
+      y += 5;
+      doc.text(`Valor: $${orden.repuesto.valor ?? 0}`, margen, y);
+      y += 10;
+    }
+
+    // ─── PIE DE PÁGINA ────────────────────────────────────────────
+    doc.setLineWidth(0.5);
+    doc.line(margen, y, 195, y);
+    y += 6;
+
+    doc.setFontSize(9);
+    doc.setFont('helvetica', 'italic');
+    doc.text('Documento generado por TechFlow', 105, y, { align: 'center' });
+
+    // ─── DESCARGAR ────────────────────────────────────────────────
+    doc.save(
+      `orden-${orden.inforden.nroorden ?? 'ST'}-${orden.cliente.nombrecliente ?? 'cliente'}.pdf`,
+    );
+  }
 }

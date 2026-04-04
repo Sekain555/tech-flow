@@ -164,6 +164,9 @@
       <ion-toolbar>
         <ion-title>Detalle de orden</ion-title>
         <ion-buttons slot="end">
+          <ion-button (click)="exportarPDF(ordenSeleccionada)">
+            <ion-icon name="download-outline"></ion-icon>&nbsp;PDF
+          </ion-button>
           <ion-button (click)="modalVerOrden.dismiss()">Cerrar</ion-button>
         </ion-buttons>
       </ion-toolbar>
