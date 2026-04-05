@@ -16,6 +16,9 @@ export class EntradaPage implements OnInit {
   usuario: string = null;
   taller: string = null;
 
+  // --- ONBOARDING ---
+  mostrarOnboarding: boolean = false;
+
   // --- DATOS DASHBOARD ---
   ordenesPendientes: number = 0;
   ordenesFinalizadas: number = 0;
@@ -60,15 +63,36 @@ export class EntradaPage implements OnInit {
           role: res.role,
           uid: uid,
         });
-        this.cargarDashboard();
+
+        this.firestore.getTenant(res.tenantId).subscribe((tenant: any) => {
+          if (tenant && tenant.estado === 'suspendido') {
+            this.auth.logout();
+            this.route.navigate(['/recepcion']);
+            return;
+          }
+
+          if (this.perfil === 'administrador' && tenant && tenant.onboardingCompletado === false) {
+            this.mostrarOnboarding = true;
+          }
+
+          this.cargarDashboard();
+        });
       }
     });
+  }
+
+  async completarOnboarding() {
+    await this.firestore.updateTenant(this.session.tenantId, { onboardingCompletado: true });
+    this.mostrarOnboarding = false;
+  }
+
+  omitirOnboarding() {
+    this.mostrarOnboarding = false;
   }
 
   cargarDashboard() {
     const tenantId = this.session.tenantId;
 
-    // Órdenes
     this.firestore.getCollectionByTenant<Ordenes>('workorders', tenantId)
       .subscribe(ordenes => {
         this.ordenesPendientes = ordenes.filter(o =>
@@ -82,13 +106,11 @@ export class EntradaPage implements OnInit {
           .slice(0, 5);
       });
 
-    // Clientes
     this.firestore.getCollectionByTenant<ClienteST>('clients', tenantId)
       .subscribe(clientes => {
         this.totalClientes = clientes.length;
       });
 
-    // Inventario
     this.firestore.getCollectionByTenant<InventarioRepuesto>('inventory', tenantId)
       .subscribe(repuestos => {
         this.repuestosCriticos = repuestos.filter(r => r.cantidad > 0 && r.cantidad <= this.STOCK_CRITICO).length;

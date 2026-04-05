@@ -138,6 +138,10 @@ export class FirestoredatabaseService {
     return this.database.collection('tenants').doc(tenantId).valueChanges();
   }
 
+  updateTenant(tenantId: string, data: any) {
+    return this.database.collection('tenants').doc(tenantId).update(data);
+  }
+
   // ─── MÉTODOS CATÁLOGO GLOBAL ─────────────────────────────────────
 
   getCatalog<T>(catalogPath: string) {

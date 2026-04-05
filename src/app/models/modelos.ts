@@ -9,6 +9,9 @@ export interface UsuarioI {
   tenantId?: string;
 }
 
+// ← LEGACY: usar Tenant (pendiente crear) para nuevos desarrollos
+// Campos ownerUid, estado, creadoEn y onboardingCompletado agregados
+// para compatibilidad con arquitectura multi-tenant
 export interface Taller {
   nombretaller: string;
   rutempresa: string;
@@ -17,6 +20,10 @@ export interface Taller {
   direcciontaller: string;
   comuna: string;
   region: string;
+  ownerUid?: string;
+  estado?: 'trial' | 'activo' | 'suspendido';
+  creadoEn?: string;
+  onboardingCompletado?: boolean;
 }
 
 export interface ClienteST {
