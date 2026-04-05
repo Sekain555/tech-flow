@@ -30,7 +30,7 @@ export class ContactoclientesPage implements OnInit {
 
   constructor(
     private firestore: FirestoredatabaseService,
-    private session: SessionService
+    public session: SessionService
   ) { }
 
   ngOnInit() {

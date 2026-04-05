@@ -84,7 +84,7 @@
               <ion-col size="8">
                 <ion-item>
                   <ion-label position="stacked">Usuario</ion-label>
-                  <ion-input [readonly]="true">{{usuario}}</ion-input>
+                  <ion-input [readonly]="true">{{session.uid}}</ion-input>
                 </ion-item>
               </ion-col>
             </ion-row>
@@ -92,7 +92,7 @@
               <ion-col size="8">
                 <ion-item>
                   <ion-label position="stacked">Taller</ion-label>
-                  <ion-input [readonly]="true">{{taller}}</ion-input>
+                  <ion-input [readonly]="true">{{session.tenantId}}</ion-input>
                 </ion-item>
               </ion-col>
             </ion-row>
@@ -100,7 +100,7 @@
               <ion-col size="8">
                 <ion-item>
                   <ion-label position="stacked">Cargo</ion-label>
-                  <ion-input [readonly]="true">{{perfil}}</ion-input>
+                  <ion-input [readonly]="true">{{session.role}}</ion-input>
                 </ion-item>
               </ion-col>
             </ion-row>
