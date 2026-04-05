@@ -5,6 +5,7 @@ import { AuthfirebaseService } from 'src/app/services/authfirebase.service';
 import { Router } from '@angular/router';
 import { UserexpService } from 'src/app/services/userexp.service';
 import SwiperCore, { Autoplay, Lazy, Navigation, Pagination } from 'swiper';
+import { environment } from 'src/environments/environment';
 
 SwiperCore.use([Autoplay, Lazy, Navigation, Pagination]);
 
@@ -19,6 +20,8 @@ export class RecepcionPage implements OnInit {
   nrorden: any;
   correo: any;
   validcorreo: boolean = false;
+
+  appVersion: string = environment.appVersion;
 
   credenciales = {
     correo: null,

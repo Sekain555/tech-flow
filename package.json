@@ -1,7 +1,7 @@
 {
-  "name": "kit-sertec",
-  "version": "0.0.1",
-  "author": "Ionic Framework",
+  "name": "tech-flow",
+  "version": "0.1.0-alpha.1",
+  "author": "Victor 'Sekain' Sepulveda",
   "homepage": "https://ionicframework.com/",
   "scripts": {
     "ng": "ng",
