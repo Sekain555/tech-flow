@@ -28,15 +28,15 @@ export class MenuvideosPage implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.traertalleres();
+  //  this.traertalleres();
   }
 
-  traertalleres() {
+  /*traertalleres() {
     this.firestore.getCollection<Taller>('Taller').subscribe(res => {
       console.log(res)
       this.talleres = res;
     })
-  }
+  }*/
 
   verplaylist() {
     console.log(this.tallerplaylist)

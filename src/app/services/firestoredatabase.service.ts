@@ -138,24 +138,50 @@ export class FirestoredatabaseService {
     return this.database.collection('tenants').doc(tenantId).valueChanges();
   }
 
-  // ─── MÉTODOS LEGACY (pendiente migrar a métodos por tenant) ──────
-
-  getCollection<T>(path: string) {
-    return this.database.collection<T>(path).valueChanges();
+  updateTenant(tenantId: string, data: any) {
+    return this.database.collection('tenants').doc(tenantId).update(data);
   }
 
-  getCollectionQuery<T>(
-    path: string,
+  // ─── MÉTODOS CATÁLOGO GLOBAL ─────────────────────────────────────
+
+  getCatalog<T>(catalogPath: string) {
+    return this.database
+      .collection<T>(catalogPath)
+      .snapshotChanges()
+      .pipe(
+        map((actions) =>
+          actions.map((a) => {
+            const data = a.payload.doc.data() as T;
+            const id = a.payload.doc.id;
+            return { id, ...data };
+          }),
+        ),
+      );
+  }
+
+  getCatalogQuery<T>(
+    catalogPath: string,
     parametro: string,
     condicion: any,
-    busqueda: string,
+    busqueda: any,
   ) {
     return this.database
-      .collection<T>(path, (ref) => ref.where(parametro, condicion, busqueda))
-      .valueChanges();
+      .collection<T>(catalogPath, (ref) =>
+        ref.where(parametro, condicion, busqueda),
+      )
+      .snapshotChanges()
+      .pipe(
+        map((actions) =>
+          actions.map((a) => {
+            const data = a.payload.doc.data() as T;
+            const id = a.payload.doc.id;
+            return { id, ...data };
+          }),
+        ),
+      );
   }
 
-  createClient(data: any, path: string) {
-    return this.database.collection(path).add(data);
+  addToCatalog(catalogPath: string, data: any) {
+    return this.database.collection(catalogPath).add(data);
   }
 }

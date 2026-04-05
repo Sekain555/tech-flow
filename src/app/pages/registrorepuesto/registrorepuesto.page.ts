@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { StrapisqlService } from 'src/app/services/strapisql.service';
 import { FirestoredatabaseService } from 'src/app/services/firestoredatabase.service';
+import { SessionService } from 'src/app/services/session.service';
 import { InventarioRepuesto } from 'src/app/models/modelos';
 
 @Component({
@@ -9,21 +9,55 @@ import { InventarioRepuesto } from 'src/app/models/modelos';
   styleUrls: ['./registrorepuesto.page.scss'],
 })
 export class RegistrorepuestoPage implements OnInit {
-
   repuestos: InventarioRepuesto[] = [];
+  busqueda: string = null;
 
-  constructor(private strapisql: StrapisqlService,
-    private firestore: FirestoredatabaseService) { }
+  readonly STOCK_CRITICO = 3;
+
+  constructor(
+    private firestore: FirestoredatabaseService,
+    private session: SessionService,
+  ) {}
 
   ngOnInit() {
-    this.traerrepuestos()
+    this.traerrepuestos();
   }
 
   traerrepuestos() {
-    this.firestore.getCollection<InventarioRepuesto>('RepuestoServicio').subscribe(res =>{
-      console.log(res);
-      this.repuestos= res;
-    })
+    this.firestore
+      .getCollectionByTenant<InventarioRepuesto>(
+        'inventory',
+        this.session.tenantId,
+      )
+      .subscribe((res) => {
+        this.repuestos = res;
+      });
   }
 
+  buscarrepuesto() {
+    if (!this.busqueda) {
+      this.traerrepuestos();
+      return;
+    }
+    this.firestore
+      .getCollectionByTenantQuery<InventarioRepuesto>(
+        'inventory',
+        this.session.tenantId,
+        'nombrers',
+        '==',
+        this.busqueda,
+      )
+      .subscribe((res) => {
+        this.repuestos = res;
+      });
+  }
+
+  stockCritico(cantidad: number): boolean {
+    return cantidad <= this.STOCK_CRITICO;
+  }
+
+  repuestosConStockCritico(): number {
+    return this.repuestos.filter((r) => r.cantidad <= this.STOCK_CRITICO)
+      .length;
+  }
 }

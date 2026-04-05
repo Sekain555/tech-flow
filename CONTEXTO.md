@@ -1,5 +1,5 @@
 # CONTEXTO.md — TechFlow
-> Última actualización: 15-03-2026
+> Última actualización: 04-04-2026
 
 ---
 
@@ -30,6 +30,7 @@ Apunta a cubrir todo el ecosistema de servicios técnicos: desde técnicos indep
 | Autenticación | Firebase Authentication |
 | Backend futuro | Python + FastAPI (a implementar post-MVP) |
 | Base de datos futura | MySQL |
+| Generación PDF | jsPDF |
 | Mobile | Capacitor (Android + iOS) |
 
 ---
@@ -43,6 +44,10 @@ userTenants/{uid}
   - role: 'administrador' | 'tecnico' | 'vendedor'
 
 Usuarios/{uid}           ← compatibilidad temporal, se eliminará en el futuro
+
+devices/{deviceId}       ← catálogo global compartido entre todos los tenants
+  - marcadisp: string
+  - modelodisp: string
 ```
 
 ### Por tenant
@@ -56,10 +61,13 @@ tenants/{tenantId}
   - comuna: string
   - region: string
   - ownerUid: string
-  ├─ users/{uid}
-  ├─ clients/{clientId}
-  ├─ workorders/{workOrderId}
-  ├─ inventory/{itemId}
+  - estado: 'trial' | 'activo' | 'suspendido'
+  - creadoEn: string (ISO date)
+  - onboardingCompletado: boolean
+  ├─ users/{uid}              ← ✅ migrado
+  ├─ clients/{clientId}       ← ✅ migrado
+  ├─ workorders/{workOrderId} ← ✅ migrado
+  ├─ inventory/{itemId}       ← ✅ migrado
   └─ settings/{docId}
 ```
 
@@ -81,7 +89,7 @@ export interface UsuarioI {
 }
 ```
 
-### Taller
+### Taller ← LEGACY — migrar a Tenant en post-MVP
 ```typescript
 export interface Taller {
   nombretaller: string;
@@ -91,6 +99,73 @@ export interface Taller {
   direcciontaller: string;
   comuna: string;
   region: string;
+  ownerUid?: string;
+  estado?: 'trial' | 'activo' | 'suspendido';
+  creadoEn?: string;
+  onboardingCompletado?: boolean;
+}
+```
+
+### ClienteST
+```typescript
+export interface ClienteST {
+  id?: string;
+  nrorden: number;
+  nombrecliente: string;
+  rutcliente: string;
+  correocliente: string;
+  nrotelefonocliente: number;
+  comunacliente: string;
+  dispositivos: {
+    marcadisp: string;
+    modelodisp: string;
+    imei: string;
+    problemadisp: string;
+  };
+}
+```
+
+### InventarioRepuesto
+```typescript
+export interface InventarioRepuesto {
+  id?: string;
+  nombrers: string;
+  marca: string;
+  modelo: string;
+  variante: string;
+  cantidad: number;
+  proveedor: string;
+  valor: number;
+}
+```
+
+### Ordenes
+```typescript
+export interface Ordenes {
+  id?: string;
+  estado: 'ingresado' | 'en reparacion' | 'esperando repuesto' | 'reparado' | 'sin reparacion';
+  cliente: { ... };
+  inforden: { ... };
+  nombreregistro: string;
+  cargo: string;
+  taller: { ... };
+  repuesto: {
+    nombrers: string;
+    marca: string;
+    modelo: string;
+    variante: string;
+    cantidad: number;   ← siempre 1 por ahora
+    valor: number;
+  };
+}
+```
+
+### Dispositivos
+```typescript
+export interface Dispositivos {
+  id?: string;
+  marcadisp: string;
+  modelodisp: string;
 }
 ```
 
@@ -99,188 +174,183 @@ export interface Taller {
 ## 6. Servicios principales
 
 ### FirestoredatabaseService
-Métodos implementados:
-- `createDoc(data, path, id)` — crear documento con ID conocido
-- `createClient(data, path)` — crear documento con ID automático
-- `getDoc(path, id)` — obtener documento por ID
-- `getCollection(path)` — obtener colección completa
-- `getCollectionQuery(path, param, cond, search)` — consulta con filtro
-- `modificarDoc(data, path, id)` — actualizar documento
-- `getId()` — generar ID único
-- `createTenant(data)` — crear nuevo tenant ✅
-- `setUserTenant(uid, data)` — mapear usuario → tenant ✅
-- `setTenantUser(tenantId, uid, data)` — guardar usuario dentro del tenant ✅
-- `getUserTenant(uid)` — resolver tenant al iniciar sesión ✅
 
-> ⚠️ `getDocQuery()` está marcado como defectuoso — pendiente eliminar en refactor.
+**Métodos globales:**
+- `createDoc(data, path, id)`
+- `getDoc(path, id)`
+- `modificarDoc(data, path, id)`
+- `getId()`
+
+**Métodos por tenant:**
+- `getCollectionByTenant<T>(subpath, tenantId)`
+- `getCollectionByTenantQuery<T>(subpath, tenantId, param, cond, search)`
+- `getDocByTenant<T>(subpath, tenantId, docId)`
+- `createDocByTenant(subpath, tenantId, data)`
+- `updateDocByTenant(subpath, tenantId, docId, data)`
+- `deleteDocByTenant(subpath, tenantId, docId)`
+
+**Métodos multi-tenant:**
+- `createTenant(data)`
+- `setUserTenant(uid, data)`
+- `setTenantUser(tenantId, uid, data)`
+- `getUserTenant(uid)`
+- `getTenant(tenantId)`
+- `updateTenant(tenantId, data)` — actualiza documento raíz del tenant
+
+**Métodos catálogo global:**
+- `getCatalog<T>(catalogPath)`
+- `getCatalogQuery<T>(catalogPath, param, cond, search)`
+- `addToCatalog(catalogPath, data)`
+
+> ✅ No existen métodos legacy
 
 ### SessionService
-Persiste en memoria (con fallback a localStorage):
-- `tenantId`
-- `role`
-- `uid`
-
-Métodos: `setSession()`, `clear()`, `isReady()`
+- `tenantId`, `role`, `uid`
+- Métodos: `setSession()`, `clear()`, `isReady()`
 
 ### AuthfirebaseService
-- `login(correo, password)`
-- `logout()`
-- `registrousuario(datosusuario)`
-- `estadousuario()` — observable del estado de auth
+- `login()`, `logout()`, `registrousuario()`, `estadousuario()`
 
 ---
 
-## 7. Arquitectura de navegación
+## 7. Reglas de seguridad Firestore
 
-### Flujo de registro (Administrador)
-1. Usuario completa formulario en `/ccuenta` (datos personales + datos del taller)
-2. Se crea cuenta en Firebase Auth
-3. Se crea documento en `tenants/` con datos del taller y `ownerUid`
-4. Se guarda `tenantId` en el usuario
-5. Se crea documento en `Usuarios/{uid}` (compatibilidad temporal)
-6. Se crea mapping en `userTenants/{uid}` con `tenantId` y `role: 'administrador'`
-7. Se crea usuario dentro de `tenants/{tenantId}/users/{uid}`
-8. Redirige a `/entrada`
-
-> Técnicos y vendedores **no se registran públicamente**. Solo el administrador puede crearlos desde dentro del sistema (pendiente implementar).
-
-### Flujo de login
-1. Firebase Auth detecta sesión activa en `/entrada`
-2. Se consulta `userTenants/{uid}` para obtener `tenantId` y `role`
-3. Se llama `SessionService.setSession()` con los datos obtenidos
-4. **Todos los roles quedan en `/entrada`** — no hay redirección por rol
-
-### Arquitectura de páginas principales
-- **`/entrada`** — layout principal con menú lateral + dashboard. Controla visibilidad por rol via `*ngIf="perfil === 'administrador'"` etc.
-- **`/menuresumen`** — página secundaria de gráficos y estadísticas. Solo accesible desde el botón "IR A ESTADÍSTICAS" dentro de `/entrada`. Lee rol y tenantId desde `SessionService`.
-- **`/recepcion`** — pantalla pública de login
-- **`/ccuenta`** — registro público, solo crea cuentas de Administrador
-
-### Control de visibilidad por rol en `/entrada`
-```html
-<!-- Solo administrador -->
-<elemento *ngIf="perfil === 'administrador'">...</elemento>
-
-<!-- Solo técnico -->
-<elemento *ngIf="perfil === 'tecnico'">...</elemento>
-
-<!-- Solo vendedor -->
-<elemento *ngIf="perfil === 'vendedor'">...</elemento>
-```
-
----
-
-## 8. Páginas del sistema
-
-| Página | Ruta | Descripción |
+| Colección | Lectura | Escritura |
 |---|---|---|
-| recepcion | /recepcion | Pantalla inicial / login |
-| ccuenta | /ccuenta | Registro de nuevo taller + administrador |
-| entrada | /entrada | Layout principal — dashboard + menú lateral |
-| menuresumen | /menuresumen | Estadísticas y gráficos (secundaria) |
-| menuresumentec | /menuresumentec | Legacy — pendiente evaluar si se elimina |
-| menuordenes | /menuordenes | Listado de órdenes |
-| nuevaorden | /nuevaorden | Crear nueva orden |
-| registroorden | /registroorden | Detalle/registro de orden |
-| estadisticasorden | /estadisticasorden | Estadísticas de órdenes |
-| menuclientes | /menuclientes | Listado de clientes |
-| nuevocliente | /nuevocliente | Crear cliente |
-| registroclientes | /registroclientes | Detalle de cliente |
-| contactoclientes | /contactoclientes | Contactar clientes |
-| menuinventario | /menuinventario | Inventario de repuestos |
-| anadirrepuesto | /anadirrepuesto | Agregar repuesto |
-| registrorepuesto | /registrorepuesto | Detalle de repuesto |
-| configadmin | /configadmin | Configuración administrador |
-| menuvideos | /menuvideos | Videos tutoriales |
-| registrovideos | /registrovideos | Registrar video |
+| `userTenants/{uid}` | Solo el propio uid | Bloqueada desde cliente |
+| `Usuarios/{uid}` | Solo el propio uid | Bloqueada desde cliente |
+| `devices/{deviceId}` | Cualquier usuario autenticado | Solo administrador |
+| `tenants/{tenantId}` | Miembros del tenant | Create: ownerUid == uid / Update: solo admin |
+| `tenants/{tenantId}/users` | Miembros del tenant | Solo administrador |
+| `tenants/{tenantId}/clients` | Miembros del tenant | Miembros del tenant |
+| `tenants/{tenantId}/workorders` | Miembros del tenant | Miembros del tenant |
+| `tenants/{tenantId}/inventory` | Miembros del tenant | Miembros del tenant |
+| `tenants/{tenantId}/settings` | Miembros del tenant | Solo administrador |
 
 ---
 
-## 9. Hardware complementario (planificado)
+## 8. Flujo de la aplicación
 
-- **ESP32** con lector RFID
-- Tarjetas RFID entregadas al cliente al dejar su equipo
-- Cliente consulta estado del equipo escaneando su tarjeta en la tienda
-- ESP32 se comunica con el backend via WiFi (REST API)
-- Aprovisionamiento WiFi via WiFiManager (primer arranque)
-- Kit RFID como add-on premium del plan de suscripción
+### Registro (nuevo taller)
+1. `/ccuenta` → crea Auth + tenant con `onboardingCompletado: false` + userTenants + Usuarios + users
+2. Redirige a `/entrada`
+
+### Login
+1. `/entrada` → consulta `userTenants` → verifica `estado` del tenant
+2. Si suspendido → logout + `/recepcion`
+3. Si `onboardingCompletado === false` y rol administrador → muestra pantalla bienvenida
+4. Si no → dashboard normal
+
+### Onboarding
+- Solo para administradores en primer acceso
+- Pantalla de bienvenida con 3 pasos en el dashboard
+- Al presionar "¡Entendido, comenzar!" → `onboardingCompletado: true` en Firestore → dashboard normal
+
+### Flujo OT
+- `muestradispositivo` → `orden.cliente.dispositivos`
+- `muestrainventario` → `orden.repuesto` con `cantidad: 1`
+- Stock decrementa en 1 al generar OT
+- Estados: `ingresado` → `en reparacion` → `esperando repuesto` → `reparado` / `sin reparacion`
+- Órdenes nunca se eliminan
+
+### Exportación PDF
+- jsPDF desde modal de detalle en `registroorden`
+- Nombre: `orden-{nroorden}-{nombrecliente}.pdf`
 
 ---
 
-## 10. Modelo de negocio (en definición)
+## 9. Estado de páginas
 
-- SaaS por suscripción mensual/anual
-- Planes por cantidad de técnicos o volumen de OTs incluidas
-- Add-on hardware: kit ESP32 + tarjetas RFID
-- Período trial al registrarse (activación manual por el dueño del sistema inicialmente)
+| Página | Ruta | Estado |
+|---|---|---|
+| recepcion | /recepcion | ✅ |
+| ccuenta | /ccuenta | ✅ |
+| entrada | /entrada | ✅ |
+| menuresumen | /menuresumen | ✅ |
+| nuevaorden | /nuevaorden | ✅ |
+| registroorden | /registroorden | ✅ |
+| registroclientes | /registroclientes | ✅ |
+| nuevocliente | /nuevocliente | ✅ |
+| contactoclientes | /contactoclientes | ✅ |
+| anadirrepuesto | /anadirrepuesto | ✅ |
+| registrorepuesto | /registrorepuesto | ✅ |
+| menuinventario | /menuinventario | ✅ solo navegación |
+| menuordenes | /menuordenes | pendiente post-MVP |
+| estadisticasorden | /estadisticasorden | pendiente post-MVP |
+| menuclientes | /menuclientes | pendiente post-MVP |
+| configadmin | /configadmin | pendiente post-MVP |
+| menuvideos | /menuvideos | postergado |
+| registrovideos | /registrovideos | postergado |
 
 ---
 
-## 11. Estado del Trello — Roadmap MVP
+## 10. Estado del Trello
 
-### DONE ✅
+### DONE ✅ — MVP COMPLETADO
 | Tarjeta |
 |---|
-| Multi-tenant foundation (tenantId en todo el modelo) |
+| Multi-tenant foundation |
 | Normalizar roles y flujo por cargo |
+| Refactor FirestoredatabaseService |
+| Restringir registro público a solo rol Administrador |
+| Modelo de activación de tenant |
+| Definir reglas Firestore por tenant |
+| Validar flujo OT dentro de tenant |
+| Migrar páginas legacy a métodos por tenant |
+| Catálogo global de dispositivos |
+| Órdenes de trabajo end-to-end |
+| Clientes + equipos (asociación real a OT) |
+| Inventario / repuestos (asociado a OT + stock) |
+| Historial / búsqueda (por cliente, por OT, por estado) |
+| Export simple (PDF/print o resumen) |
+| Onboarding (crear taller → primer técnico → primera OT) |
 
-### BACKLOG (orden de prioridad)
-| # | Tarjeta | Prioridad | Tamaño | Categoría |
-|---|---|---|---|---|
-| 1 | Refactor FirestoredatabaseService (IDs + paths por tenant) | Alta | L | BE |
-| 2 | Restringir registro público a solo rol Administrador | Alta | S | FE |
-| 3 | Modelo de activación de tenant (trial/activo/suspendido) | Media | M | BE/OPS |
-| 4 | Definir reglas Firestore por tenant | Alta | M | OPS |
-| 5 | Validar flujo OT dentro de tenant | Alta | M | FE/BE |
-| 6 | Órdenes de trabajo end-to-end (crear → estados → cerrar) | Media | L | FE/BE |
-| 7 | Clientes + equipos (asociación real a OT) | Media | M | FE/BE |
-| 8 | Inventario / repuestos (asociado a OT + stock) | Media | M | FE/BE |
-| 9 | Historial / búsqueda (por cliente, por OT, por estado) | Baja | M | FE/BE |
-| 10 | Export simple (PDF/print o resumen) | Baja | S | FE |
-| 11 | Onboarding (crear taller → primer técnico → primera OT) | Baja | M | FE/BE |
+### POST-MVP
+| Tarjeta |
+|---|
+| Panel de administración del sistema (superadmin) |
+| Múltiples repuestos por OT |
+| Enriquecer dashboard con métricas reales |
+| Visita guiada interactiva del sistema |
+| Crear interfaz Tenant y migrar desde Taller legacy |
 
 ---
 
-## 12. Pendientes técnicos conocidos
+## 11. Pendientes técnicos conocidos
 
 | Pendiente | Prioridad | Contexto |
 |---|---|---|
-| `correotaller` es null en tenant | Baja | El formulario de registro no tiene ese campo |
-| `getDocQuery()` defectuoso | Alta | Marcado para eliminar en refactor del servicio |
-| Colección `Usuarios/` es legacy | Baja | Mantener por compatibilidad hasta migración completa |
-| Técnicos/vendedores sin flujo de creación | Alta | Solo el admin puede crearlos, flujo no implementado aún |
-| Validación de roles técnico/vendedor pendiente | Media | Depende de implementación de creación de usuarios internos |
-| `menuresumentec` posiblemente redundante | Baja | Evaluar si se elimina ahora que existe dashboard unificado |
+| `correotaller` null en tenant | Baja | Formulario sin ese campo |
+| Colección `Usuarios/` legacy | Baja | Compatibilidad temporal |
+| Interfaz `Taller` legacy | Media | Migrar a `Tenant` en post-MVP |
+| Técnicos/vendedores sin flujo de creación | Alta | Pendiente post-MVP |
+| Botón eliminar/editar repuesto sin funcionalidad | Baja | Post-MVP |
+| Botón eliminar cliente sin funcionalidad | Baja | Post-MVP |
+| Solo un repuesto por OT | Media | Post-MVP |
+| Logo del taller en PDF | Baja | Pendiente subida de imágenes |
+| `menuresumentec` posiblemente redundante | Baja | Evaluar eliminación |
+| Conflicto ng2-charts vs chart.js | Baja | Usar --legacy-peer-deps |
 
 ---
 
-## 13. Convención de tarjetas Trello
-
-```
-**Prioridad:** Alta / Media / Baja
-**Tamaño:** S / M / L
-**Categoría:** FE / BE / FE/BE / OPS
-
-### Alcance:
-- Lista de tareas concretas
-
-### Dependencias:
-- Tarjetas o módulos previos requeridos
-
-### CA:
-- Criterios verificables que indican que está completo
-```
-
-Los colores de portada están en revisión — aún no definidos definitivamente.
-
----
-
-## 14. Decisiones de arquitectura tomadas
+## 12. Decisiones de arquitectura tomadas
 
 | Decisión | Razón |
 |---|---|
-| Subcolecciones por tenant en Firestore | Aislamiento natural, reglas más limpias, escala mejor |
-| Un solo dashboard `/entrada` para todos los roles | Menos código duplicado, mantenimiento centralizado |
-| Registro público solo para Administrador | Seguridad — técnicos/vendedores los crea el admin desde dentro |
-| `SessionService` como fuente de verdad del rol | Evita consultas repetidas a Firestore en cada página |
-| `ionViewDidEnter` para inicializar gráficos | El DOM debe estar listo antes de acceder a canvas |
+| Subcolecciones por tenant en Firestore | Aislamiento natural, reglas más limpias |
+| Un solo dashboard para todos los roles | Menos duplicación, mantenimiento centralizado |
+| Registro público solo para Administrador | Seguridad |
+| `SessionService` como fuente de verdad | Evita consultas repetidas a Firestore |
+| `ionViewDidEnter` para gráficos | DOM debe estar listo antes de acceder a canvas |
+| Tenant inicia en estado `trial` | Control de acceso desde el primer registro |
+| Estado del tenant verificado en cada login | Permite suspender sin eliminar cuenta |
+| `allow create` en tenant si ownerUid == uid | Permite registro sin romper seguridad |
+| `firestore.rules` versionado en Git | Trazabilidad de cambios |
+| Dispositivos como catálogo global `devices/` | Marcas y modelos son iguales para todos los talleres |
+| Órdenes nunca se eliminan | Preservar historial completo |
+| `orden.repuesto.cantidad` siempre 1 | Simplificación para MVP |
+| Stock crítico = cantidad ≤ 3 | Umbral configurable via constante `STOCK_CRITICO` |
+| Dashboard simplificado con datos reales | Mejor UX que campos vacíos |
+| jsPDF para generación de PDF | Control total sobre el diseño del documento |
+| Onboarding como pantalla en dashboard | No invasivo, no bloquea navegación |
+| `onboardingCompletado` en Firestore | Persiste entre dispositivos y sesiones |

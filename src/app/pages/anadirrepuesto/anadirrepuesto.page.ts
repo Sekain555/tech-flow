@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { InventarioRepuesto } from 'src/app/models/modelos';
 import { FirestoredatabaseService } from 'src/app/services/firestoredatabase.service';
+import { SessionService } from 'src/app/services/session.service';
 
 @Component({
   selector: 'app-anadirrepuesto',
@@ -17,18 +18,16 @@ export class AnadirrepuestoPage implements OnInit {
     cantidad: null,
     proveedor: null,
     valor: null,
-  }
+  };
 
   constructor(
-    private firestore: FirestoredatabaseService
+    private firestore: FirestoredatabaseService,
+    private session: SessionService
   ) { }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   async guardarrepuesto() {
-    const path = 'RepuestoServicio';
-    await this.firestore.createClient(this.datosrepuesto, path);
+    await this.firestore.createDocByTenant('inventory', this.session.tenantId, this.datosrepuesto);
   }
-
 }

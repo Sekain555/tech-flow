@@ -15,6 +15,7 @@
 
 <ion-content>
   <ion-grid>
+    <!-- FILTROS -->
     <ion-row class="ion-justify-content-center">
       <ion-col size="8">
         <ion-card>
@@ -25,143 +26,86 @@
                 <ion-col>
                   <ion-item>
                     <ion-label position="floating">N° de orden</ion-label>
-                    <ion-input type="number"></ion-input>
+                    <ion-input
+                      type="text"
+                      [(ngModel)]="filtroNroOrden"
+                      (ionChange)="filtrarOrdenes()"
+                    ></ion-input>
                   </ion-item>
                 </ion-col>
                 <ion-col>
                   <ion-item>
-                    <ion-label position="floating">Nombre del cliente</ion-label>
-                    <ion-input type="text"></ion-input>
+                    <ion-label position="floating"
+                      >Nombre del cliente</ion-label
+                    >
+                    <ion-input
+                      type="text"
+                      [(ngModel)]="filtroNombre"
+                      (ionChange)="filtrarOrdenes()"
+                    ></ion-input>
                   </ion-item>
                 </ion-col>
                 <ion-col>
                   <ion-item>
-                    <ion-label position="floating">Dispositivo</ion-label>
-                    <ion-select>
-                      <ion-select-option>Samsung S21+ 5G</ion-select-option>
+                    <ion-label position="floating"
+                      >Estado de reparación</ion-label
+                    >
+                    <ion-select
+                      [(ngModel)]="filtroEstado"
+                      (ionChange)="filtrarOrdenes()"
+                    >
+                      <ion-select-option value="">Todos</ion-select-option>
+                      <ion-select-option
+                        *ngFor="let estado of estados"
+                        [value]="estado"
+                      >
+                        {{estado | titlecase}}
+                      </ion-select-option>
                     </ion-select>
                   </ion-item>
                 </ion-col>
               </ion-row>
-              <ion-row>
-                <ion-col>
-                  <ion-item>
-                    <ion-label position="floating">Estado de reparación</ion-label>
-                    <ion-select>
-                      <ion-select-option>Ingresado</ion-select-option>
-                      <ion-select-option>En reparación</ion-select-option>
-                      <ion-select-option>Esperando repuesto</ion-select-option>
-                      <ion-select-option>Reparado</ion-select-option>
-                      <ion-select-option>Sin reparación</ion-select-option>
-                    </ion-select>
-                  </ion-item>
-                </ion-col>
-                <ion-col>
-                  <ion-item>
-                    <ion-label position="floating">Tipo de reparación</ion-label>
-                    <ion-select>
-                      <ion-select-option>Revisión</ion-select-option>
-                      <ion-select-option>Mantención</ion-select-option>
-                      <ion-select-option>Revisión</ion-select-option>
-                      <ion-select-option>Garantía</ion-select-option>
-                    </ion-select>
-                  </ion-item>
-                </ion-col>
-                <ion-col>
-                  <ion-item>
-                    <ion-label position="floating">Técnico</ion-label>
-                    <ion-select>
-                      <ion-select-option>Jesús Pacheco</ion-select-option>
-                    </ion-select>
-                  </ion-item>
-                </ion-col>
-              </ion-row>
-              <ion-row>
-                <ion-col>
-                  <ion-item>
-                    <ion-label>Habilitar intérvalo de fechas</ion-label>
-                    <ion-toggle [enableOnOffLabels]="true" slot="end"></ion-toggle>
-                  </ion-item>
-                </ion-col>
+              <ion-row class="ion-justify-content-center">
                 <ion-col size="auto">
-                  <ion-item>
-                    <ion-label>Fecha inicio:</ion-label>
-                    <ion-datetime-button datetime="date"></ion-datetime-button>
-
-                    <ion-modal [keepContentsMounted]="true">
-                      <ng-template>
-                        <ion-datetime presentation="date" id="date"></ion-datetime>
-                      </ng-template>
-                    </ion-modal>
-                  </ion-item>
-                </ion-col>
-                <ion-col size="auto">
-                  <ion-item disabled="true">
-                    <ion-label>Fecha corte:</ion-label>
-                    <ion-datetime-button datetime="date"></ion-datetime-button>
-
-                    <ion-modal [keepContentsMounted]="true">
-                      <ng-template>
-                        <ion-datetime presentation="date" id="date"></ion-datetime>
-                      </ng-template>
-                    </ion-modal>
-                  </ion-item>
+                  <ion-button (click)="limpiarFiltros()"
+                    >LIMPIAR FILTROS</ion-button
+                  >
                 </ion-col>
               </ion-row>
             </ion-list>
-            <ion-row class="ion-justify-content-center">
-              <ion-col>
-                <ion-button>FILTRAR</ion-button>
-              </ion-col>
-            </ion-row>
           </ion-row>
         </ion-card>
       </ion-col>
     </ion-row>
+
+    <!-- ENCABEZADOS -->
     <ion-list lines="full">
       <ion-row class="ion-justify-content-between">
-        <ion-col size="auto">
-          <ion-item>
-            <ion-chip>N° de orden</ion-chip>
-          </ion-item>
-        </ion-col>
-        <ion-col size="auto">
-          <ion-item>
-            <ion-chip>Nombre cliente</ion-chip>
-          </ion-item>
-        </ion-col>
-        <ion-col size="auto">
-          <ion-item>
-            <ion-chip>Dispositivo</ion-chip>
-          </ion-item>
-        </ion-col>
-        <ion-col size="auto">
-          <ion-item>
-            <ion-chip>Estado de reparación</ion-chip>
-          </ion-item>
-        </ion-col>
-        <ion-col size="auto">
-          <ion-item>
-            <ion-chip>Tipo de reparación</ion-chip>
-          </ion-item>
-        </ion-col>
-        <ion-col size="auto">
-          <ion-item>
-            <ion-chip>Técnico</ion-chip>
-          </ion-item>
-        </ion-col>
-        <ion-col size="auto">
-          <ion-item>
-            <ion-chip>Fecha de ingreso</ion-chip>
-          </ion-item>
-        </ion-col>
-        <ion-col size="0.7">
-          <!--ARREGLO PARA LOS BOTONES DE VER, EDITAR Y ELIMINAR-->
-        </ion-col>
+        <ion-col
+          ><ion-item><ion-chip>N° de orden</ion-chip></ion-item></ion-col
+        >
+        <ion-col
+          ><ion-item><ion-chip>Nombre cliente</ion-chip></ion-item></ion-col
+        >
+        <ion-col
+          ><ion-item><ion-chip>Dispositivo</ion-chip></ion-item></ion-col
+        >
+        <ion-col
+          ><ion-item><ion-chip>Estado</ion-chip></ion-item></ion-col
+        >
+        <ion-col
+          ><ion-item><ion-chip>Tipo ingreso</ion-chip></ion-item></ion-col
+        >
+        <ion-col
+          ><ion-item><ion-chip>Fecha ingreso</ion-chip></ion-item></ion-col
+        >
+        <ion-col size="auto"></ion-col>
       </ion-row>
-      <ion-item *ngFor="let orden of ordenes">
+
+      <!-- LISTA DE ÓRDENES -->
+      <ion-item *ngFor="let orden of ordenesFiltradas">
         <ion-grid>
-          <ion-row>
+          <ion-row class="ion-align-items-center">
             <ion-col>
               <ion-label>{{orden.inforden.nroorden}}</ion-label>
             </ion-col>
@@ -172,51 +116,155 @@
               <ion-label>{{orden.cliente.dispositivos.modelodisp}}</ion-label>
             </ion-col>
             <ion-col>
-              <ion-label>Estado de reparación</ion-label>
+              <ion-badge [color]="colorEstado(orden.estado)">
+                {{orden.estado | titlecase}}
+              </ion-badge>
             </ion-col>
             <ion-col>
               <ion-label>{{orden.inforden.tipodeingreso}}</ion-label>
             </ion-col>
             <ion-col>
-              <ion-label>Técnico</ion-label>
+              <ion-label
+                >{{orden.inforden.fechahoy | date:'dd/MM/yyyy'}}</ion-label
+              >
             </ion-col>
-            <ion-col>
-              <ion-label>{{orden.inforden.fechahoy}}</ion-label>
+            <ion-col size="auto">
+              <ion-button
+                fill="clear"
+                (click)="seleccionarOrden(orden); modalVerOrden.present()"
+              >
+                <ion-icon name="search"></ion-icon>
+              </ion-button>
+              <ion-button
+                fill="clear"
+                (click)="seleccionarOrden(orden); modalCambiarEstado.present()"
+              >
+                <ion-icon name="pencil"></ion-icon>
+              </ion-button>
+              <ion-button
+                fill="clear"
+                color="danger"
+                (click)="cerrarOrden(orden)"
+                title="Sin reparación"
+              >
+                <ion-icon name="close-circle"></ion-icon>
+              </ion-button>
             </ion-col>
           </ion-row>
         </ion-grid>
-        <ion-button id="modal-verorden" fill="clear">
-          <ion-icon name="search"></ion-icon>
-        </ion-button>
-        <ion-button fill="clear">
-          <ion-icon name="pencil"></ion-icon>
-        </ion-button>
-        <ion-button fill="clear">
-          <ion-icon name="close-circle"></ion-icon>
-        </ion-button>
       </ion-item>
     </ion-list>
   </ion-grid>
 </ion-content>
 
-<!--FUNCION MODAL PARA VER ORDEN-->
-<ion-modal trigger="modal-verorden">
+<!-- MODAL VER ORDEN -->
+<ion-modal #modalVerOrden>
   <ng-template>
-    <ion-grid>
-      <ion-row>
-        <ion-card>
-          <ion-col>
-            <ion-thumbnail>
-              <img alt="Silhouette of mountains" src="https://ionicframework.com/docs/img/demos/thumbnail.svg" />
-            </ion-thumbnail>
-          </ion-col>
-          <ion-col>
-            <ion-row>
-              <ion-label></ion-label>
-            </ion-row>
-          </ion-col>
-        </ion-card>
-      </ion-row>
-    </ion-grid>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Detalle de orden</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="exportarPDF(ordenSeleccionada)">
+            <ion-icon name="download-outline"></ion-icon>&nbsp;PDF
+          </ion-button>
+          <ion-button (click)="modalVerOrden.dismiss()">Cerrar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding" *ngIf="ordenSeleccionada">
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title
+            >Orden N° {{ordenSeleccionada.inforden.nroorden}}</ion-card-title
+          >
+          <ion-card-subtitle>
+            <ion-badge [color]="colorEstado(ordenSeleccionada.estado)">
+              {{ordenSeleccionada.estado | titlecase}}
+            </ion-badge>
+          </ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <ion-list lines="none">
+            <ion-item>
+              <ion-label
+                ><strong>Cliente:</strong>
+                {{ordenSeleccionada.cliente.nombrecliente}}</ion-label
+              >
+            </ion-item>
+            <ion-item>
+              <ion-label
+                ><strong>RUT:</strong>
+                {{ordenSeleccionada.cliente.rutcliente}}</ion-label
+              >
+            </ion-item>
+            <ion-item>
+              <ion-label
+                ><strong>Dispositivo:</strong>
+                {{ordenSeleccionada.cliente.dispositivos.marcadisp}}
+                {{ordenSeleccionada.cliente.dispositivos.modelodisp}}</ion-label
+              >
+            </ion-item>
+            <ion-item>
+              <ion-label
+                ><strong>Problema:</strong>
+                {{ordenSeleccionada.cliente.dispositivos.problemadisp}}</ion-label
+              >
+            </ion-item>
+            <ion-item>
+              <ion-label
+                ><strong>Tipo ingreso:</strong>
+                {{ordenSeleccionada.inforden.tipodeingreso}}</ion-label
+              >
+            </ion-item>
+            <ion-item>
+              <ion-label
+                ><strong>Fecha ingreso:</strong>
+                {{ordenSeleccionada.inforden.fechahoy |
+                date:'dd/MM/yyyy'}}</ion-label
+              >
+            </ion-item>
+            <ion-item>
+              <ion-label
+                ><strong>Observaciones:</strong>
+                {{ordenSeleccionada.inforden.observaciones}}</ion-label
+              >
+            </ion-item>
+            <ion-item>
+              <ion-label
+                ><strong>Abono:</strong>
+                ${{ordenSeleccionada.inforden.abono}}</ion-label
+              >
+            </ion-item>
+          </ion-list>
+        </ion-card-content>
+      </ion-card>
+    </ion-content>
+  </ng-template>
+</ion-modal>
+
+<!-- MODAL CAMBIAR ESTADO -->
+<ion-modal #modalCambiarEstado>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Cambiar estado</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="modalCambiarEstado.dismiss()">Cerrar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding" *ngIf="ordenSeleccionada">
+      <ion-list>
+        <ion-radio-group
+          [value]="ordenSeleccionada.estado"
+          (ionChange)="cambiarEstado(ordenSeleccionada, $any($event).detail.value); modalCambiarEstado.dismiss()"
+        >
+          <ion-item *ngFor="let estado of estados">
+            <ion-label>{{estado | titlecase}}</ion-label>
+            <ion-radio slot="end" [value]="estado"></ion-radio>
+          </ion-item>
+        </ion-radio-group>
+      </ion-list>
+    </ion-content>
   </ng-template>
 </ion-modal>
