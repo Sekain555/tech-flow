@@ -1,5 +1,5 @@
 # CONTEXTO.md — TechFlow
-> Última actualización: 04-04-2026
+> Última actualización: 03-04-2026
 
 ---
 
@@ -30,8 +30,8 @@ Apunta a cubrir todo el ecosistema de servicios técnicos: desde técnicos indep
 | Autenticación | Firebase Authentication |
 | Backend futuro | Python + FastAPI (a implementar post-MVP) |
 | Base de datos futura | MySQL |
-| Generación PDF | jsPDF |
 | Mobile | Capacitor (Android + iOS) |
+| Generación PDF | jsPDF |
 
 ---
 
@@ -63,7 +63,6 @@ tenants/{tenantId}
   - ownerUid: string
   - estado: 'trial' | 'activo' | 'suspendido'
   - creadoEn: string (ISO date)
-  - onboardingCompletado: boolean
   ├─ users/{uid}              ← ✅ migrado
   ├─ clients/{clientId}       ← ✅ migrado
   ├─ workorders/{workOrderId} ← ✅ migrado
@@ -89,9 +88,9 @@ export interface UsuarioI {
 }
 ```
 
-### Taller ← LEGACY — migrar a Tenant en post-MVP
+### Tenant
 ```typescript
-export interface Taller {
+export interface Tenant {
   nombretaller: string;
   rutempresa: string;
   correotaller: string;
@@ -99,10 +98,9 @@ export interface Taller {
   direcciontaller: string;
   comuna: string;
   region: string;
-  ownerUid?: string;
-  estado?: 'trial' | 'activo' | 'suspendido';
+  ownerUid: string;
+  estado: 'trial' | 'activo' | 'suspendido';
   creadoEn?: string;
-  onboardingCompletado?: boolean;
 }
 ```
 
@@ -195,7 +193,6 @@ export interface Dispositivos {
 - `setTenantUser(tenantId, uid, data)`
 - `getUserTenant(uid)`
 - `getTenant(tenantId)`
-- `updateTenant(tenantId, data)` — actualiza documento raíz del tenant
 
 **Métodos catálogo global:**
 - `getCatalog<T>(catalogPath)`
@@ -220,7 +217,7 @@ export interface Dispositivos {
 | `userTenants/{uid}` | Solo el propio uid | Bloqueada desde cliente |
 | `Usuarios/{uid}` | Solo el propio uid | Bloqueada desde cliente |
 | `devices/{deviceId}` | Cualquier usuario autenticado | Solo administrador |
-| `tenants/{tenantId}` | Miembros del tenant | Create: ownerUid == uid / Update: solo admin |
+| `tenants/{tenantId}` | Miembros del tenant | Bloqueada desde cliente |
 | `tenants/{tenantId}/users` | Miembros del tenant | Solo administrador |
 | `tenants/{tenantId}/clients` | Miembros del tenant | Miembros del tenant |
 | `tenants/{tenantId}/workorders` | Miembros del tenant | Miembros del tenant |
@@ -229,64 +226,64 @@ export interface Dispositivos {
 
 ---
 
-## 8. Flujo de la aplicación
+## 8. Flujo de órdenes de trabajo
 
-### Registro (nuevo taller)
-1. `/ccuenta` → crea Auth + tenant con `onboardingCompletado: false` + userTenants + Usuarios + users
-2. Redirige a `/entrada`
-
-### Login
-1. `/entrada` → consulta `userTenants` → verifica `estado` del tenant
-2. Si suspendido → logout + `/recepcion`
-3. Si `onboardingCompletado === false` y rol administrador → muestra pantalla bienvenida
-4. Si no → dashboard normal
-
-### Onboarding
-- Solo para administradores en primer acceso
-- Pantalla de bienvenida con 3 pasos en el dashboard
-- Al presionar "¡Entendido, comenzar!" → `onboardingCompletado: true` en Firestore → dashboard normal
-
-### Flujo OT
+### Modelo de datos en nuevaorden
 - `muestradispositivo` → `orden.cliente.dispositivos`
-- `muestrainventario` → `orden.repuesto` con `cantidad: 1`
-- Stock decrementa en 1 al generar OT
-- Estados: `ingresado` → `en reparacion` → `esperando repuesto` → `reparado` / `sin reparacion`
-- Órdenes nunca se eliminan
+- `muestrainventario` → `orden.repuesto` con `cantidad: 1` forzada
+- Stock del repuesto se decrementa en 1 en `inventory/`
+
+### Estados posibles
+| Estado | Color | Descripción |
+|---|---|---|
+| `ingresado` | primary | Estado inicial |
+| `en reparacion` | warning | Técnico trabajando |
+| `esperando repuesto` | tertiary | En espera |
+| `reparado` | success | Listo para retirar |
+| `sin reparacion` | danger | No se pudo reparar |
 
 ### Exportación PDF
-- jsPDF desde modal de detalle en `registroorden`
-- Nombre: `orden-{nroorden}-{nombrecliente}.pdf`
+- Generado con jsPDF desde el modal de detalle de orden
+- Secciones: encabezado, datos del cliente, dispositivo, orden y repuesto
+- Nombre del archivo: `orden-{nroorden}-{nombrecliente}.pdf`
+- Pendiente: agregar logo del taller cuando se implemente subida de imágenes
+
+### Búsqueda en registroorden
+- Filtro por N° de orden
+- Filtro por nombre de cliente
+- Filtro por estado
+- Todos operan sobre `ordenesFiltradas[]`
 
 ---
 
-## 9. Estado de páginas
+## 9. Estado de migración por página
 
 | Página | Ruta | Estado |
 |---|---|---|
-| recepcion | /recepcion | ✅ |
-| ccuenta | /ccuenta | ✅ |
-| entrada | /entrada | ✅ |
-| menuresumen | /menuresumen | ✅ |
-| nuevaorden | /nuevaorden | ✅ |
-| registroorden | /registroorden | ✅ |
-| registroclientes | /registroclientes | ✅ |
-| nuevocliente | /nuevocliente | ✅ |
-| contactoclientes | /contactoclientes | ✅ |
-| anadirrepuesto | /anadirrepuesto | ✅ |
-| registrorepuesto | /registrorepuesto | ✅ |
+| recepcion | /recepcion | — |
+| ccuenta | /ccuenta | ✅ completo |
+| entrada | /entrada | ✅ completo |
+| menuresumen | /menuresumen | ✅ completo |
+| nuevaorden | /nuevaorden | ✅ completo |
+| registroorden | /registroorden | ✅ completo |
+| registroclientes | /registroclientes | ✅ completo |
+| nuevocliente | /nuevocliente | ✅ completo |
+| contactoclientes | /contactoclientes | ✅ completo |
+| anadirrepuesto | /anadirrepuesto | ✅ completo |
+| registrorepuesto | /registrorepuesto | ✅ completo |
 | menuinventario | /menuinventario | ✅ solo navegación |
-| menuordenes | /menuordenes | pendiente post-MVP |
-| estadisticasorden | /estadisticasorden | pendiente post-MVP |
-| menuclientes | /menuclientes | pendiente post-MVP |
-| configadmin | /configadmin | pendiente post-MVP |
-| menuvideos | /menuvideos | postergado |
-| registrovideos | /registrovideos | postergado |
+| menuordenes | /menuordenes | pendiente |
+| estadisticasorden | /estadisticasorden | pendiente |
+| menuclientes | /menuclientes | pendiente |
+| configadmin | /configadmin | pendiente |
+| menuvideos | /menuvideos | postergado (post-MVP) |
+| registrovideos | /registrovideos | postergado (post-MVP) |
 
 ---
 
-## 10. Estado del Trello
+## 10. Estado del Trello — Roadmap MVP
 
-### DONE ✅ — MVP COMPLETADO
+### DONE ✅
 | Tarjeta |
 |---|
 | Multi-tenant foundation |
@@ -303,7 +300,11 @@ export interface Dispositivos {
 | Inventario / repuestos (asociado a OT + stock) |
 | Historial / búsqueda (por cliente, por OT, por estado) |
 | Export simple (PDF/print o resumen) |
-| Onboarding (crear taller → primer técnico → primera OT) |
+
+### BACKLOG
+| # | Tarjeta | Prioridad | Tamaño | Categoría |
+|---|---|---|---|---|
+| 1 | Onboarding (crear taller → primer técnico → primera OT) | Baja | M | FE/BE |
 
 ### POST-MVP
 | Tarjeta |
@@ -311,8 +312,6 @@ export interface Dispositivos {
 | Panel de administración del sistema (superadmin) |
 | Múltiples repuestos por OT |
 | Enriquecer dashboard con métricas reales |
-| Visita guiada interactiva del sistema |
-| Crear interfaz Tenant y migrar desde Taller legacy |
 
 ---
 
@@ -322,14 +321,15 @@ export interface Dispositivos {
 |---|---|---|
 | `correotaller` null en tenant | Baja | Formulario sin ese campo |
 | Colección `Usuarios/` legacy | Baja | Compatibilidad temporal |
-| Interfaz `Taller` legacy | Media | Migrar a `Tenant` en post-MVP |
-| Técnicos/vendedores sin flujo de creación | Alta | Pendiente post-MVP |
-| Botón eliminar/editar repuesto sin funcionalidad | Baja | Post-MVP |
-| Botón eliminar cliente sin funcionalidad | Baja | Post-MVP |
+| Interfaz `Taller` legacy | Baja | Usar `Tenant` para nuevos desarrollos |
+| Técnicos/vendedores sin flujo de creación | Alta | Pendiente implementar |
+| Botón eliminar/editar repuesto sin funcionalidad | Baja | Pendiente card futura |
+| Botón eliminar cliente sin funcionalidad | Baja | Pendiente card futura |
 | Solo un repuesto por OT | Media | Post-MVP |
 | Logo del taller en PDF | Baja | Pendiente subida de imágenes |
 | `menuresumentec` posiblemente redundante | Baja | Evaluar eliminación |
-| Conflicto ng2-charts vs chart.js | Baja | Usar --legacy-peer-deps |
+| `menuvideos` función comentada | Baja | Postergado post-MVP |
+| Conflicto ng2-charts vs chart.js | Baja | Preexistente, usar --legacy-peer-deps |
 
 ---
 
@@ -344,7 +344,7 @@ export interface Dispositivos {
 | `ionViewDidEnter` para gráficos | DOM debe estar listo antes de acceder a canvas |
 | Tenant inicia en estado `trial` | Control de acceso desde el primer registro |
 | Estado del tenant verificado en cada login | Permite suspender sin eliminar cuenta |
-| `allow create` en tenant si ownerUid == uid | Permite registro sin romper seguridad |
+| Escritura de datos críticos bloqueada desde cliente | Seguridad |
 | `firestore.rules` versionado en Git | Trazabilidad de cambios |
 | Dispositivos como catálogo global `devices/` | Marcas y modelos son iguales para todos los talleres |
 | Órdenes nunca se eliminan | Preservar historial completo |
@@ -352,5 +352,5 @@ export interface Dispositivos {
 | Stock crítico = cantidad ≤ 3 | Umbral configurable via constante `STOCK_CRITICO` |
 | Dashboard simplificado con datos reales | Mejor UX que campos vacíos |
 | jsPDF para generación de PDF | Control total sobre el diseño del documento |
-| Onboarding como pantalla en dashboard | No invasivo, no bloquea navegación |
-| `onboardingCompletado` en Firestore | Persiste entre dispositivos y sesiones |
+| Panel superadmin postergado para post-MVP | Excede scope del MVP |
+| Función de videos postergada para post-MVP | API key revocada, bajo impacto |
