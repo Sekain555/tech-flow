@@ -10,7 +10,6 @@ import { Router } from '@angular/router';
   styleUrls: ['./ccuenta.page.scss'],
 })
 export class CcuentaPage implements OnInit {
-
   datosusuario: UsuarioI = {
     nombre: null,
     rut: null,
@@ -19,7 +18,7 @@ export class CcuentaPage implements OnInit {
     clave: null,
     cargo: 'administrador',
     nombretaller: null,
-    tenantId: null
+    tenantId: null,
   };
 
   rinclave16: string = null;
@@ -37,15 +36,17 @@ export class CcuentaPage implements OnInit {
   constructor(
     private auth: AuthfirebaseService,
     private firestore: FirestoredatabaseService,
-    private router: Router
-  ) { }
+    private router: Router,
+  ) {}
 
-  ngOnInit() { }
+  ngOnInit() {}
 
   async crearcuenta() {
-    const res = await this.auth.registrousuario(this.datosusuario).catch(error => {
-      console.log(error);
-    });
+    const res = await this.auth
+      .registrousuario(this.datosusuario)
+      .catch((error) => {
+        console.log(error);
+      });
 
     if (res) {
       const pathUsuarios = 'Usuarios';
@@ -58,7 +59,10 @@ export class CcuentaPage implements OnInit {
 
       const tenantRef = await this.firestore.createTenant({
         ...this.datostaller,
-        ownerUid: uid
+        ownerUid: uid,
+        estado: 'trial',
+        creadoEn: new Date().toISOString(),
+        onboardingCompletado: false, // ← agregar esta línea
       });
 
       const tenantId = tenantRef.id;
@@ -67,7 +71,7 @@ export class CcuentaPage implements OnInit {
       await this.firestore.createDoc(this.datosusuario, pathUsuarios, uid);
       await this.firestore.setUserTenant(uid, {
         tenantId: tenantId,
-        role: 'administrador'
+        role: 'administrador',
       });
       await this.firestore.setTenantUser(tenantId, uid, this.datosusuario);
 

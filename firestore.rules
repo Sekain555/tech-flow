@@ -33,30 +33,28 @@ service cloud.firestore {
     // Datos del tenant: solo miembros del tenant pueden leer
     match /tenants/{tenantId} {
       allow read: if perteneceAlTenant(tenantId);
-      allow write: if false; // solo desde registro o Firebase Console
-
-      // Usuarios dentro del tenant
+      allow create: if request.auth != null &&
+        request.resource.data.ownerUid == request.auth.uid;
+      allow update: if perteneceAlTenant(tenantId) && esAdmin(tenantId);
+      allow delete: if false;
+    
       match /users/{uid} {
         allow read: if perteneceAlTenant(tenantId);
         allow write: if esAdmin(tenantId);
       }
-
-      // Clientes
+    
       match /clients/{clientId} {
         allow read, write: if perteneceAlTenant(tenantId);
       }
-
-      // Órdenes de trabajo
+    
       match /workorders/{workOrderId} {
         allow read, write: if perteneceAlTenant(tenantId);
       }
-
-      // Inventario
+    
       match /inventory/{itemId} {
         allow read, write: if perteneceAlTenant(tenantId);
       }
-
-      // Configuración: solo admin puede modificar
+    
       match /settings/{docId} {
         allow read: if perteneceAlTenant(tenantId);
         allow write: if esAdmin(tenantId);
