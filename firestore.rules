@@ -19,7 +19,9 @@ service cloud.firestore {
     // userTenants: solo el propio usuario puede leer su mapping
     match /userTenants/{uid} {
       allow read: if request.auth != null && request.auth.uid == uid;
-      allow write: if false; // solo escritura desde backend/registro
+      allow create: if request.auth != null && request.auth.uid == uid;
+      allow update: if false;
+      allow delete: if false;
     }
 
     // Usuarios: legacy, solo el propio usuario puede leer
