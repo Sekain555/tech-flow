@@ -49,7 +49,6 @@ export class CcuentaPage implements OnInit {
       });
 
     if (res) {
-      const pathUsuarios = 'Usuarios';
       const uid = res.user.uid;
 
       this.datosusuario.clave = null;
@@ -62,20 +61,24 @@ export class CcuentaPage implements OnInit {
         ownerUid: uid,
         estado: 'trial',
         creadoEn: new Date().toISOString(),
-        onboardingCompletado: false, // ← agregar esta línea
+        onboardingCompletado: false,
       });
 
       const tenantId = tenantRef.id;
       this.datosusuario.tenantId = tenantId;
 
-      await this.firestore.createDoc(this.datosusuario, pathUsuarios, uid);
       await this.firestore.setUserTenant(uid, {
         tenantId: tenantId,
         role: 'administrador',
       });
+
       await this.firestore.setTenantUser(tenantId, uid, this.datosusuario);
 
-      console.log('Tenant creado:', tenantId);
+      await res.user.sendEmailVerification();
+
+      // Esperar brevemente para que Firestore propague antes de navegar
+      await new Promise((resolve) => setTimeout(resolve, 1500));
+
       this.router.navigate(['/entrada']);
     }
   }
