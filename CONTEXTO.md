@@ -1,5 +1,5 @@
 # CONTEXTO.md — TechFlow
-> Última actualización: 04-04-2026
+> Última actualización: 08-04-2026
 
 ---
 
@@ -217,7 +217,7 @@ export interface Dispositivos {
 
 | Colección | Lectura | Escritura |
 |---|---|---|
-| `userTenants/{uid}` | Solo el propio uid | Bloqueada desde cliente |
+| `userTenants/{uid}` | Solo el propio uid | Create: solo el propio uid / Update y Delete: bloqueado |
 | `Usuarios/{uid}` | Solo el propio uid | Bloqueada desde cliente |
 | `devices/{deviceId}` | Cualquier usuario autenticado | Solo administrador |
 | `tenants/{tenantId}` | Miembros del tenant | Create: ownerUid == uid / Update: solo admin |
@@ -232,8 +232,12 @@ export interface Dispositivos {
 ## 8. Flujo de la aplicación
 
 ### Registro (nuevo taller)
-1. `/ccuenta` → crea Auth + tenant con `onboardingCompletado: false` + userTenants + Usuarios + users
-2. Redirige a `/entrada`
+1. `/ccuenta` → crea Auth + tenant con `onboardingCompletado: false` + userTenants + users
+2. Envía email de verificación con `sendEmailVerification()`
+3. Espera 1500ms para propagación de Firestore
+4. Redirige a `/entrada`
+
+> La colección legacy `Usuarios/` ya no se escribe en el registro — fue eliminada del flujo.
 
 ### Login
 1. `/entrada` → consulta `userTenants` → verifica `estado` del tenant
@@ -286,7 +290,7 @@ export interface Dispositivos {
 
 ## 10. Estado del Trello
 
-### DONE ✅ — MVP COMPLETADO
+### DONE ✅ — MVP COMPLETADO + HOTFIX v0.1.0-alpha.2
 | Tarjeta |
 |---|
 | Multi-tenant foundation |
@@ -304,6 +308,8 @@ export interface Dispositivos {
 | Historial / búsqueda (por cliente, por OT, por estado) |
 | Export simple (PDF/print o resumen) |
 | Onboarding (crear taller → primer técnico → primera OT) |
+| 🚨 userTenants no se creaba al registrar nuevo taller |
+| 🚨 Email de confirmación al registrar cuenta |
 
 ### POST-MVP
 | Tarjeta |
@@ -321,7 +327,7 @@ export interface Dispositivos {
 | Pendiente | Prioridad | Contexto |
 |---|---|---|
 | `correotaller` null en tenant | Baja | Formulario sin ese campo |
-| Colección `Usuarios/` legacy | Baja | Compatibilidad temporal |
+| Colección `Usuarios/` legacy | Baja | Ya no se escribe en registro, pendiente eliminar colección de Firestore |
 | Interfaz `Taller` legacy | Media | Migrar a `Tenant` en post-MVP |
 | Técnicos/vendedores sin flujo de creación | Alta | Pendiente post-MVP |
 | Botón eliminar/editar repuesto sin funcionalidad | Baja | Post-MVP |
@@ -330,6 +336,7 @@ export interface Dispositivos {
 | Logo del taller en PDF | Baja | Pendiente subida de imágenes |
 | `menuresumentec` posiblemente redundante | Baja | Evaluar eliminación |
 | Conflicto ng2-charts vs chart.js | Baja | Usar --legacy-peer-deps |
+| Verificación de correo no bloquea acceso | Media | Card registrada en backlog v0.1.2-alpha.3 |
 
 ---
 
@@ -353,4 +360,6 @@ export interface Dispositivos {
 | Dashboard simplificado con datos reales | Mejor UX que campos vacíos |
 | jsPDF para generación de PDF | Control total sobre el diseño del documento |
 | Onboarding como pantalla en dashboard | No invasivo, no bloquea navegación |
-| `onboardingCompletado` en Firestore | Persiste entre dispositivos y sesiones |
+| `allow create` en userTenants si uid == uid autenticado | Permite registro sin exponer escritura arbitraria |
+| `setTimeout(1500ms)` antes de navegar post-registro | Garantiza propagación de Firestore antes de que el observer de entrada lo lea |
+| `sendEmailVerification()` al completar registro | Verificación de correo implementada — no bloquea acceso aún |
