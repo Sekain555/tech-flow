@@ -7,3 +7,10 @@ ion-card-header.ios {
   display: flex;
   flex-flow: column-reverse;
 }
+
+ion-menu {
+  ion-title {
+    font-size: 18px;
+    white-space: normal;
+  }
+}

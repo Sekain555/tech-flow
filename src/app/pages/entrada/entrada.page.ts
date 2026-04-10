@@ -81,7 +81,7 @@ export class EntradaPage implements OnInit {
           ) {
             this.mostrarOnboarding = true;
           }
-
+          this.taller = tenant.nombretaller;
           this.cargarDashboard();
         });
       }
