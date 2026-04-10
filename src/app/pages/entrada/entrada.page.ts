@@ -62,7 +62,10 @@ export class EntradaPage implements OnInit {
           tenantId: res.tenantId,
           role: res.role,
           uid: uid,
+          
         });
+
+        this.obtenerNombreUsuario(res.tenantId, uid);
 
         this.firestore.getTenant(res.tenantId).subscribe((tenant: any) => {
           if (tenant && tenant.estado === 'suspendido') {
@@ -71,7 +74,11 @@ export class EntradaPage implements OnInit {
             return;
           }
 
-          if (this.perfil === 'administrador' && tenant && tenant.onboardingCompletado === false) {
+          if (
+            this.perfil === 'administrador' &&
+            tenant &&
+            tenant.onboardingCompletado === false
+          ) {
             this.mostrarOnboarding = true;
           }
 
@@ -82,7 +89,9 @@ export class EntradaPage implements OnInit {
   }
 
   async completarOnboarding() {
-    await this.firestore.updateTenant(this.session.tenantId, { onboardingCompletado: true });
+    await this.firestore.updateTenant(this.session.tenantId, {
+      onboardingCompletado: true,
+    });
     this.mostrarOnboarding = false;
   }
 
@@ -93,28 +102,42 @@ export class EntradaPage implements OnInit {
   cargarDashboard() {
     const tenantId = this.session.tenantId;
 
-    this.firestore.getCollectionByTenant<Ordenes>('workorders', tenantId)
-      .subscribe(ordenes => {
-        this.ordenesPendientes = ordenes.filter(o =>
-          o.estado === 'ingresado' || o.estado === 'en reparacion' || o.estado === 'esperando repuesto'
+    this.firestore
+      .getCollectionByTenant<Ordenes>('workorders', tenantId)
+      .subscribe((ordenes) => {
+        this.ordenesPendientes = ordenes.filter(
+          (o) =>
+            o.estado === 'ingresado' ||
+            o.estado === 'en reparacion' ||
+            o.estado === 'esperando repuesto',
         ).length;
-        this.ordenesFinalizadas = ordenes.filter(o =>
-          o.estado === 'reparado' || o.estado === 'sin reparacion'
+        this.ordenesFinalizadas = ordenes.filter(
+          (o) => o.estado === 'reparado' || o.estado === 'sin reparacion',
         ).length;
         this.ultimasOrdenes = ordenes
-          .sort((a, b) => new Date(b.inforden.fechahoy).getTime() - new Date(a.inforden.fechahoy).getTime())
+          .sort(
+            (a, b) =>
+              new Date(b.inforden.fechahoy).getTime() -
+              new Date(a.inforden.fechahoy).getTime(),
+          )
           .slice(0, 5);
       });
 
-    this.firestore.getCollectionByTenant<ClienteST>('clients', tenantId)
-      .subscribe(clientes => {
+    this.firestore
+      .getCollectionByTenant<ClienteST>('clients', tenantId)
+      .subscribe((clientes) => {
         this.totalClientes = clientes.length;
       });
 
-    this.firestore.getCollectionByTenant<InventarioRepuesto>('inventory', tenantId)
-      .subscribe(repuestos => {
-        this.repuestosCriticos = repuestos.filter(r => r.cantidad > 0 && r.cantidad <= this.STOCK_CRITICO).length;
-        this.repuestesSinStock = repuestos.filter(r => r.cantidad === 0).length;
+    this.firestore
+      .getCollectionByTenant<InventarioRepuesto>('inventory', tenantId)
+      .subscribe((repuestos) => {
+        this.repuestosCriticos = repuestos.filter(
+          (r) => r.cantidad > 0 && r.cantidad <= this.STOCK_CRITICO,
+        ).length;
+        this.repuestesSinStock = repuestos.filter(
+          (r) => r.cantidad === 0,
+        ).length;
       });
   }
 
@@ -124,12 +147,28 @@ export class EntradaPage implements OnInit {
 
   colorEstado(estado: string): string {
     switch (estado) {
-      case 'ingresado': return 'primary';
-      case 'en reparacion': return 'warning';
-      case 'esperando repuesto': return 'tertiary';
-      case 'reparado': return 'success';
-      case 'sin reparacion': return 'danger';
-      default: return 'medium';
+      case 'ingresado':
+        return 'primary';
+      case 'en reparacion':
+        return 'warning';
+      case 'esperando repuesto':
+        return 'tertiary';
+      case 'reparado':
+        return 'success';
+      case 'sin reparacion':
+        return 'danger';
+      default:
+        return 'medium';
     }
+  }
+
+  obtenerNombreUsuario(tenantId: string, uid: string) {
+    this.firestore
+      .getDocByTenant<any>('users', tenantId, uid)
+      .subscribe((res) => {
+        if (res) {
+          this.usuario = res.nombre;
+        }
+      });
   }
 }
