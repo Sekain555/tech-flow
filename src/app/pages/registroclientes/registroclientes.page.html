@@ -26,7 +26,8 @@
               <ion-searchbar
                 [(ngModel)]="busquedacliente"
                 (ionChange)="buscarcliente()"
-                placeholder="Buscar cliente por RUT">
+                placeholder="Buscar cliente por RUT"
+              >
               </ion-searchbar>
             </ion-row>
           </ion-list>
@@ -34,32 +35,29 @@
       </ion-col>
     </ion-row>
 
-    <ion-list lines="full">
-      <ion-row class="ion-justify-content-between">
-        <ion-col size="2.65">
-          <ion-item><ion-chip>Nombre</ion-chip></ion-item>
-        </ion-col>
-        <ion-col size="2.65">
-          <ion-item><ion-chip>RUT</ion-chip></ion-item>
-        </ion-col>
-        <ion-col size="2.65">
-          <ion-item><ion-chip>Correo</ion-chip></ion-item>
-        </ion-col>
-        <ion-col size="2.65">
-          <ion-item><ion-chip>Teléfono</ion-chip></ion-item>
-        </ion-col>
-        <ion-col size="1">&nbsp;</ion-col>
+    <ion-grid class="tabla-encabezado">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="3"><strong>Nombre</strong></ion-col>
+        <ion-col size="2"><strong>RUT</strong></ion-col>
+        <ion-col size="3"><strong>Correo</strong></ion-col>
+        <ion-col size="2"><strong>Teléfono</strong></ion-col>
+        <ion-col size="2"></ion-col>
       </ion-row>
+    </ion-grid>
 
+    <ion-list lines="full">
       <ion-item *ngFor="let cliente of clientes">
         <ion-grid>
           <ion-row class="ion-align-items-center">
-            <ion-col size="2.65">{{cliente.nombrecliente}}</ion-col>
-            <ion-col size="2.65">{{cliente.rutcliente}}</ion-col>
-            <ion-col size="2.65">{{cliente.correocliente}}</ion-col>
-            <ion-col size="2.65">{{cliente.nrotelefonocliente}}</ion-col>
-            <ion-col size="1">
-              <ion-button fill="clear" (click)="verHistorial(cliente); modalHistorial.present()">
+            <ion-col size="3">{{cliente.nombrecliente}}</ion-col>
+            <ion-col size="2">{{cliente.rutcliente}}</ion-col>
+            <ion-col size="3">{{cliente.correocliente}}</ion-col>
+            <ion-col size="2">{{cliente.nrotelefonocliente}}</ion-col>
+            <ion-col size="2" style="display: flex; align-items: center">
+              <ion-button
+                fill="clear"
+                (click)="verHistorial(cliente); modalHistorial.present()"
+              >
                 <ion-icon name="search"></ion-icon>
               </ion-button>
               <ion-button fill="clear" color="danger">
@@ -78,7 +76,9 @@
   <ng-template>
     <ion-header>
       <ion-toolbar>
-        <ion-title>Historial — {{clienteSeleccionado?.nombrecliente}}</ion-title>
+        <ion-title
+          >Historial — {{clienteSeleccionado?.nombrecliente}}</ion-title
+        >
         <ion-buttons slot="end">
           <ion-button (click)="modalHistorial.dismiss()">Cerrar</ion-button>
         </ion-buttons>
@@ -91,9 +91,14 @@
             <ion-row class="ion-align-items-center">
               <ion-col>
                 <ion-label>
-                  <strong>{{orden.cliente.dispositivos.marcadisp}} {{orden.cliente.dispositivos.modelodisp}}</strong>
+                  <strong
+                    >{{orden.cliente.dispositivos.marcadisp}}
+                    {{orden.cliente.dispositivos.modelodisp}}</strong
+                  >
                 </ion-label>
-                <ion-label>{{orden.inforden.fechahoy | date:'dd/MM/yyyy'}}</ion-label>
+                <ion-label
+                  >{{orden.inforden.fechahoy | date:'dd/MM/yyyy'}}</ion-label
+                >
               </ion-col>
               <ion-col size="auto">
                 <ion-badge [color]="colorEstado(orden.estado)">

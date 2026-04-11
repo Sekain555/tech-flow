@@ -43,43 +43,31 @@
       </ion-col>
     </ion-row>
 
-    <ion-list lines="full">
-      <ion-row class="ion-justify-content-between">
-        <ion-col size="1.375"
-          ><ion-item><ion-chip>Repuesto</ion-chip></ion-item></ion-col
-        >
-        <ion-col size="1.375"
-          ><ion-item><ion-chip>Marca</ion-chip></ion-item></ion-col
-        >
-        <ion-col size="1.375"
-          ><ion-item><ion-chip>Modelo</ion-chip></ion-item></ion-col
-        >
-        <ion-col size="1.375"
-          ><ion-item><ion-chip>Variante</ion-chip></ion-item></ion-col
-        >
-        <ion-col size="1.375"
-          ><ion-item><ion-chip>Cantidad</ion-chip></ion-item></ion-col
-        >
-        <ion-col size="1.375"
-          ><ion-item><ion-chip>Proveedor</ion-chip></ion-item></ion-col
-        >
-        <ion-col size="1.375"
-          ><ion-item><ion-chip>Valor</ion-chip></ion-item></ion-col
-        >
-        <ion-col size="1"></ion-col>
+    <ion-grid class="tabla-encabezado">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="1.4"><strong>Repuesto</strong></ion-col>
+        <ion-col size="1.4"><strong>Marca</strong></ion-col>
+        <ion-col size="1.4"><strong>Modelo</strong></ion-col>
+        <ion-col size="1.4"><strong>Variante</strong></ion-col>
+        <ion-col size="1.4"><strong>Cantidad</strong></ion-col>
+        <ion-col size="1.4"><strong>Proveedor</strong></ion-col>
+        <ion-col size="1.4"><strong>Valor</strong></ion-col>
+        <ion-col size="2.2"></ion-col>
       </ion-row>
+    </ion-grid>
 
+    <ion-list lines="full">
       <ion-item
         *ngFor="let repuesto of repuestos"
         [color]="stockCritico(repuesto.cantidad) ? 'danger' : ''"
       >
         <ion-grid>
           <ion-row class="ion-justify-content-between ion-align-items-center">
-            <ion-col size="1.375">{{repuesto.nombrers}}</ion-col>
-            <ion-col size="1.375">{{repuesto.marca}}</ion-col>
-            <ion-col size="1.375">{{repuesto.modelo}}</ion-col>
-            <ion-col size="1.375">{{repuesto.variante}}</ion-col>
-            <ion-col size="1.375">
+            <ion-col size="1.4">{{repuesto.nombrers}}</ion-col>
+            <ion-col size="1.4">{{repuesto.marca}}</ion-col>
+            <ion-col size="1.4">{{repuesto.modelo}}</ion-col>
+            <ion-col size="1.4">{{repuesto.variante}}</ion-col>
+            <ion-col size="1.4">
               <ion-badge
                 [color]="stockCritico(repuesto.cantidad) ? 'danger' : 'success'"
               >
@@ -91,9 +79,9 @@
                 color="danger"
               ></ion-icon>
             </ion-col>
-            <ion-col size="1.375">{{repuesto.proveedor}}</ion-col>
-            <ion-col size="1.375">{{repuesto.valor}}</ion-col>
-            <ion-col size="1">
+            <ion-col size="1.4">{{repuesto.proveedor}}</ion-col>
+            <ion-col size="1.4">{{repuesto.valor}}</ion-col>
+            <ion-col size="2.2" style="display: flex; align-items: center">
               <ion-button fill="clear">
                 <ion-icon name="pencil"></ion-icon>
               </ion-button>

@@ -79,56 +79,49 @@
     </ion-row>
 
     <!-- ENCABEZADOS -->
-    <ion-list lines="full">
-      <ion-row class="ion-justify-content-between">
-        <ion-col
-          ><ion-item><ion-chip>N° de orden</ion-chip></ion-item></ion-col
-        >
-        <ion-col
-          ><ion-item><ion-chip>Nombre cliente</ion-chip></ion-item></ion-col
-        >
-        <ion-col
-          ><ion-item><ion-chip>Dispositivo</ion-chip></ion-item></ion-col
-        >
-        <ion-col
-          ><ion-item><ion-chip>Estado</ion-chip></ion-item></ion-col
-        >
-        <ion-col
-          ><ion-item><ion-chip>Tipo ingreso</ion-chip></ion-item></ion-col
-        >
-        <ion-col
-          ><ion-item><ion-chip>Fecha ingreso</ion-chip></ion-item></ion-col
-        >
-        <ion-col size="auto"></ion-col>
+    <ion-grid class="tabla-encabezado">
+      <ion-row class="ion-align-items-center">
+        <ion-col size="1"><strong>N° orden</strong></ion-col>
+        <ion-col size="2"><strong>Cliente</strong></ion-col>
+        <ion-col size="2"><strong>Dispositivo</strong></ion-col>
+        <ion-col size="2"><strong>Estado</strong></ion-col>
+        <ion-col size="2"><strong>Tipo ingreso</strong></ion-col>
+        <ion-col size="2"><strong>Fecha ingreso</strong></ion-col>
+        <ion-col size="1"></ion-col>
       </ion-row>
+    </ion-grid>
 
-      <!-- LISTA DE ÓRDENES -->
+    <!-- LISTA DE ÓRDENES -->
+    <ion-list lines="full">
       <ion-item *ngFor="let orden of ordenesFiltradas">
         <ion-grid>
           <ion-row class="ion-align-items-center">
-            <ion-col>
+            <ion-col size="1">
               <ion-label>{{orden.inforden.nroorden}}</ion-label>
             </ion-col>
-            <ion-col>
+            <ion-col size="2">
               <ion-label>{{orden.cliente.nombrecliente}}</ion-label>
             </ion-col>
-            <ion-col>
+            <ion-col size="2">
               <ion-label>{{orden.cliente.dispositivos.modelodisp}}</ion-label>
             </ion-col>
-            <ion-col>
+            <ion-col size="2">
               <ion-badge [color]="colorEstado(orden.estado)">
                 {{orden.estado | titlecase}}
               </ion-badge>
             </ion-col>
-            <ion-col>
+            <ion-col size="2">
               <ion-label>{{orden.inforden.tipodeingreso}}</ion-label>
             </ion-col>
-            <ion-col>
+            <ion-col size="2">
               <ion-label
                 >{{orden.inforden.fechahoy | date:'dd/MM/yyyy'}}</ion-label
               >
             </ion-col>
-            <ion-col size="auto">
+            <ion-col
+              size="1"
+              style="display: flex; align-items: center; flex-wrap: nowrap"
+            >
               <ion-button
                 fill="clear"
                 (click)="seleccionarOrden(orden); modalVerOrden.present()"
