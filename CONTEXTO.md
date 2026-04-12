@@ -1,5 +1,5 @@
 # CONTEXTO.md — TechFlow
-> Última actualización: 08-04-2026
+> Última actualización: 12-04-2026
 
 ---
 
@@ -43,7 +43,7 @@ userTenants/{uid}
   - tenantId: string
   - role: 'administrador' | 'tecnico' | 'vendedor'
 
-Usuarios/{uid}           ← compatibilidad temporal, se eliminará en el futuro
+Usuarios/{uid}           ← legacy, ya no se escribe en registro
 
 devices/{deviceId}       ← catálogo global compartido entre todos los tenants
   - marcadisp: string
@@ -55,7 +55,7 @@ devices/{deviceId}       ← catálogo global compartido entre todos los tenants
 tenants/{tenantId}
   - nombretaller: string
   - rutempresa: string
-  - correotaller: string     ← actualmente null, pendiente agregar al formulario
+  - correotaller: string
   - nrotelefonotaller: string
   - direcciontaller: string
   - comuna: string
@@ -195,7 +195,7 @@ export interface Dispositivos {
 - `setTenantUser(tenantId, uid, data)`
 - `getUserTenant(uid)`
 - `getTenant(tenantId)`
-- `updateTenant(tenantId, data)` — actualiza documento raíz del tenant
+- `updateTenant(tenantId, data)`
 
 **Métodos catálogo global:**
 - `getCatalog<T>(catalogPath)`
@@ -232,23 +232,24 @@ export interface Dispositivos {
 ## 8. Flujo de la aplicación
 
 ### Registro (nuevo taller)
-1. `/ccuenta` → crea Auth + tenant con `onboardingCompletado: false` + userTenants + users
+1. `/ccuenta` → crea Auth + tenant + userTenants + users
 2. Envía email de verificación con `sendEmailVerification()`
 3. Espera 1500ms para propagación de Firestore
 4. Redirige a `/entrada`
 
-> La colección legacy `Usuarios/` ya no se escribe en el registro — fue eliminada del flujo.
+> La colección legacy `Usuarios/` ya no se escribe en el registro.
+> El campo `correotaller` se captura correctamente desde el formulario.
 
 ### Login
 1. `/entrada` → consulta `userTenants` → verifica `estado` del tenant
 2. Si suspendido → logout + `/recepcion`
 3. Si `onboardingCompletado === false` y rol administrador → muestra pantalla bienvenida
-4. Si no → dashboard normal
+4. Si no → dashboard normal con nombre real del usuario y nombre del taller
 
-### Onboarding
-- Solo para administradores en primer acceso
-- Pantalla de bienvenida con 3 pasos en el dashboard
-- Al presionar "¡Entendido, comenzar!" → `onboardingCompletado: true` en Firestore → dashboard normal
+### Dashboard (entrada)
+- Saludo con nombre real del usuario desde `tenants/{tenantId}/users/{uid}`
+- Barra lateral muestra `{Rol} de {nombretaller}`
+- Últimas 5 órdenes, conteos, clientes e inventario en tiempo real
 
 ### Flujo OT
 - `muestradispositivo` → `orden.cliente.dispositivos`
@@ -282,7 +283,7 @@ export interface Dispositivos {
 | menuordenes | /menuordenes | pendiente post-MVP |
 | estadisticasorden | /estadisticasorden | pendiente post-MVP |
 | menuclientes | /menuclientes | pendiente post-MVP |
-| configadmin | /configadmin | pendiente post-MVP |
+| configadmin | /configadmin | pendiente v0.1.1-alpha.2 |
 | menuvideos | /menuvideos | postergado |
 | registrovideos | /registrovideos | postergado |
 
@@ -290,7 +291,7 @@ export interface Dispositivos {
 
 ## 10. Estado del Trello
 
-### DONE ✅ — MVP COMPLETADO + HOTFIX v0.1.0-alpha.2
+### DONE ✅ — MVP + HOTFIX + v0.1.1-alpha.2 (bugs)
 | Tarjeta |
 |---|
 | Multi-tenant foundation |
@@ -310,6 +311,31 @@ export interface Dispositivos {
 | Onboarding (crear taller → primer técnico → primera OT) |
 | 🚨 userTenants no se creaba al registrar nuevo taller |
 | 🚨 Email de confirmación al registrar cuenta |
+| 🔴 correotaller null en registro de taller |
+| 🔴 Saludo al usuario en header de Entrada |
+| 🔴 Barra lateral muestra ID de Firestore en vez del nombre del taller |
+| 🔴 Tablas desalineadas en registros |
+| 🔴 Datos de contacto reales en modal CONTÁCTANOS |
+
+### BACKLOG v0.1.1-alpha.2 (mejoras pendientes)
+| Tarjeta | Tipo |
+|---|---|
+| Configuración del taller desde configadmin | 🟡 MEJORA |
+| Logo del taller en PDF de orden | 🟡 MEJORA |
+| Editar y eliminar repuesto en registrorepuesto | 🟡 MEJORA |
+| Eliminar o desactivar cliente en registroclientes | 🟡 MEJORA |
+
+### BACKLOG v0.1.2-alpha.3
+| Tarjeta | Tipo |
+|---|---|
+| Reemplazar banners Kit Sertec por banners TechFlow | 🟡 MEJORA |
+| Tema propio TechFlow | 🟡 MEJORA |
+| Rediseño UI general | 🟡 MEJORA |
+| Rediseño de menús de categoría | 🟡 MEJORA |
+| Responsividad móvil | 🟡 MEJORA |
+| Creación de usuarios técnicos y vendedores | 🟢 FEATURE |
+| Crear interfaz Tenant y migrar desde Taller legacy | 🟡 MEJORA |
+| Bloquear acceso hasta verificar correo | 🟢 FEATURE |
 
 ### POST-MVP
 | Tarjeta |
@@ -318,7 +344,12 @@ export interface Dispositivos {
 | Múltiples repuestos por OT |
 | Enriquecer dashboard con métricas reales |
 | Visita guiada interactiva del sistema |
-| Crear interfaz Tenant y migrar desde Taller legacy |
+| Notificaciones por email al cambiar estado de OT |
+
+### ÉPICAS/VISIÓN
+| Tarjeta |
+|---|
+| Sistema NFC — Identificación física de órdenes (v2.0.0) |
 
 ---
 
@@ -326,17 +357,17 @@ export interface Dispositivos {
 
 | Pendiente | Prioridad | Contexto |
 |---|---|---|
-| `correotaller` null en tenant | Baja | Formulario sin ese campo |
-| Colección `Usuarios/` legacy | Baja | Ya no se escribe en registro, pendiente eliminar colección de Firestore |
-| Interfaz `Taller` legacy | Media | Migrar a `Tenant` en post-MVP |
-| Técnicos/vendedores sin flujo de creación | Alta | Pendiente post-MVP |
-| Botón eliminar/editar repuesto sin funcionalidad | Baja | Post-MVP |
-| Botón eliminar cliente sin funcionalidad | Baja | Post-MVP |
+| Colección `Usuarios/` legacy | Baja | Ya no se escribe, pendiente eliminar de Firestore |
+| Interfaz `Taller` legacy | Media | Migrar a `Tenant` en v0.1.2-alpha.3 |
+| Técnicos/vendedores sin flujo de creación | Alta | Pendiente v0.1.2-alpha.3 |
+| Botón eliminar/editar repuesto sin funcionalidad | Baja | Pendiente v0.1.1-alpha.2 |
+| Botón eliminar cliente sin funcionalidad | Baja | Pendiente v0.1.1-alpha.2 |
 | Solo un repuesto por OT | Media | Post-MVP |
-| Logo del taller en PDF | Baja | Pendiente subida de imágenes |
+| Logo del taller en PDF | Baja | Pendiente v0.1.1-alpha.2 |
 | `menuresumentec` posiblemente redundante | Baja | Evaluar eliminación |
 | Conflicto ng2-charts vs chart.js | Baja | Usar --legacy-peer-deps |
-| Verificación de correo no bloquea acceso | Media | Card registrada en backlog v0.1.2-alpha.3 |
+| Verificación de correo no bloquea acceso | Media | Pendiente v0.1.2-alpha.3 |
+| Tamaños de columna en tablas revisar con tema propio | Baja | Pendiente v0.1.2-alpha.3 |
 
 ---
 
@@ -351,6 +382,7 @@ export interface Dispositivos {
 | `ionViewDidEnter` para gráficos | DOM debe estar listo antes de acceder a canvas |
 | Tenant inicia en estado `trial` | Control de acceso desde el primer registro |
 | Estado del tenant verificado en cada login | Permite suspender sin eliminar cuenta |
+| `allow create` en userTenants si uid == uid autenticado | Permite registro sin exponer escritura arbitraria |
 | `allow create` en tenant si ownerUid == uid | Permite registro sin romper seguridad |
 | `firestore.rules` versionado en Git | Trazabilidad de cambios |
 | Dispositivos como catálogo global `devices/` | Marcas y modelos son iguales para todos los talleres |
@@ -360,6 +392,9 @@ export interface Dispositivos {
 | Dashboard simplificado con datos reales | Mejor UX que campos vacíos |
 | jsPDF para generación de PDF | Control total sobre el diseño del documento |
 | Onboarding como pantalla en dashboard | No invasivo, no bloquea navegación |
-| `allow create` en userTenants si uid == uid autenticado | Permite registro sin exponer escritura arbitraria |
-| `setTimeout(1500ms)` antes de navegar post-registro | Garantiza propagación de Firestore antes de que el observer de entrada lo lea |
-| `sendEmailVerification()` al completar registro | Verificación de correo implementada — no bloquea acceso aún |
+| `onboardingCompletado` en Firestore | Persiste entre dispositivos y sesiones |
+| `setTimeout(1500ms)` antes de navegar post-registro | Garantiza propagación de Firestore |
+| `sendEmailVerification()` al completar registro | Verificación de correo — no bloquea acceso aún |
+| `ion-grid.tabla-encabezado` para tablas | Alineación consistente entre encabezado y datos |
+| Nombre real del usuario desde `tenants/users/{uid}` | Saludo personalizado en dashboard |
+| Nombre del taller desde `getTenant()` | Barra lateral con información correcta |
