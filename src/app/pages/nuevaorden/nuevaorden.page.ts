@@ -325,12 +325,18 @@ export class NuevaordenPage implements OnInit {
 
   // ---GENERAR ORDEN---
   async generarorden() {
+    // Generar número de orden con transacción atómica
+    const nroOrden = await this.firestore.generarNroOrden(
+      this.session.tenantId,
+    );
+
     this.orden.cliente = this.muestracliente;
     this.orden.cliente.dispositivos.marcadisp =
       this.muestradispositivo.marcadisp;
     this.orden.cliente.dispositivos.modelodisp =
       this.muestradispositivo.modelodisp;
     this.orden.inforden = this.inforden;
+    this.orden.inforden.nroorden = nroOrden;
     this.orden.repuesto = {
       ...this.muestrainventario,
       cantidad: 1,
@@ -344,7 +350,6 @@ export class NuevaordenPage implements OnInit {
       this.orden,
     );
 
-    // Descontar stock si hay repuesto seleccionado
     if (this.muestrainventario.id && this.muestrainventario.cantidad > 0) {
       await this.firestore.updateDocByTenant(
         'inventory',

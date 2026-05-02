@@ -184,4 +184,20 @@ export class FirestoredatabaseService {
   addToCatalog(catalogPath: string, data: any) {
     return this.database.collection(catalogPath).add(data);
   }
+
+    // ─── TRANSACCIÓN ÁTOMICA PARA NRO DE ORDEN ─────────────────────────────────────
+
+  async generarNroOrden(tenantId: string): Promise<number> {
+  const tenantRef = this.database.firestore
+    .collection('tenants')
+    .doc(tenantId);
+
+  return this.database.firestore.runTransaction(async (transaction) => {
+    const tenantDoc = await transaction.get(tenantRef);
+    const ultimoNroOrden = tenantDoc.data()?.ultimoNroOrden ?? 0;
+    const nuevoNroOrden = ultimoNroOrden + 1;
+    transaction.update(tenantRef, { ultimoNroOrden: nuevoNroOrden });
+    return nuevoNroOrden;
+  });
+}
 }
