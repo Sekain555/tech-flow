@@ -14,7 +14,11 @@
 </ion-header>
 
 <ion-content>
-  <swiper [pagination]="{type: 'progressbar'}" [navigation]="true" class="mySwiper">
+  <swiper
+    [pagination]="{type: 'progressbar'}"
+    [navigation]="true"
+    class="mySwiper"
+  >
     <ng-template swiperSlide>
       <ion-grid>
         <ion-row class="ion-justify-content-center">
@@ -25,24 +29,30 @@
             <ion-img src="/assets/icon/logo-taller.png"></ion-img>
             <ion-row class="ion-justify-content-center">
               <ion-button fill="outline" disabled>
-                <ion-icon name="arrow-up-circle-outline"></ion-icon>&nbsp;SUBIR LOGO</ion-button>
+                <ion-icon name="arrow-up-circle-outline"></ion-icon>&nbsp;SUBIR
+                LOGO</ion-button
+              >
             </ion-row>
           </ion-col>
           <ion-col size="4.5">
-            <ion-row class="arreglo">
-
-            </ion-row>
+            <ion-row class="arreglo"> </ion-row>
             <ion-row class="ion-justify-content-center">
               <ion-col size="4">
                 <ion-item>
                   <ion-label position="stacked">Nombre taller</ion-label>
-                  <ion-input readonly="true">{{taller.nombretaller}}</ion-input>
+                  <ion-input
+                    [readonly]="!editando"
+                    [(ngModel)]="taller.nombretaller"
+                  ></ion-input>
                 </ion-item>
               </ion-col>
               <ion-col size="4">
                 <ion-item>
                   <ion-label position="stacked">RUT Empresa</ion-label>
-                  <ion-input readonly="true">{{taller.rutempresa}}</ion-input>
+                  <ion-input
+                    readonly="true"
+                    [(ngModel)]="taller.rutempresa"
+                  ></ion-input>
                 </ion-item>
               </ion-col>
             </ion-row>
@@ -50,13 +60,19 @@
               <ion-col size="7">
                 <ion-item>
                   <ion-label position="stacked">Correo electrónico</ion-label>
-                  <ion-input readonly="true"></ion-input>
+                  <ion-input
+                    [readonly]="!editando"
+                    [(ngModel)]="taller.correotaller"
+                  ></ion-input>
                 </ion-item>
               </ion-col>
               <ion-col size="5">
                 <ion-item>
                   <ion-label position="stacked">N° de teléfono</ion-label>
-                  <ion-input readonly="true"></ion-input>
+                  <ion-input
+                    [readonly]="!editando"
+                    [(ngModel)]="taller.nrotelefonotaller"
+                  ></ion-input>
                 </ion-item>
               </ion-col>
             </ion-row>
@@ -64,15 +80,36 @@
               <ion-col size="12">
                 <ion-item>
                   <ion-label position="stacked">Dirección</ion-label>
-                  <ion-input readonly="true">
-                  </ion-input>
+                  <ion-input
+                    [readonly]="!editando"
+                    [(ngModel)]="taller.direcciontaller"
+                  ></ion-input>
                 </ion-item>
               </ion-col>
             </ion-row>
             <ion-row class="ion-justify-content-center">
-              <ion-button fill="outline" disabled><ion-icon
-                  name="create-outline"></ion-icon>&nbsp;EDITAR
-                DATOS</ion-button>
+              <ion-button
+                *ngIf="!editando"
+                fill="outline"
+                (click)="toggleEditar()"
+              >
+                <ion-icon name="create-outline"></ion-icon>&nbsp;EDITAR DATOS
+              </ion-button>
+              <ion-button
+                *ngIf="editando"
+                fill="outline"
+                (click)="guardarDatos()"
+              >
+                <ion-icon name="save-outline"></ion-icon>&nbsp;GUARDAR
+              </ion-button>
+              <ion-button
+                *ngIf="editando"
+                fill="outline"
+                color="medium"
+                (click)="toggleEditar()"
+              >
+                CANCELAR
+              </ion-button>
             </ion-row>
           </ion-col>
         </ion-row>
@@ -85,13 +122,14 @@
         </ion-row>
         <ion-row class="ion-justify-content-center">
           <ion-col size="6">
-          <h5>Como administrador de tu taller puedes escoger utilizar nuestra función "Videos" para mostrar a tus clientes
-            las grabaciones que realizas al reparar sus dispositivos</h5>
+            <h5>
+              Como administrador de tu taller puedes escoger utilizar nuestra
+              función "Videos" para mostrar a tus clientes las grabaciones que
+              realizas al reparar sus dispositivos
+            </h5>
           </ion-col>
         </ion-row>
-        <ion-row>
-          
-        </ion-row>
+        <ion-row> </ion-row>
       </ion-grid>
     </ng-template>
   </swiper>
