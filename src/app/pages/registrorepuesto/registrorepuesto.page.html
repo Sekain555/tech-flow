@@ -82,10 +82,17 @@
             <ion-col size="1.4">{{repuesto.proveedor}}</ion-col>
             <ion-col size="1.4">{{repuesto.valor}}</ion-col>
             <ion-col size="2.2" style="display: flex; align-items: center">
-              <ion-button fill="clear">
+              <ion-button
+                fill="clear"
+                (click)="seleccionarEditar(repuesto); modalEditar.present()"
+              >
                 <ion-icon name="pencil"></ion-icon>
               </ion-button>
-              <ion-button fill="clear" color="danger">
+              <ion-button
+                fill="clear"
+                color="danger"
+                (click)="confirmarEliminar(repuesto)"
+              >
                 <ion-icon name="close-circle"></ion-icon>
               </ion-button>
             </ion-col>
@@ -95,3 +102,60 @@
     </ion-list>
   </ion-grid>
 </ion-content>
+
+<!-- MODAL EDITAR REPUESTO -->
+<ion-modal #modalEditar>
+  <ng-template>
+    <ion-header>
+      <ion-toolbar>
+        <ion-title>Editar repuesto</ion-title>
+        <ion-buttons slot="end">
+          <ion-button (click)="modalEditar.dismiss()">Cancelar</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding" *ngIf="repuestoEditando">
+      <ion-list>
+        <ion-item>
+          <ion-label position="stacked">Nombre repuesto</ion-label>
+          <ion-input [(ngModel)]="repuestoEditando.nombrers"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Marca</ion-label>
+          <ion-input [(ngModel)]="repuestoEditando.marca"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Modelo</ion-label>
+          <ion-input [(ngModel)]="repuestoEditando.modelo"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Variante</ion-label>
+          <ion-input [(ngModel)]="repuestoEditando.variante"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Cantidad</ion-label>
+          <ion-input
+            type="number"
+            [(ngModel)]="repuestoEditando.cantidad"
+          ></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Proveedor</ion-label>
+          <ion-input [(ngModel)]="repuestoEditando.proveedor"></ion-input>
+        </ion-item>
+        <ion-item>
+          <ion-label position="stacked">Valor</ion-label>
+          <ion-input
+            type="number"
+            [(ngModel)]="repuestoEditando.valor"
+          ></ion-input>
+        </ion-item>
+      </ion-list>
+      <ion-row class="ion-justify-content-center ion-margin-top">
+        <ion-button (click)="guardarEdicionRepuesto(modalEditar)">
+          <ion-icon name="save-outline"></ion-icon>&nbsp;GUARDAR
+        </ion-button>
+      </ion-row>
+    </ion-content>
+  </ng-template>
+</ion-modal>
