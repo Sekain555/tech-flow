@@ -1,7 +1,7 @@
-import { Component, OnInit, ViewEncapsulation} from '@angular/core';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
 import { FirestoredatabaseService } from 'src/app/services/firestoredatabase.service';
-import { AuthfirebaseService } from 'src/app/services/authfirebase.service';
-import { UsuarioI, Taller } from 'src/app/models/modelos';
+import { SessionService } from 'src/app/services/session.service';
+import { Taller } from 'src/app/models/modelos';
 import SwiperCore, { Navigation, Pagination, Scrollbar } from 'swiper';
 
 SwiperCore.use([Navigation, Pagination, Scrollbar]);
@@ -10,16 +10,9 @@ SwiperCore.use([Navigation, Pagination, Scrollbar]);
   selector: 'app-configadmin',
   templateUrl: './configadmin.page.html',
   styleUrls: ['./configadmin.page.scss'],
-  encapsulation: ViewEncapsulation.None
+  encapsulation: ViewEncapsulation.None,
 })
 export class ConfigadminPage implements OnInit {
-
-  id: string = null;
-
-  
-
-  talleres: Taller[] = [];
-
   taller: Taller = {
     nombretaller: null,
     rutempresa: null,
@@ -28,40 +21,22 @@ export class ConfigadminPage implements OnInit {
     direcciontaller: null,
     comuna: null,
     region: null,
-  }
+  };
 
   constructor(
     private firestore: FirestoredatabaseService,
-    private auth: AuthfirebaseService,
-  ) {
-    this.auth.estadousuario().subscribe(res => {
-      if (res) {
-        //está logeado
-        this.obtenerusuario(res.uid);
-      }
-    })
-  }
+    private session: SessionService,
+  ) {}
 
   ngOnInit() {
+    this.traertaller();
   }
 
-  obtenerusuario(uid: string) {
-    const path = 'Usuarios';
-    const id = uid;
-    this.firestore.getDoc<UsuarioI>(path, id).subscribe(res => {
+  traertaller() {
+    this.firestore.getTenant(this.session.tenantId).subscribe((res: any) => {
       if (res) {
-        console.log(res);
-        this.taller.nombretaller = res.nombretaller
-        console.log(this.taller);
-        this.traertalleres();
+        this.taller = res;
       }
-    })
-  }
-
-  traertalleres() {
-    this.firestore.getDoc<Taller>('Taller', this.taller.nombretaller).subscribe(res => {
-      console.log(res)
-    
-    })
+    });
   }
 }
